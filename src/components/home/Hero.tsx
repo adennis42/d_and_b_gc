@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { trackCallToAction } from "@/lib/analytics";
 
 /**
  * Hero component - Full-height hero section with background image
@@ -66,7 +69,11 @@ export function Hero() {
               size="lg"
               className="text-base sm:text-lg px-8 py-6 h-auto shadow-lg"
             >
-              <Link href="/gallery" aria-label="View our portfolio gallery">
+              <Link
+                href="/gallery"
+                aria-label="View our portfolio gallery"
+                onClick={() => trackCallToAction("hero", "view-gallery", "/gallery")}
+              >
                 View Our Work
               </Link>
             </Button>
@@ -76,7 +83,13 @@ export function Hero() {
               size="lg"
               className="text-base sm:text-lg px-8 py-6 h-auto bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 shadow-lg"
             >
-              <Link href="/schedule" aria-label="Schedule a free consultation">
+              <Link
+                href="/schedule"
+                aria-label="Schedule a free consultation"
+                onClick={() =>
+                  trackCallToAction("hero", "schedule-consultation", "/schedule")
+                }
+              >
                 Schedule Consultation
               </Link>
             </Button>

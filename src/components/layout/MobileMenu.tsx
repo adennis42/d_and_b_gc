@@ -85,8 +85,8 @@ export function MobileMenu() {
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 p-6">
-            <ul className="space-y-4">
+          <nav className="flex-1 p-6" aria-label="Mobile navigation">
+            <ul className="space-y-4" role="list">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -95,7 +95,7 @@ export function MobileMenu() {
                       href={link.href}
                       className={`
                         block px-4 py-3 rounded-md text-lg font-medium
-                        transition-colors
+                        transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
                         ${
                           isActive
                             ? "bg-primary text-primary-foreground"
@@ -103,6 +103,7 @@ export function MobileMenu() {
                         }
                       `}
                       onClick={() => setIsOpen(false)}
+                      aria-current={isActive ? "page" : undefined}
                     >
                       {link.label}
                     </Link>

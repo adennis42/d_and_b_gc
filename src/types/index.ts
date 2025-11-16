@@ -9,13 +9,14 @@
 export interface Project {
   id: string;
   title: string;
-  category: 'kitchen' | 'bathroom';
+  category: 'kitchen' | 'bathroom' | 'sunroom' | 'millwork';
   description?: string;
   images: {
     url: string;
     alt: string;
     width: number;
     height: number;
+    blurDataURL?: string; // Base64 blur placeholder for Next.js Image
   }[];
   featured?: boolean;
 }

@@ -66,18 +66,20 @@ export function Footer() {
               <p>
                 <a
                   href="tel:+1234567890"
-                  className="hover:text-foreground transition-colors"
+                  className="hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
+                  aria-label="Call us at (123) 456-7890"
                 >
-                  <span className="sr-only">Phone</span>
+                  <span className="sr-only">Phone: </span>
                   (123) 456-7890
                 </a>
               </p>
               <p>
                 <a
                   href="mailto:info@contractor.com"
-                  className="hover:text-foreground transition-colors"
+                  className="hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
+                  aria-label="Email us at info@contractor.com"
                 >
-                  <span className="sr-only">Email</span>
+                  <span className="sr-only">Email: </span>
                   info@contractor.com
                 </a>
               </p>
@@ -89,12 +91,12 @@ export function Footer() {
             <h3 className="text-lg font-semibold tracking-tight">
               Quick Links
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
                   >
                     {link.label}
                   </Link>
@@ -126,7 +128,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
                     aria-label={social.ariaLabel}
                   >
                     <Icon className="h-5 w-5" aria-hidden="true" />

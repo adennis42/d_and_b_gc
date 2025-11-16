@@ -1,37 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "@/components/home/Hero";
 import { Services } from "@/components/home/Services";
 import { CTA } from "@/components/home/CTA";
+import { getHomeMetadata } from "@/lib/metadata";
 
 /**
  * Homepage metadata for SEO
- * Phase 2: Update with actual contractor information and optimized descriptions
+ * Generated using centralized metadata utility
  */
-export const metadata: Metadata = {
-  title: "High-End Residential Remodeling | Kitchen & Bathroom Contractor",
-  description:
-    "Professional general contractor specializing in high-end residential bathroom and kitchen remodels. Transform your home with expert craftsmanship and custom design.",
-  keywords: [
-    "kitchen remodeling",
-    "bathroom remodeling",
-    "residential contractor",
-    "home renovation",
-    "custom design",
-  ],
-  openGraph: {
-    title: "High-End Residential Remodeling | Kitchen & Bathroom Contractor",
-    description:
-      "Professional general contractor specializing in high-end residential bathroom and kitchen remodels.",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "High-End Residential Remodeling | Kitchen & Bathroom Contractor",
-    description:
-      "Professional general contractor specializing in high-end residential bathroom and kitchen remodels.",
-  },
-};
+export const metadata = getHomeMetadata();
 
 /**
  * Homepage component

@@ -46,6 +46,22 @@ For Vercel deployment, you need to add environment variables in the Vercel dashb
 - `CLOUDINARY_API_KEY` - Cloudinary API key
 - `CLOUDINARY_API_SECRET` - Cloudinary API secret
 
+#### SEO & Structured Data (Recommended)
+- `NEXT_PUBLIC_SITE_URL` - Your production site URL (e.g., https://dbcontractorsny.com)
+- `NEXT_PUBLIC_BUSINESS_STREET` - Business street address
+- `NEXT_PUBLIC_BUSINESS_CITY` - Business city
+- `NEXT_PUBLIC_BUSINESS_STATE` - Business state/province
+- `NEXT_PUBLIC_BUSINESS_ZIP` - Business postal/ZIP code
+- `NEXT_PUBLIC_BUSINESS_COUNTRY` - Business country (default: US)
+- `NEXT_PUBLIC_BUSINESS_PHONE` - Business phone number
+- `NEXT_PUBLIC_BUSINESS_EMAIL` - Business email address
+- `NEXT_PUBLIC_BUSINESS_HOURS` - Business hours (format: "Mo-Fr 08:00-17:00,Sa 09:00-13:00")
+- `NEXT_PUBLIC_SERVICE_AREAS` - Service areas (format: "New York,Long Island,Westchester County")
+- `NEXT_PUBLIC_RATING_VALUE` - Average rating (optional, e.g., "4.8")
+- `NEXT_PUBLIC_REVIEW_COUNT` - Number of reviews (optional, e.g., "25")
+- `NEXT_PUBLIC_BUSINESS_LOGO` - Logo URL path (default: "/images/logo.png")
+- `NEXT_PUBLIC_BUSINESS_IMAGE` - Business image URL path (default: "/images/og-image.jpg")
+
 ### Environment-Specific Variables
 
 You can set different values for:
