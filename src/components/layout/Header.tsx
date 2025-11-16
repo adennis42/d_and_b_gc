@@ -26,7 +26,7 @@ export function Header() {
             href="/"
             className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity"
           >
-            Contractor Name
+            D&B General Contactors
           </Link>
 
           {/* Desktop Navigation */}

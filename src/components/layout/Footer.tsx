@@ -141,7 +141,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {currentYear} Contractor Name. All rights reserved.
+            &copy; {currentYear} D&B General Contactors. All rights reserved.
           </p>
         </div>
       </div>
