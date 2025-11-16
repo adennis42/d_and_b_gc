@@ -52,7 +52,7 @@ export function Footer() {
           {/* Company Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold tracking-tight">
-              Contractor Name
+              D&B General Contactors
             </h3>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p className="flex items-start">
