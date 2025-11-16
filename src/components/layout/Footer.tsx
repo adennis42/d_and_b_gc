@@ -1,9 +1,5 @@
 import Link from "next/link";
-import {
-  TwitterLogoIcon,
-  LinkedInLogoIcon,
-  InstagramLogoIcon,
-} from "@radix-ui/react-icons";
+import { Facebook, Star } from "lucide-react";
 
 /**
  * Footer component - Site footer with contact info, social links, and navigation
@@ -16,6 +12,7 @@ import {
  */
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const companyName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors";
 
   const quickLinks = [
     { href: "/", label: "Home" },
@@ -26,22 +23,16 @@ export function Footer() {
 
   const socialLinks = [
     {
-      name: "Instagram",
-      href: "#",
-      icon: InstagramLogoIcon,
-      ariaLabel: "Visit our Instagram page",
+      name: "Facebook",
+      href: "#", // Update with actual Facebook page URL
+      icon: Facebook,
+      ariaLabel: "Visit our Facebook page",
     },
     {
-      name: "Twitter",
-      href: "#",
-      icon: TwitterLogoIcon,
-      ariaLabel: "Visit our Twitter page",
-    },
-    {
-      name: "LinkedIn",
-      href: "#",
-      icon: LinkedInLogoIcon,
-      ariaLabel: "Visit our LinkedIn page",
+      name: "Yelp",
+      href: "https://www.yelp.com/biz/artisan-interior-millwork-bay-shore",
+      icon: Star,
+      ariaLabel: "Visit our Yelp page",
     },
   ];
 
@@ -52,37 +43,59 @@ export function Footer() {
           {/* Company Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold tracking-tight">
-              D&B General Contactors
+              {companyName}
             </h3>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p className="flex items-start">
-                <span className="sr-only">Address</span>
-                <span>123 Main Street</span>
-              </p>
-              <p className="flex items-start">
-                <span className="sr-only">City and State</span>
-                <span>City, State 12345</span>
-              </p>
-              <p>
-                <a
-                  href="tel:+1234567890"
-                  className="hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
-                  aria-label="Call us at (123) 456-7890"
-                >
-                  <span className="sr-only">Phone: </span>
-                  (123) 456-7890
-                </a>
-              </p>
-              <p>
-                <a
-                  href="mailto:info@contractor.com"
-                  className="hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
-                  aria-label="Email us at info@contractor.com"
-                >
-                  <span className="sr-only">Email: </span>
-                  info@contractor.com
-                </a>
-              </p>
+              {/* Street Address */}
+              {process.env.NEXT_PUBLIC_BUSINESS_STREET && (
+                <p className="flex items-start">
+                  <span className="sr-only">Address</span>
+                  <span>{process.env.NEXT_PUBLIC_BUSINESS_STREET}</span>
+                </p>
+              )}
+              {/* City, State, ZIP */}
+              {(process.env.NEXT_PUBLIC_BUSINESS_CITY ||
+                process.env.NEXT_PUBLIC_BUSINESS_STATE ||
+                process.env.NEXT_PUBLIC_BUSINESS_ZIP) && (
+                <p className="flex items-start">
+                  <span className="sr-only">City and State</span>
+                  <span>
+                    {[
+                      process.env.NEXT_PUBLIC_BUSINESS_CITY,
+                      process.env.NEXT_PUBLIC_BUSINESS_STATE,
+                      process.env.NEXT_PUBLIC_BUSINESS_ZIP,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </span>
+                </p>
+              )}
+              {/* Phone */}
+              {process.env.NEXT_PUBLIC_BUSINESS_PHONE && (
+                <p>
+                  <a
+                    href={`tel:${process.env.NEXT_PUBLIC_BUSINESS_PHONE.replace(/[^0-9+]/g, "")}`}
+                    className="hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
+                    aria-label={`Call us at ${process.env.NEXT_PUBLIC_BUSINESS_PHONE}`}
+                  >
+                    <span className="sr-only">Phone: </span>
+                    {process.env.NEXT_PUBLIC_BUSINESS_PHONE}
+                  </a>
+                </p>
+              )}
+              {/* Email */}
+              {process.env.NEXT_PUBLIC_BUSINESS_EMAIL && (
+                <p>
+                  <a
+                    href={`mailto:${process.env.NEXT_PUBLIC_BUSINESS_EMAIL}`}
+                    className="hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
+                    aria-label={`Email us at ${process.env.NEXT_PUBLIC_BUSINESS_EMAIL}`}
+                  >
+                    <span className="sr-only">Email: </span>
+                    {process.env.NEXT_PUBLIC_BUSINESS_EMAIL}
+                  </a>
+                </p>
+              )}
             </div>
           </div>
 
@@ -143,7 +156,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {currentYear} D&B General Contactors. All rights reserved.
+            &copy; {currentYear} {companyName}. All rights reserved.
           </p>
         </div>
       </div>

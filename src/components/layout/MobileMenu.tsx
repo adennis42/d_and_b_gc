@@ -65,15 +65,17 @@ export function MobileMenu() {
       {/* Slide-in Menu */}
       <div
         className={`
-          fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-background border-l z-50
+          fixed top-0 right-0 h-full w-80 max-w-[85vw] border-l z-50 shadow-lg
+          bg-white dark:bg-gray-950
           transform transition-transform duration-300 ease-in-out
           md:hidden
           ${isOpen ? "translate-x-0" : "translate-x-full"}
         `}
+        style={{ backgroundColor: '#ffffff' }}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-white dark:bg-gray-950">
           {/* Menu Header */}
-          <div className="flex items-center justify-between p-6 border-b">
+          <div className="flex items-center justify-between p-6 border-b bg-white dark:bg-gray-950">
             <span className="text-xl font-bold">Menu</span>
             <button
               onClick={() => setIsOpen(false)}
@@ -85,7 +87,7 @@ export function MobileMenu() {
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 p-6" aria-label="Mobile navigation">
+          <nav className="flex-1 p-6 bg-white dark:bg-gray-950" aria-label="Mobile navigation">
             <ul className="space-y-4" role="list">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;

@@ -92,7 +92,7 @@ interface StructuredDataProps {
  * ```
  */
 export function StructuredData({
-  businessName = "D&B General Contractors",
+  businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors",
   description = "Professional general contractor specializing in high-end residential bathroom and kitchen remodels. Transform your home with expert craftsmanship and custom design.",
   address,
   telephone,

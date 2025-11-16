@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 /**
  * Site configuration constants
  * Update these with your actual site information
+ * Company name can be overridden via NEXT_PUBLIC_BUSINESS_NAME environment variable
  */
 const siteConfig = {
-  name: "D&B General Contractors",
+  name: process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors",
   description:
     "Professional general contractor specializing in high-end residential bathroom and kitchen remodels. Transform your home with expert craftsmanship and custom design.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://dbcontractorsny.com/",

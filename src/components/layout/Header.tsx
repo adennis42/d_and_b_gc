@@ -10,6 +10,8 @@ import { MobileMenu } from "./MobileMenu";
  * - Professional, clean design using Tailwind CSS
  */
 export function Header() {
+  const companyName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors";
+  
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
@@ -25,9 +27,9 @@ export function Header() {
           <Link
             href="/"
             className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
-            aria-label="D&B General Contractors - Home"
+            aria-label={`${companyName} - Home`}
           >
-            D&B General Contactors
+            {companyName}
           </Link>
 
           {/* Desktop Navigation */}
