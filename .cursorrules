@@ -1,0 +1,297 @@
+# Contractor Website - High-End Residential Remodeling
+
+## Project Overview
+Building a professional website for a general contractor specializing in high-end residential bathroom and kitchen remodels. The site showcases completed work, provides business information, and enables consultation scheduling.
+
+## Tech Stack
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript (strict mode)
+- **Styling**: Tailwind CSS
+- **Components**: Shadcn/ui
+- **Hosting**: Vercel
+- **Image Storage**: Vercel Blob or Cloudinary
+- **Scheduling**: Google Calendar integration
+- **Email**: Resend or SendGrid
+- **Analytics**: Google Analytics or Plausible
+
+## Core Requirements
+1. **SEO-first**: Every page must have proper metadata, semantic HTML, structured data
+2. **Performance**: Lighthouse score 90+ on all metrics
+3. **Responsive**: Mobile-first design, tested on iOS/Android
+4. **Accessible**: WCAG 2.1 AA compliance
+5. **Fast iteration**: Maintainer-friendly code structure
+
+## Architecture Guidelines
+
+### Directory Structure
+```
+/app
+  /(routes)
+    /page.tsx (Home)
+    /about/page.tsx
+    /gallery/page.tsx
+    /schedule/page.tsx
+  /api
+    /contact/route.ts
+    /upload/route.ts (future)
+  /layout.tsx
+  /globals.css
+/components
+  /ui (shadcn components)
+  /layout (Header, Footer, Nav)
+  /gallery (GalleryGrid, Lightbox, ProjectCard)
+  /forms (ContactForm, ScheduleForm)
+  /home (Hero, Services, CTA)
+/lib
+  /utils.ts
+  /email.ts
+  /calendar.ts
+  /constants.ts
+/public
+  /images
+  /fonts
+```
+
+### Coding Standards
+- **TypeScript**: Use strict mode, no `any` types
+- **Components**: Server components by default, client components only when needed
+- **Naming**: PascalCase for components, camelCase for utilities, kebab-case for routes
+- **Imports**: Use absolute imports with `@/` prefix
+- **Comments**: Focus on "why" not "what", document complex logic
+- **Error handling**: Always handle errors gracefully with user-friendly messages
+
+### Performance Rules
+- Use Next.js `<Image>` component for all images
+- Implement lazy loading for gallery
+- Minimize client-side JavaScript
+- Use server actions for form submissions
+- Optimize fonts with next/font
+- Implement proper caching strategies
+
+### SEO Checklist (Every Page)
+- [ ] Unique title tag (50-60 chars)
+- [ ] Meta description (150-160 chars)
+- [ ] Open Graph tags
+- [ ] Twitter Card tags
+- [ ] Canonical URL
+- [ ] Structured data (JSON-LD)
+- [ ] Semantic HTML (h1, h2, nav, main, footer)
+- [ ] Alt text for all images
+
+## Phase Implementation
+
+### Phase 1: Foundation ✓
+**Goal**: Working Next.js app deployed to Vercel
+
+**Tasks**:
+1. Initialize Next.js 15 with TypeScript
+   ```bash
+   npx create-next-app@latest contractor-site --typescript --tailwind --app
+   ```
+2. Install dependencies:
+   ```bash
+   npx shadcn@latest init
+   npx shadcn@latest add button card input textarea
+   ```
+3. Create base layout with Header/Footer
+4. Set up environment variables (.env.local)
+5. Configure Vercel deployment
+6. Implement responsive navigation with mobile menu
+
+**Success Criteria**:
+- Site loads on localhost:3000
+- Navigation works on mobile/desktop
+- Deployed to Vercel with custom domain ready
+- TypeScript compiles without errors
+
+### Phase 2: Core Content
+**Goal**: Complete informational pages with contact capability
+
+**Tasks**:
+1. **Homepage**:
+   - Hero section with compelling headline and CTA
+   - Services overview (kitchen/bathroom remodeling)
+   - Social proof placeholder (testimonials later)
+   - High-quality hero image or video background
+   
+2. **About Page**:
+   - Contractor background and expertise
+   - Service areas
+   - Process/methodology
+   - Team information
+   
+3. **Contact/Schedule Page**:
+   - Contact form (name, email, phone, message, project type)
+   - Google Calendar scheduling link/widget
+   - Business hours and response time expectations
+   - Form validation with React Hook Form + Zod
+   
+4. **Email Integration**:
+   - Set up Resend/SendGrid
+   - Form submission triggers email to contractor
+   - Auto-reply to user confirming receipt
+
+**Success Criteria**:
+- All pages accessible via navigation
+- Contact form sends emails successfully
+- Responsive on mobile, tablet, desktop
+- Basic SEO metadata on all pages
+
+### Phase 3: Gallery System
+**Goal**: Beautiful, performant photo gallery
+
+**Tasks**:
+1. **Gallery Architecture**:
+   - Decide: Static images in /public vs. Cloudinary/Vercel Blob
+   - Create image upload/management strategy
+   - Implement image optimization pipeline
+   
+2. **Gallery Components**:
+   - Responsive grid layout (masonry or CSS grid)
+   - Lightbox/modal for full-size viewing
+   - Category filters (All, Kitchens, Bathrooms)
+   - Project cards with hover effects
+   
+3. **Features**:
+   - Lazy loading with intersection observer
+   - Before/after slider component (optional)
+   - Project detail modal (optional: description, timeline)
+   - Keyboard navigation in lightbox
+   
+4. **Image Management**:
+   - Simple JSON file for gallery data structure
+   - Or: Headless CMS integration (Sanity/Contentful) for future scaling
+
+**Data Structure Example**:
+```typescript
+interface Project {
+  id: string;
+  title: string;
+  category: 'kitchen' | 'bathroom';
+  description?: string;
+  images: {
+    url: string;
+    alt: string;
+    width: number;
+    height: number;
+  }[];
+  featured?: boolean;
+}
+```
+
+**Success Criteria**:
+- Gallery loads quickly (< 2s on 3G)
+- Images are properly optimized
+- Smooth user experience on all devices
+- Can easily add new projects
+
+### Phase 4: Polish & Launch
+**Goal**: Production-ready, optimized site
+
+**Tasks**:
+1. **SEO Enhancement**:
+   - Add sitemap.xml
+   - Add robots.txt
+   - Implement structured data (LocalBusiness schema)
+   - Add breadcrumbs
+   - Optimize meta tags across all pages
+   - Add canonical URLs
+   
+2. **Performance**:
+   - Run Lighthouse audit
+   - Optimize Core Web Vitals (LCP, FID, CLS)
+   - Implement proper caching headers
+   - Add loading states and skeletons
+   - Compress images further if needed
+   
+3. **Analytics & Monitoring**:
+   - Set up Google Analytics or Plausible
+   - Implement event tracking (form submissions, calls to action)
+   - Add error monitoring (Sentry optional)
+   
+4. **Final QA**:
+   - Cross-browser testing (Chrome, Safari, Firefox)
+   - Mobile device testing (iOS, Android)
+   - Form validation testing
+   - Link checking
+   - Spelling and grammar review
+   - WCAG accessibility audit
+
+**Success Criteria**:
+- Lighthouse scores 90+ (Performance, Accessibility, Best Practices, SEO)
+- No console errors
+- All forms working
+- Analytics tracking conversions
+- Google Calendar integration tested
+
+## Future Enhancements (Post-Launch)
+- Testimonials section with customer reviews
+- Blog for SEO content (remodeling tips, trends)
+- Project cost estimator tool
+- Service area map with coverage
+- Financing information/calculator
+- Lead capture with progressive disclosure
+- A/B testing on CTAs
+- Admin dashboard for gallery management
+
+## Development Workflow
+1. Work on feature branch
+2. Test locally
+3. Commit with descriptive messages
+4. Push to trigger Vercel preview deployment
+5. Review preview URL
+6. Merge to main for production deployment
+
+## Environment Variables Needed
+```
+# Email
+RESEND_API_KEY=
+EMAIL_FROM=
+EMAIL_TO=
+
+# Google Calendar
+GOOGLE_CALENDAR_ID=
+GOOGLE_API_KEY=
+
+# Analytics
+NEXT_PUBLIC_GA_ID=
+
+# Image Storage (if using Cloudinary)
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+## Key Commands
+```bash
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Type check
+npm run type-check
+
+# Lint
+npm run lint
+```
+
+## When Asking Cursor for Help
+Be specific about:
+- Which phase you're working on
+- The component or feature you're implementing
+- Any specific requirements (e.g., "mobile-first", "keyboard accessible")
+- Desired behavior with examples
+
+Example prompts:
+- "Implement the Hero section for Phase 2 with a background image, headline, subheadline, and CTA button. Use Shadcn/ui components."
+- "Create a responsive navigation header that collapses to a hamburger menu on mobile."
+- "Build a lightbox component for the gallery that supports keyboard navigation and displays image metadata."
+
+## Important Notes
+- Always use Server Components unless client interactivity is required
+- Prioritize Web Vitals: use next/image, avoid layout shifts
+- Test on actual Android device for contractor usability
+- Keep the codebase maintainable - you'll be updating this long-term
+- Document any non-obvious decisions in code comments
