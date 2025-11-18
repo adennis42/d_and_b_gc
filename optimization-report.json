@@ -1,0 +1,12 @@
+{
+  "summary": {
+    "total": 0,
+    "processed": 0,
+    "skipped": 0,
+    "errors": 0,
+    "totalOriginalSizeMB": "0.00",
+    "totalOptimizedSizeMB": "0.00",
+    "totalReductionPercent": "NaN"
+  },
+  "files": []
+}

@@ -3,6 +3,18 @@
  */
 
 /**
+ * Video type for YouTube embeds
+ */
+export type Video = {
+  type: 'youtube';
+  videoId: string; // YouTube video ID (e.g., "dQw4w9WgXcQ")
+  thumbnailUrl?: string; // Optional custom thumbnail
+  alt: string; // Description for accessibility
+  width: number; // Video aspect ratio width
+  height: number; // Video aspect ratio height
+};
+
+/**
  * Project interface for gallery items
  * Based on the structure defined in .cursorrules
  */
@@ -18,6 +30,7 @@ export interface Project {
     height: number;
     blurDataURL?: string; // Base64 blur placeholder for Next.js Image
   }[];
+  videos?: Video[]; // Optional array of YouTube videos
   featured?: boolean;
 }
 

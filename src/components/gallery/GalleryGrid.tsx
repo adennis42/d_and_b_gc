@@ -2,10 +2,12 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
+import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getAllProjects, getProjectsByCategory } from "@/lib/gallery-data";
 import { trackGalleryView } from "@/lib/analytics";
+import { getYouTubeThumbnail } from "@/lib/video-utils";
 import type { Project } from "@/types";
 
 type FilterCategory = "all" | "kitchen" | "bathroom" | "sunroom" | "millwork";
@@ -107,7 +109,11 @@ export function GalleryGrid({
           aria-label={`Show all projects (${allProjects.length} total)`}
         >
           All Projects
-          <Badge variant="outline" className="ml-2" aria-hidden="true">
+          <Badge 
+            variant={activeFilter === "all" ? "secondary" : "outline"} 
+            className={`ml-2 ${activeFilter === "all" ? "bg-white/20 text-white border-white/30" : ""}`}
+            aria-hidden="true"
+          >
             {allProjects.length}
           </Badge>
         </Button>
@@ -119,7 +125,11 @@ export function GalleryGrid({
           aria-label={`Filter by kitchen projects (${getProjectsByCategory("kitchen").length} projects)`}
         >
           Kitchens
-          <Badge variant="outline" className="ml-2" aria-hidden="true">
+          <Badge 
+            variant={activeFilter === "kitchen" ? "secondary" : "outline"} 
+            className={`ml-2 ${activeFilter === "kitchen" ? "bg-white/20 text-white border-white/30" : ""}`}
+            aria-hidden="true"
+          >
             {getProjectsByCategory("kitchen").length}
           </Badge>
         </Button>
@@ -131,7 +141,11 @@ export function GalleryGrid({
           aria-label={`Filter by bathroom projects (${getProjectsByCategory("bathroom").length} projects)`}
         >
           Bathrooms
-          <Badge variant="outline" className="ml-2" aria-hidden="true">
+          <Badge 
+            variant={activeFilter === "bathroom" ? "secondary" : "outline"} 
+            className={`ml-2 ${activeFilter === "bathroom" ? "bg-white/20 text-white border-white/30" : ""}`}
+            aria-hidden="true"
+          >
             {getProjectsByCategory("bathroom").length}
           </Badge>
         </Button>
@@ -143,7 +157,11 @@ export function GalleryGrid({
           aria-label={`Filter by sunroom projects (${getProjectsByCategory("sunroom").length} projects)`}
         >
           Sunrooms
-          <Badge variant="outline" className="ml-2" aria-hidden="true">
+          <Badge 
+            variant={activeFilter === "sunroom" ? "secondary" : "outline"} 
+            className={`ml-2 ${activeFilter === "sunroom" ? "bg-white/20 text-white border-white/30" : ""}`}
+            aria-hidden="true"
+          >
             {getProjectsByCategory("sunroom").length}
           </Badge>
         </Button>
@@ -155,7 +173,11 @@ export function GalleryGrid({
           aria-label={`Filter by millwork projects (${getProjectsByCategory("millwork").length} projects)`}
         >
           Millwork
-          <Badge variant="outline" className="ml-2" aria-hidden="true">
+          <Badge 
+            variant={activeFilter === "millwork" ? "secondary" : "outline"} 
+            className={`ml-2 ${activeFilter === "millwork" ? "bg-white/20 text-white border-white/30" : ""}`}
+            aria-hidden="true"
+          >
             {getProjectsByCategory("millwork").length}
           </Badge>
         </Button>
@@ -170,7 +192,23 @@ export function GalleryGrid({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => {
             const firstImage = project.images[0];
-            if (!firstImage) return null;
+            const firstVideo = project.videos?.[0];
+            const hasVideos = project.videos && project.videos.length > 0;
+            const hasImages = project.images.length > 0;
+            
+            // Determine thumbnail source (prefer first image, fallback to video thumbnail)
+            const thumbnailSource = firstImage 
+              ? { type: 'image' as const, src: firstImage.url, alt: firstImage.alt, blurDataURL: firstImage.blurDataURL }
+              : firstVideo 
+                ? { type: 'video' as const, src: getYouTubeThumbnail(firstVideo.videoId, 'hq'), alt: firstVideo.alt }
+                : null;
+            
+            if (!thumbnailSource) return null;
+
+            // Calculate media counts
+            const imageCount = project.images.length;
+            const videoCount = project.videos?.length || 0;
+            const totalMediaCount = imageCount + videoCount;
 
             return (
               <div
@@ -188,21 +226,41 @@ export function GalleryGrid({
                 aria-label={`View ${project.title} project`}
               >
                 <div className="relative overflow-hidden rounded-lg border bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  {/* Image Container */}
+                  {/* Media Container */}
                   <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                    <Image
-                      src={firstImage.url}
-                      alt={firstImage.alt}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      loading="lazy"
-                      quality={85}
-                      placeholder={firstImage.blurDataURL ? "blur" : "empty"}
-                      blurDataURL={firstImage.blurDataURL}
-                    />
+                    {thumbnailSource.type === 'image' ? (
+                      <Image
+                        src={thumbnailSource.src}
+                        alt={thumbnailSource.alt}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        loading="lazy"
+                        quality={85}
+                        placeholder={thumbnailSource.blurDataURL ? "blur" : "empty"}
+                        blurDataURL={thumbnailSource.blurDataURL}
+                      />
+                    ) : (
+                      <Image
+                        src={thumbnailSource.src}
+                        alt={thumbnailSource.alt}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        loading="lazy"
+                        quality={85}
+                      />
+                    )}
                     {/* Overlay on hover */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                    {/* Video play indicator */}
+                    {hasVideos && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                        <div className="bg-white/90 rounded-full p-3 group-hover:bg-white group-hover:scale-110 transition-transform">
+                          <Play className="h-8 w-8 text-black ml-1" fill="currentColor" aria-hidden="true" />
+                        </div>
+                      </div>
+                    )}
                     {/* Category Badge */}
                     <div className="absolute top-3 right-3">
                       <Badge variant={getCategoryVariant(project.category)}>
@@ -214,6 +272,14 @@ export function GalleryGrid({
                       <div className="absolute top-3 left-3">
                         <Badge variant="default" className="bg-primary/90">
                           Featured
+                        </Badge>
+                      </div>
+                    )}
+                    {/* Video Badge */}
+                    {hasVideos && (
+                      <div className="absolute top-3 left-3" style={{ marginTop: project.featured ? '2.5rem' : '0' }}>
+                        <Badge variant="secondary" className="bg-blue-600/90 text-white">
+                          Video
                         </Badge>
                       </div>
                     )}
@@ -230,7 +296,15 @@ export function GalleryGrid({
                       </p>
                     )}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{project.images.length} photo{project.images.length !== 1 ? "s" : ""}</span>
+                      {hasImages && hasVideos ? (
+                        <span>
+                          {imageCount} photo{imageCount !== 1 ? "s" : ""}, {videoCount} video{videoCount !== 1 ? "s" : ""}
+                        </span>
+                      ) : hasVideos ? (
+                        <span>{videoCount} video{videoCount !== 1 ? "s" : ""}</span>
+                      ) : (
+                        <span>{imageCount} photo{imageCount !== 1 ? "s" : ""}</span>
+                      )}
                     </div>
                   </div>
                 </div>

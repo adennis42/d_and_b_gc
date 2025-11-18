@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { useSwipeable } from "react-swipeable";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { YouTubeVideo } from "./YouTubeVideo";
 import type { Project } from "@/types";
 
 interface LightboxProps {
@@ -21,11 +23,12 @@ interface LightboxProps {
 }
 
 /**
- * Lightbox component - Full-screen image viewer with navigation
+ * Lightbox component - Full-screen image and video viewer with navigation
  * Features:
  * - Full-screen overlay with dark background
  * - Large image display with Next.js Image optimization
- * - Navigation arrows to browse project images
+ * - YouTube video embeds with lazy loading
+ * - Navigation arrows to browse project media (images + videos)
  * - Project title and description display
  * - Close button (X) and ESC key support
  * - Click outside to close (via Radix Dialog)
@@ -40,14 +43,46 @@ export function Lightbox({
   open,
   onClose,
 }: LightboxProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(initialImageIndex);
 
-  // Reset image index when project changes
+  // Combine images and videos into a single media array
+  const mediaItems = useMemo(() => {
+    if (!project) return [];
+    const items: Array<{ type: 'image' | 'video'; index: number }> = [];
+    
+    // Add images
+    project.images.forEach((_, index) => {
+      items.push({ type: 'image', index });
+    });
+    
+    // Add videos
+    if (project.videos) {
+      project.videos.forEach((_, index) => {
+        items.push({ type: 'video', index });
+      });
+    }
+    
+    return items;
+  }, [project]);
+
+  // Get current media item
+  const currentMedia = mediaItems[currentMediaIndex];
+  const isVideo = currentMedia?.type === 'video';
+  const isImage = currentMedia?.type === 'image';
+  
+  const currentImage = isImage && project ? project.images[currentMedia.index] : null;
+  const currentVideo = isVideo && project ? project.videos?.[currentMedia.index] : null;
+  
+  const hasMultipleItems = mediaItems.length > 1;
+
+  // Reset media index when project changes
   useEffect(() => {
     if (project) {
-      setCurrentImageIndex(initialImageIndex);
+      // Clamp initial index to valid range
+      const maxIndex = mediaItems.length > 0 ? mediaItems.length - 1 : 0;
+      setCurrentMediaIndex(Math.min(initialImageIndex, maxIndex));
     }
-  }, [project, initialImageIndex]);
+  }, [project, initialImageIndex, mediaItems.length]);
 
   // Prevent body scroll when lightbox is open (Radix Dialog handles this, but we ensure it)
   useEffect(() => {
@@ -93,22 +128,22 @@ export function Lightbox({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, project, currentImageIndex]);
+  }, [open, project, currentMediaIndex]);
 
   // Navigation handlers
   const handleNext = useCallback(() => {
-    if (!project) return;
-    setCurrentImageIndex((prev) =>
-      prev < project.images.length - 1 ? prev + 1 : 0
+    if (mediaItems.length === 0) return;
+    setCurrentMediaIndex((prev) =>
+      prev < mediaItems.length - 1 ? prev + 1 : 0
     );
-  }, [project]);
+  }, [mediaItems.length]);
 
   const handlePrevious = useCallback(() => {
-    if (!project) return;
-    setCurrentImageIndex((prev) =>
-      prev > 0 ? prev - 1 : project.images.length - 1
+    if (mediaItems.length === 0) return;
+    setCurrentMediaIndex((prev) =>
+      prev > 0 ? prev - 1 : mediaItems.length - 1
     );
-  }, [project]);
+  }, [mediaItems.length]);
 
   // Swipe handlers for mobile
   const swipeHandlers = useSwipeable({
@@ -118,10 +153,7 @@ export function Lightbox({
     preventScrollOnSwipe: true,
   });
 
-  if (!project) return null;
-
-  const currentImage = project.images[currentImageIndex];
-  const hasMultipleImages = project.images.length > 1;
+  if (!project || mediaItems.length === 0) return null;
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -142,12 +174,14 @@ export function Lightbox({
         }}
       >
         {/* Dialog Title and Description (hidden but accessible to screen readers) */}
-        <DialogTitle id="lightbox-title" className="sr-only">
-          {project.title} - Image {currentImageIndex + 1} of {project.images.length}
-        </DialogTitle>
-        <DialogDescription id="lightbox-description" className="sr-only">
-          {project.description || `Viewing images from ${project.title} project`}
-        </DialogDescription>
+        <VisuallyHidden.Root>
+          <DialogTitle id="lightbox-title">
+            {project.title} - {isVideo ? 'Video' : 'Image'} {currentMediaIndex + 1} of {mediaItems.length}
+          </DialogTitle>
+          <DialogDescription id="lightbox-description">
+            {project.description || `Viewing ${isVideo ? 'video' : 'images'} from ${project.title} project`}
+          </DialogDescription>
+        </VisuallyHidden.Root>
 
         {/* Close Button */}
         <Button
@@ -167,22 +201,22 @@ export function Lightbox({
           data-image-container
         >
           {/* Previous Button */}
-          {hasMultipleImages && (
+          {hasMultipleItems && (
             <Button
               variant="ghost"
               size="icon"
               onClick={handlePrevious}
-              className="absolute left-4 z-50 text-white hover:bg-white/20 hover:text-white hidden md:flex focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
-              aria-label={`Previous image (${currentImageIndex} of ${project.images.length})`}
+              className="absolute left-4 z-50 text-white bg-black/50 hover:bg-black/70 backdrop-blur-sm border border-white/20 hover:border-white/40 rounded-full h-12 w-12 md:h-14 md:w-14 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+              aria-label={`Previous ${isVideo ? 'video' : 'image'} (${currentMediaIndex} of ${mediaItems.length})`}
               data-navigation
             >
-              <ChevronLeft className="h-8 w-8" aria-hidden="true" />
+              <ChevronLeft className="h-6 w-6 md:h-8 md:w-8" aria-hidden="true" />
             </Button>
           )}
 
-          {/* Image */}
+          {/* Media Container */}
           <div className="relative w-full h-full max-w-6xl max-h-[80vh] flex items-center justify-center">
-            {currentImage && (
+            {isImage && currentImage && (
               <Image
                 src={currentImage.url}
                 alt={currentImage.alt}
@@ -196,40 +230,45 @@ export function Lightbox({
                 blurDataURL={currentImage.blurDataURL}
               />
             )}
+            {isVideo && currentVideo && (
+              <div className="w-full max-w-5xl">
+                <YouTubeVideo video={currentVideo} autoplay={false} />
+              </div>
+            )}
           </div>
 
           {/* Next Button */}
-          {hasMultipleImages && (
+          {hasMultipleItems && (
             <Button
               variant="ghost"
               size="icon"
               onClick={handleNext}
-              className="absolute right-4 z-50 text-white hover:bg-white/20 hover:text-white hidden md:flex focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
-              aria-label={`Next image (${currentImageIndex + 2} of ${project.images.length})`}
+              className="absolute right-4 z-50 text-white bg-black/50 hover:bg-black/70 backdrop-blur-sm border border-white/20 hover:border-white/40 rounded-full h-12 w-12 md:h-14 md:w-14 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+              aria-label={`Next ${isVideo ? 'video' : 'image'} (${currentMediaIndex + 2} of ${mediaItems.length})`}
               data-navigation
             >
-              <ChevronRight className="h-8 w-8" aria-hidden="true" />
+              <ChevronRight className="h-6 w-6 md:h-8 md:w-8" aria-hidden="true" />
             </Button>
           )}
 
           {/* Mobile Navigation Dots */}
-          {hasMultipleImages && (
+          {hasMultipleItems && (
             <div
               className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 md:hidden"
               role="tablist"
-              aria-label="Image navigation"
+              aria-label="Media navigation"
             >
-              {project.images.map((_, index) => (
+              {mediaItems.map((item, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentImageIndex(index)}
+                  onClick={() => setCurrentMediaIndex(index)}
                   className={`h-2 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black ${
-                    index === currentImageIndex
+                    index === currentMediaIndex
                       ? "w-8 bg-white"
                       : "w-2 bg-white/50"
                   }`}
-                  aria-label={`Go to image ${index + 1} of ${project.images.length}`}
-                  aria-selected={index === currentImageIndex}
+                  aria-label={`Go to ${item.type} ${index + 1} of ${mediaItems.length}`}
+                  aria-selected={index === currentMediaIndex}
                   role="tab"
                 />
               ))}
@@ -247,18 +286,18 @@ export function Lightbox({
               {project.description}
             </p>
           )}
-          {hasMultipleImages && (
+          {hasMultipleItems && (
             <div className="mt-3 text-white/60 text-sm">
-              Image {currentImageIndex + 1} of {project.images.length}
+              {isVideo ? 'Video' : 'Image'} {currentMediaIndex + 1} of {mediaItems.length}
             </div>
           )}
         </div>
 
-        {/* Desktop Image Counter */}
-        {hasMultipleImages && (
+        {/* Desktop Media Counter */}
+        {hasMultipleItems && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:block">
             <div className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm">
-              {currentImageIndex + 1} / {project.images.length}
+              {currentMediaIndex + 1} / {mediaItems.length}
             </div>
           </div>
         )}
