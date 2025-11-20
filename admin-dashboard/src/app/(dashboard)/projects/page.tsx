@@ -1,16 +1,73 @@
-import { sql } from '@/lib/db';
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Trash2, Edit } from 'lucide-react';
 
-export default async function ProjectsPage() {
-  const projectsResult = await sql`
-    SELECT id, title, category, description, featured, created_at
-    FROM projects
-    ORDER BY "order" ASC, created_at DESC
-  `;
+interface Project {
+  id: string;
+  title: string;
+  category: string;
+  description: string | null;
+  featured: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
-  // postgres package returns arrays directly
-  const projects = Array.isArray(projectsResult) ? projectsResult : [];
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const response = await fetch('/api/projects');
+        if (!response.ok) throw new Error('Failed to load projects');
+        const data = await response.json();
+        setProjects(data.projects || []);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProjects();
+  }, []);
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/projects/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        setProjects(projects.filter(p => p.id !== id));
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to delete project');
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      alert('Error deleting project');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading projects...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -22,51 +79,62 @@ export default async function ProjectsPage() {
       </div>
 
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200">
-          {projects.map((project) => (
-            <li key={project.id}>
-              <Link
-                href={`/projects/${project.id}`}
-                className="block hover:bg-gray-50 px-4 py-4 sm:px-6"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      {project.featured && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                          Featured
-                        </span>
-                      )}
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {project.title}
+        {projects.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500 mb-4">No projects yet.</p>
+            <Link href="/projects/new">
+              <Button>Create Your First Project</Button>
+            </Link>
+          </div>
+        ) : (
+          <ul className="divide-y divide-gray-200">
+            {projects.map((project) => (
+              <li key={project.id}>
+                <div className="block hover:bg-gray-50 px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center flex-1">
+                      <div className="flex-shrink-0">
+                        {project.featured && (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            Featured
+                          </span>
+                        )}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {project.category} • {new Date(project.created_at as string).toLocaleDateString()}
+                      <div className="ml-4 flex-1">
+                        <div className="text-sm font-medium text-gray-900">
+                          {project.title}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {project.category} • {new Date(project.created_at as string).toLocaleDateString()}
+                        </div>
+                        {project.description && (
+                          <div className="text-sm text-gray-500 mt-1 line-clamp-1">
+                            {project.description}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                  <div className="ml-2 flex-shrink-0">
-                    <svg
-                      className="h-5 w-5 text-gray-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <div className="ml-2 flex-shrink-0 flex items-center gap-2">
+                      <Link
+                        href={`/projects/${project.id}/edit`}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <Edit className="h-5 w-5" />
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(project.id, project.title)}
+                        className="text-gray-400 hover:text-red-600"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
 }
-

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,9 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { extractYouTubeId, getYouTubeThumbnail } from "@/lib/video-utils";
-import { Upload, X, Plus, GripVertical, Video, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Plus, Video } from "lucide-react";
 import Image from "next/image";
-import type { Project } from "@/types";
 
 interface ImageData {
   id?: string;
@@ -33,9 +32,13 @@ interface VideoData {
   order: number;
 }
 
-export default function NewProjectPage() {
+export default function EditProjectPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const params = useParams();
+  const projectId = params.id as string;
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   
   // Form state
@@ -48,6 +51,36 @@ export default function NewProjectPage() {
   const [images, setImages] = useState<ImageData[]>([]);
   const [videos, setVideos] = useState<VideoData[]>([]);
   const [videoUrl, setVideoUrl] = useState("");
+
+  // Load project data
+  useEffect(() => {
+    const loadProject = async () => {
+      try {
+        const response = await fetch(`/api/projects/${projectId}`);
+        if (!response.ok) {
+          throw new Error("Failed to load project");
+        }
+
+        const project = await response.json();
+        setTitle(project.title);
+        setCategory(project.category);
+        setDescription(project.description || "");
+        setFeatured(project.featured || false);
+        setImages(project.images || []);
+        setVideos(project.videos || []);
+      } catch (error) {
+        console.error("Error loading project:", error);
+        alert("Failed to load project");
+        router.push("/projects");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (projectId) {
+      loadProject();
+    }
+  }, [projectId, router]);
 
   // Handle image upload
   const handleImageUpload = async (files: FileList | null) => {
@@ -136,10 +169,10 @@ export default function NewProjectPage() {
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
     try {
-      const response = await fetch("/api/projects", {
-        method: "POST",
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -155,22 +188,33 @@ export default function NewProjectPage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to create project");
+        throw new Error(error.error || "Failed to update project");
       }
 
       router.push("/projects");
       router.refresh();
     } catch (error: any) {
-      console.error("Error creating project:", error);
-      alert(error.message || "Failed to create project. Please try again.");
+      console.error("Error updating project:", error);
+      alert(error.message || "Failed to update project. Please try again.");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading project...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">New Project</h1>
+      <h1 className="text-3xl font-bold mb-6">Edit Project</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
@@ -364,15 +408,16 @@ export default function NewProjectPage() {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            disabled={loading}
+            disabled={saving}
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={loading || uploading}>
-            {loading ? "Creating..." : "Create Project"}
+          <Button type="submit" disabled={saving || uploading}>
+            {saving ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </form>
     </div>
   );
 }
+

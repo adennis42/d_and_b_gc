@@ -50,6 +50,7 @@ export async function uploadImage(
   const height = metadata.height || 1440;
 
   // Upload to Vercel Blob
+  // @vercel/blob automatically reads BLOB_READ_WRITE_TOKEN from process.env
   const blob = await put(filename, optimized, {
     access: 'public',
     contentType: 'image/webp',
