@@ -112,28 +112,32 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="animate-fade-in">
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Site Settings</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text text-transparent mb-2">
+            Site Settings
+          </h1>
+          <p className="text-slate-400">
             Configure site-wide settings including the homepage hero image.
           </p>
         </div>
 
         {error && (
-          <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-md">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg flex items-center gap-2">
+            <span className="text-red-400">⚠️</span>
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-500/10 text-green-600 dark:text-green-400 px-4 py-3 rounded-md">
+          <div className="bg-green-500/10 border border-green-500/30 text-green-400 px-4 py-3 rounded-lg flex items-center gap-2 animate-fade-in">
+            <span className="text-green-400">✓</span>
             Settings saved successfully!
           </div>
         )}
 
-        <Card>
+        <Card className="bg-slate-900/80 backdrop-blur-sm border-slate-800 shadow-lg">
           <CardHeader>
             <CardTitle>Hero Image</CardTitle>
             <CardDescription>

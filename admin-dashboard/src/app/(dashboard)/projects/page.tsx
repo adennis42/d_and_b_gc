@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Trash2, Edit } from 'lucide-react';
+import { Trash2, Edit, FolderKanban } from 'lucide-react';
 import Image from 'next/image';
 
 interface Project {
@@ -64,43 +64,56 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading projects...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center animate-fade-in">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-800 border-t-blue-500 mx-auto"></div>
+          <p className="mt-4 text-slate-400 font-medium">Loading projects...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Projects</h1>
+    <div className="animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text text-transparent mb-2">
+            Projects
+          </h1>
+          <p className="text-slate-400">Manage your gallery projects and images</p>
+        </div>
         <Link href="/projects/new">
-          <Button>New Project</Button>
+          <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all">
+            New Project
+          </Button>
         </Link>
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <div className="bg-slate-900/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-800 overflow-hidden">
         {projects.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 mb-4">No projects yet.</p>
+          <div className="text-center py-16 px-4">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+              <FolderKanban className="w-8 h-8 text-slate-400" />
+            </div>
+            <p className="text-slate-300 mb-2 font-medium">No projects yet</p>
+            <p className="text-slate-500 text-sm mb-6">Get started by creating your first project</p>
             <Link href="/projects/new">
-              <Button>Create Your First Project</Button>
+              <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg shadow-blue-500/30">
+                Create Your First Project
+              </Button>
             </Link>
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <ul className="divide-y divide-slate-800">
             {projects.map((project) => (
               <li key={project.id}>
-                <div className="block hover:bg-gray-50 px-4 py-4 sm:px-6">
+                <div className="block hover:bg-slate-800/50 transition-colors px-4 py-5 sm:px-6 group">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center flex-1 min-w-0">
                       {/* Thumbnail */}
                       <div className="flex-shrink-0 mr-4">
                         {project.thumbnailUrl && !imageErrors.has(project.id) ? (
-                          <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
+                          <div className="relative w-16 h-16 rounded-xl overflow-hidden border-2 border-slate-700 bg-slate-800 shadow-sm group-hover:border-blue-500 transition-colors">
                             {/* Use regular img tag for local paths that might not exist, Next.js Image for external URLs */}
                             {project.thumbnailUrl.startsWith('http') ? (
                               <Image
@@ -126,8 +139,8 @@ export default function ProjectsPage() {
                             )}
                           </div>
                         ) : (
-                          <div className="w-16 h-16 rounded-lg bg-gray-200 border border-gray-300 flex items-center justify-center">
-                            <span className="text-xs text-gray-400 text-center px-1">
+                          <div className="w-16 h-16 rounded-xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center">
+                            <span className="text-xs text-slate-500 text-center px-1 font-medium">
                               {project.thumbnailUrl ? 'Error' : 'No image'}
                             </span>
                           </div>
@@ -136,21 +149,25 @@ export default function ProjectsPage() {
                       
                       {/* Project Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1.5">
                           {project.featured && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                              Featured
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-300 border border-amber-500/30">
+                              ⭐ Featured
                             </span>
                           )}
-                          <div className="text-sm font-medium text-gray-900 truncate">
+                          <div className="text-base font-semibold text-slate-100 truncate">
                             {project.title}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {project.category} • {new Date(project.created_at as string).toLocaleDateString()}
+                        <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 font-medium capitalize border border-slate-700">
+                            {project.category}
+                          </span>
+                          <span className="text-slate-600">•</span>
+                          <span>{new Date(project.created_at as string).toLocaleDateString()}</span>
                         </div>
                         {project.description && (
-                          <div className="text-sm text-gray-500 mt-1 line-clamp-1">
+                          <div className="text-sm text-slate-500 mt-1.5 line-clamp-1">
                             {project.description}
                           </div>
                         )}
@@ -161,14 +178,14 @@ export default function ProjectsPage() {
                     <div className="ml-4 flex-shrink-0 flex items-center gap-2">
                       <Link
                         href={`/projects/${project.id}/edit`}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="p-2 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                         title="Edit project"
                       >
                         <Edit className="h-5 w-5" />
                       </Link>
                       <button
                         onClick={() => handleDelete(project.id, project.title)}
-                        className="text-gray-400 hover:text-red-600"
+                        className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                         title="Delete project"
                       >
                         <Trash2 className="h-5 w-5" />

@@ -203,60 +203,65 @@ export default function EditProjectPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading project...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center animate-fade-in">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-800 border-t-blue-500 mx-auto"></div>
+          <p className="mt-4 text-slate-400 font-medium">Loading project...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Edit Project</h1>
+    <div className="max-w-4xl mx-auto animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text text-transparent mb-2">
+          Edit Project
+        </h1>
+        <p className="text-slate-400">Update project details and media</p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
-        <div className="bg-white shadow rounded-lg p-6 space-y-4">
-          <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+        <div className="bg-slate-900/80 backdrop-blur-sm shadow-lg border border-slate-800 rounded-xl p-6 space-y-4">
+          <h2 className="text-xl font-semibold mb-4 text-slate-100">Basic Information</h2>
 
           <div>
-            <Label htmlFor="title">Project Title *</Label>
+            <Label htmlFor="title" className="text-slate-300">Project Title *</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Modern Kitchen Renovation"
               required
-              className="mt-1"
+              className="mt-1 bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
             />
           </div>
 
           <div>
-            <Label htmlFor="category">Category *</Label>
+            <Label htmlFor="category" className="text-slate-300">Category *</Label>
             <Select value={category} onValueChange={(value: any) => setCategory(value)}>
-              <SelectTrigger className="mt-1">
+              <SelectTrigger className="mt-1 bg-slate-800 border-slate-700 text-slate-100">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="kitchen">Kitchen</SelectItem>
-                <SelectItem value="bathroom">Bathroom</SelectItem>
-                <SelectItem value="sunroom">Sunroom</SelectItem>
-                <SelectItem value="millwork">Millwork</SelectItem>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectItem value="kitchen" className="text-slate-100 hover:bg-slate-700">Kitchen</SelectItem>
+                <SelectItem value="bathroom" className="text-slate-100 hover:bg-slate-700">Bathroom</SelectItem>
+                <SelectItem value="sunroom" className="text-slate-100 hover:bg-slate-700">Sunroom</SelectItem>
+                <SelectItem value="millwork" className="text-slate-100 hover:bg-slate-700">Millwork</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description" className="text-slate-300">Description</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the project..."
               rows={4}
-              className="mt-1"
+              className="mt-1 bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
             />
           </div>
 
@@ -266,18 +271,18 @@ export default function EditProjectPage() {
               checked={featured}
               onCheckedChange={(checked) => setFeatured(checked === true)}
             />
-            <Label htmlFor="featured" className="cursor-pointer">
+            <Label htmlFor="featured" className="cursor-pointer text-slate-300">
               Featured Project
             </Label>
           </div>
         </div>
 
         {/* Images */}
-        <div className="bg-white shadow rounded-lg p-6 space-y-4">
-          <h2 className="text-xl font-semibold mb-4">Images</h2>
+        <div className="bg-slate-900/80 backdrop-blur-sm shadow-lg border border-slate-800 rounded-xl p-6 space-y-4">
+          <h2 className="text-xl font-semibold mb-4 text-slate-100">Images</h2>
 
           {/* Upload Area */}
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+          <div className="border-2 border-dashed border-slate-700 rounded-lg p-8 text-center hover:border-blue-500/50 transition-colors">
             <input
               type="file"
               id="image-upload"
@@ -291,11 +296,11 @@ export default function EditProjectPage() {
               htmlFor="image-upload"
               className="cursor-pointer flex flex-col items-center"
             >
-              <Upload className="h-12 w-12 text-gray-400 mb-4" />
-              <span className="text-sm text-gray-600">
+              <Upload className="h-12 w-12 text-slate-500 mb-4" />
+              <span className="text-sm text-slate-300">
                 {uploading ? "Uploading..." : "Click to upload images or drag and drop"}
               </span>
-              <span className="text-xs text-gray-500 mt-1">
+              <span className="text-xs text-slate-500 mt-1">
                 PNG, JPG, WEBP up to 10MB each
               </span>
             </label>
@@ -306,7 +311,7 @@ export default function EditProjectPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
               {images.map((image, index) => (
                 <div key={index} className="relative group">
-                  <div className="aspect-[4/3] relative rounded-lg overflow-hidden border">
+                  <div className="aspect-[4/3] relative rounded-lg overflow-hidden border-2 border-slate-700">
                     <Image
                       src={image.url}
                       alt={image.alt}
@@ -317,7 +322,7 @@ export default function EditProjectPage() {
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all shadow-lg"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -330,7 +335,7 @@ export default function EditProjectPage() {
                         setImages(newImages);
                       }}
                       placeholder="Image description"
-                      className="text-xs"
+                      className="text-xs bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500"
                     />
                   </div>
                 </div>
@@ -340,8 +345,8 @@ export default function EditProjectPage() {
         </div>
 
         {/* Videos */}
-        <div className="bg-white shadow rounded-lg p-6 space-y-4">
-          <h2 className="text-xl font-semibold mb-4">Videos</h2>
+        <div className="bg-slate-900/80 backdrop-blur-sm shadow-lg border border-slate-800 rounded-xl p-6 space-y-4">
+          <h2 className="text-xl font-semibold mb-4 text-slate-100">Videos</h2>
 
           {/* Video URL Input */}
           <div className="flex gap-2">
@@ -349,12 +354,13 @@ export default function EditProjectPage() {
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
-              className="flex-1"
+              className="flex-1 bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
             />
             <Button
               type="button"
               onClick={handleAddVideo}
               disabled={!videoUrl.trim()}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg shadow-blue-500/30"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Video
@@ -366,21 +372,21 @@ export default function EditProjectPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
               {videos.map((video, index) => (
                 <div key={index} className="relative group">
-                  <div className="aspect-video relative rounded-lg overflow-hidden border">
+                  <div className="aspect-video relative rounded-lg overflow-hidden border-2 border-slate-700">
                     <Image
                       src={video.thumbnailUrl || getYouTubeThumbnail(video.videoId)}
                       alt={video.alt}
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                       <Video className="h-8 w-8 text-white" />
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeVideo(index)}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all shadow-lg"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -393,7 +399,7 @@ export default function EditProjectPage() {
                         setVideos(newVideos);
                       }}
                       placeholder="Video description"
-                      className="text-xs"
+                      className="text-xs bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500"
                     />
                   </div>
                 </div>
@@ -403,16 +409,21 @@ export default function EditProjectPage() {
         </div>
 
         {/* Submit Buttons */}
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-4 pt-4">
           <Button
             type="button"
             variant="outline"
             onClick={() => router.back()}
             disabled={saving}
+            className="px-6 py-2.5 border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-slate-100 hover:border-slate-600 transition-all"
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={saving || uploading}>
+          <Button 
+            type="submit" 
+            disabled={saving || uploading}
+            className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         </div>
