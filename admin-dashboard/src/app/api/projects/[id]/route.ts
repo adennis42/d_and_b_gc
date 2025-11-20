@@ -102,6 +102,14 @@ export async function PUT(
     const body = await request.json();
     const { title, category, description, featured, order, images, videos } = body;
 
+    // Validate required fields
+    if (!title) {
+      return NextResponse.json(
+        { error: 'Title is required' },
+        { status: 400 }
+      );
+    }
+
     // Validate category if provided
     if (category) {
       const validCategories = ['kitchen', 'bathroom', 'sunroom', 'millwork'];
@@ -113,15 +121,15 @@ export async function PUT(
       }
     }
 
-    // Update project
+    // Update project - update all provided fields
     await sql`
       UPDATE projects
       SET 
-        title = COALESCE(${title}, title),
-        category = COALESCE(${category}, category),
-        description = COALESCE(${description}, description),
-        featured = COALESCE(${featured}, featured),
-        "order" = COALESCE(${order}, "order"),
+        title = ${title},
+        category = ${category},
+        description = ${description || null},
+        featured = ${featured || false},
+        "order" = ${order || 0},
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ${projectId}
     `;
@@ -158,10 +166,18 @@ export async function PUT(
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating project:', error);
+    console.error('Error details:', {
+      message: error?.message,
+      stack: error?.stack,
+      code: error?.code,
+    });
     return NextResponse.json(
-      { error: 'Failed to update project' },
+      { 
+        error: 'Failed to update project',
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined
+      },
       { status: 500 }
     );
   }

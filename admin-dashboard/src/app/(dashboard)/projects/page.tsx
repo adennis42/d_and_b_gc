@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Trash2, Edit } from 'lucide-react';
+import Image from 'next/image';
 
 interface Project {
   id: string;
@@ -13,11 +14,14 @@ interface Project {
   featured: boolean;
   created_at: string;
   updated_at: string;
+  thumbnailUrl?: string | null;
+  thumbnailAlt?: string | null;
 }
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -92,17 +96,55 @@ export default function ProjectsPage() {
               <li key={project.id}>
                 <div className="block hover:bg-gray-50 px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center flex-1">
-                      <div className="flex-shrink-0">
-                        {project.featured && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Featured
-                          </span>
+                    <div className="flex items-center flex-1 min-w-0">
+                      {/* Thumbnail */}
+                      <div className="flex-shrink-0 mr-4">
+                        {project.thumbnailUrl && !imageErrors.has(project.id) ? (
+                          <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
+                            {/* Use regular img tag for local paths that might not exist, Next.js Image for external URLs */}
+                            {project.thumbnailUrl.startsWith('http') ? (
+                              <Image
+                                src={project.thumbnailUrl}
+                                alt={project.thumbnailAlt || project.title}
+                                fill
+                                className="object-cover"
+                                sizes="64px"
+                                onError={() => {
+                                  setImageErrors((prev) => new Set(prev).add(project.id));
+                                }}
+                              />
+                            ) : (
+                              // Use regular img for local paths to avoid Next.js optimization errors
+                              <img
+                                src={project.thumbnailUrl}
+                                alt={project.thumbnailAlt || project.title}
+                                className="w-full h-full object-cover"
+                                onError={() => {
+                                  setImageErrors((prev) => new Set(prev).add(project.id));
+                                }}
+                              />
+                            )}
+                          </div>
+                        ) : (
+                          <div className="w-16 h-16 rounded-lg bg-gray-200 border border-gray-300 flex items-center justify-center">
+                            <span className="text-xs text-gray-400 text-center px-1">
+                              {project.thumbnailUrl ? 'Error' : 'No image'}
+                            </span>
+                          </div>
                         )}
                       </div>
-                      <div className="ml-4 flex-1">
-                        <div className="text-sm font-medium text-gray-900">
-                          {project.title}
+                      
+                      {/* Project Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          {project.featured && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              Featured
+                            </span>
+                          )}
+                          <div className="text-sm font-medium text-gray-900 truncate">
+                            {project.title}
+                          </div>
                         </div>
                         <div className="text-sm text-gray-500">
                           {project.category} • {new Date(project.created_at as string).toLocaleDateString()}
@@ -114,16 +156,20 @@ export default function ProjectsPage() {
                         )}
                       </div>
                     </div>
-                    <div className="ml-2 flex-shrink-0 flex items-center gap-2">
+                    
+                    {/* Actions */}
+                    <div className="ml-4 flex-shrink-0 flex items-center gap-2">
                       <Link
                         href={`/projects/${project.id}/edit`}
                         className="text-gray-400 hover:text-gray-600"
+                        title="Edit project"
                       >
                         <Edit className="h-5 w-5" />
                       </Link>
                       <button
                         onClick={() => handleDelete(project.id, project.title)}
                         className="text-gray-400 hover:text-red-600"
+                        title="Delete project"
                       >
                         <Trash2 className="h-5 w-5" />
                       </button>

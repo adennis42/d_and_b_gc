@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint",
-    "create-admin": "tsx scripts/create-admin-user.ts"
+    "create-admin": "tsx scripts/create-admin-user.ts",
+    "migrate-images": "tsx ../scripts/migrate-images-to-vercel-blob.ts",
+    "upload-all-images": "tsx ../scripts/upload-all-images-to-blob.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

@@ -22,7 +22,32 @@ export async function GET() {
       ORDER BY "order" ASC, created_at DESC
     `;
 
-    return NextResponse.json({ projects: Array.isArray(projects) ? projects : [] });
+    const projectsArray = Array.isArray(projects) ? projects : [];
+    
+    // Get first image for each project as thumbnail
+    const projectsWithThumbnails = await Promise.all(
+      projectsArray.map(async (project) => {
+        const firstImage = await sql`
+          SELECT url, alt
+          FROM project_images
+          WHERE project_id = ${project.id}
+          ORDER BY "order" ASC
+          LIMIT 1
+        `;
+        
+        return {
+          ...project,
+          thumbnailUrl: Array.isArray(firstImage) && firstImage.length > 0 
+            ? firstImage[0].url 
+            : null,
+          thumbnailAlt: Array.isArray(firstImage) && firstImage.length > 0 
+            ? firstImage[0].alt 
+            : null,
+        };
+      })
+    );
+
+    return NextResponse.json({ projects: projectsWithThumbnails });
   } catch (error) {
     console.error('Error fetching projects:', error);
     return NextResponse.json(

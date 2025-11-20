@@ -24,6 +24,7 @@ declare module "next-auth" {
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
+  trustHost: true, // Required for NextAuth v5 in some configurations
   providers: [
     Credentials({
       credentials: {
