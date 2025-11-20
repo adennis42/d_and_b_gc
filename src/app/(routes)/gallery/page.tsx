@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
-import { GalleryPageContent } from "@/components/gallery/GalleryPageContent";
+import { GalleryDataLoader } from "@/components/gallery/GalleryDataLoader";
 import { GallerySkeleton } from "@/components/gallery/GallerySkeleton";
 import { getGalleryMetadata } from "@/lib/metadata";
 
@@ -31,7 +31,7 @@ export default function GalleryPage() {
 
       {/* Gallery Content with Suspense for Loading State */}
       <Suspense fallback={<GallerySkeleton />}>
-        <GalleryPageContent />
+        <GalleryDataLoader />
       </Suspense>
     </main>
   );

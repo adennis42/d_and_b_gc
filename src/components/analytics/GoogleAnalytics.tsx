@@ -1,15 +1,15 @@
 "use client";
 
-import Script from "next/script";
+import { GoogleAnalytics as NextGoogleAnalytics } from "@next/third-parties/google";
 
 /**
- * Google Analytics component
+ * Google Analytics component using @next/third-parties
  * 
  * Features:
  * - Loads analytics script only in production
  * - Uses NEXT_PUBLIC_GA_ID from environment variables
  * - Tracks page views automatically (handled by Next.js router)
- * - Respects user privacy (no cookies, GDPR-friendly with consent)
+ * - Optimized loading with @next/third-parties
  * 
  * Usage:
  * Add <GoogleAnalytics /> to your root layout.tsx
@@ -31,29 +31,7 @@ export function GoogleAnalytics() {
     return null;
   }
 
-  return (
-    <>
-      {/* Google Analytics Scripts */}
-      <Script
-        strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-      />
-      <Script
-        id="google-analytics"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${gaId}', {
-              page_path: window.location.pathname
-            });
-          `,
-        }}
-      />
-    </>
-  );
+  return <NextGoogleAnalytics gaId={gaId} />;
 }
 
 // Extend Window interface for TypeScript

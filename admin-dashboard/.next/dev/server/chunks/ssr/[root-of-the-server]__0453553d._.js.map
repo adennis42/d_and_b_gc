@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///Users/andrew/Documents/Personal_Projects/contractor_website/admin-dashboard/src/app/%28dashboard%29/projects/new/page.tsx"],"sourcesContent":["export default function NewProjectPage() {\n  return (\n    <div>\n      <h1 className=\"text-3xl font-bold mb-6\">New Project</h1>\n      <p className=\"text-gray-600\">Project creation form coming soon...</p>\n    </div>\n  );\n}\n\n"],"names":[],"mappings":";;;;;;AAAe,SAAS;IACtB,qBACE,oQAAC;;0BACC,oQAAC;gBAAG,WAAU;0BAA0B;;;;;;0BACxC,oQAAC;gBAAE,WAAU;0BAAgB;;;;;;;;;;;;AAGnC"}}]
+}

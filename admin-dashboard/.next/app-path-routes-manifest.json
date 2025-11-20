@@ -1,0 +1,11 @@
+{
+  "/(dashboard)/analytics/page": "/analytics",
+  "/(dashboard)/projects/new/page": "/projects/new",
+  "/(dashboard)/projects/page": "/projects",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/api/upload/route": "/api/upload",
+  "/login/page": "/login",
+  "/page": "/"
+}

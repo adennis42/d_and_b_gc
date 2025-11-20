@@ -1,0 +1,3 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["chunks/admin-dashboard_edge-wrapper_ac529649.js",47733,(e,h,t)=>{self._ENTRIES||={};let n=Promise.resolve().then(()=>e.i(84530));n.catch(()=>{}),self._ENTRIES.middleware_middleware=new Proxy(n,{get(e,h){if("then"===h)return(h,t)=>e.then(h,t);let t=(...t)=>e.then(e=>(0,e[h])(...t));return t.then=(t,n)=>e.then(e=>e[h]).then(t,n),t}})}]);
+
+//# sourceMappingURL=admin-dashboard_edge-wrapper_ac529649.js.map

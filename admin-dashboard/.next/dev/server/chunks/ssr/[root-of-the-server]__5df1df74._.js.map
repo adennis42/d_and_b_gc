@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":["file:///Users/andrew/Documents/Personal_Projects/contractor_website/admin-dashboard/src/app/page.tsx"],"sourcesContent":["import { redirect } from 'next/navigation';\n\nexport default function HomePage() {\n  redirect('/projects');\n}\n\n"],"names":[],"mappings":";;;;AAAA;AAAA;;AAEe,SAAS;IACtB,IAAA,uNAAQ,EAAC;AACX"}}]
+}

@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getAllProjects, getProjectsByCategory } from "@/lib/gallery-data";
 import { trackGalleryView } from "@/lib/analytics";
 import { getYouTubeThumbnail } from "@/lib/video-utils";
 import type { Project } from "@/types";
@@ -24,22 +23,21 @@ type FilterCategory = "all" | "kitchen" | "bathroom" | "sunroom" | "millwork";
  * - Proper image sizing and aspect ratios
  */
 export function GalleryGrid({
+  projects,
   onProjectClick,
 }: {
+  projects: Project[];
   onProjectClick?: (project: Project, imageIndex: number) => void;
 }) {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
 
-  // Get all projects
-  const allProjects = getAllProjects();
-
   // Filter projects based on active filter
   const filteredProjects = useMemo(() => {
     if (activeFilter === "all") {
-      return allProjects;
+      return projects;
     }
-    return getProjectsByCategory(activeFilter);
-  }, [activeFilter, allProjects]);
+    return projects.filter((project) => project.category === activeFilter);
+  }, [activeFilter, projects]);
 
   // Track gallery view and filter changes
   useEffect(() => {
@@ -59,6 +57,14 @@ export function GalleryGrid({
       // Open lightbox with first image
       onProjectClick(project, 0);
     }
+  };
+
+  // Helper function to get projects by category
+  const getProjectsByCategory = (category: FilterCategory) => {
+    if (category === "all") {
+      return projects;
+    }
+    return projects.filter((project) => project.category === category);
   };
 
   // Get category label
@@ -106,7 +112,7 @@ export function GalleryGrid({
           onClick={() => setActiveFilter("all")}
           className="transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           aria-pressed={activeFilter === "all"}
-          aria-label={`Show all projects (${allProjects.length} total)`}
+          aria-label={`Show all projects (${projects.length} total)`}
         >
           All Projects
           <Badge 
@@ -114,7 +120,7 @@ export function GalleryGrid({
             className={`ml-2 ${activeFilter === "all" ? "bg-white/20 text-white border-white/30" : ""}`}
             aria-hidden="true"
           >
-            {allProjects.length}
+            {projects.length}
           </Badge>
         </Button>
         <Button

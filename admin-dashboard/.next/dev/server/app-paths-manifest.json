@@ -1,0 +1,8 @@
+{
+  "/(dashboard)/analytics/page": "app/(dashboard)/analytics/page.js",
+  "/(dashboard)/projects/new/page": "app/(dashboard)/projects/new/page.js",
+  "/(dashboard)/projects/page": "app/(dashboard)/projects/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/login/page": "app/login/page.js"
+}

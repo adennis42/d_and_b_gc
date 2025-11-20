@@ -10,7 +10,11 @@ import type { Project } from "@/types";
  * Gallery page content component (Client Component)
  * Handles interactive gallery features including lightbox
  */
-export function GalleryPageContent() {
+export function GalleryPageContent({
+  initialProjects,
+}: {
+  initialProjects: Project[];
+}) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -50,7 +54,7 @@ export function GalleryPageContent() {
       {/* Gallery Grid */}
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <GalleryGrid onProjectClick={handleProjectClick} />
+          <GalleryGrid projects={initialProjects} onProjectClick={handleProjectClick} />
         </div>
       </section>
 

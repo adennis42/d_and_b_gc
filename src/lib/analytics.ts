@@ -2,7 +2,9 @@
  * Analytics utility functions for tracking custom events
  * 
  * These functions provide a clean API for tracking user interactions
- * throughout the application. They work with Google Analytics 4 (GA4).
+ * throughout the application. They work with:
+ * - Google Analytics 4 (GA4) for client-side tracking
+ * - PostgreSQL database for server-side tracking and custom analytics dashboard
  * 
  * Usage:
  * ```tsx
@@ -70,11 +72,28 @@ export function trackFormSubmission(
   formLocation: string,
   success: boolean = true
 ): void {
-  trackEvent("form_submission", {
+  const params = {
     form_type: formType,
     form_location: formLocation,
     success: success,
-  });
+  };
+
+  trackEvent("form_submission", params);
+
+  // Also track server-side for analytics dashboard
+  if (typeof window !== "undefined") {
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event_type: "form_submit",
+        page_path: window.location.pathname,
+        metadata: params,
+      }),
+    }).catch(() => {
+      // Silently fail - analytics shouldn't break the app
+    });
+  }
 }
 
 /**
@@ -82,12 +101,12 @@ export function trackFormSubmission(
  * 
  * @param category - Project category viewed (e.g., 'kitchen', 'bathroom', 'all')
  * @param projectId - Optional project ID if viewing a specific project
- * @param action - Action taken (e.g., 'view', 'filter', 'lightbox_open')
+ * @param action - Action taken (e.g., 'view', 'filter', 'lightbox_open', 'image_click', 'video_play')
  */
 export function trackGalleryView(
   category: string,
   projectId?: string,
-  action: "view" | "filter" | "lightbox_open" = "view"
+  action: "view" | "filter" | "lightbox_open" | "image_click" | "video_play" = "view"
 ): void {
   const params: Record<string, string | number | boolean> = {
     category: category,
@@ -98,7 +117,32 @@ export function trackGalleryView(
     params.project_id = projectId;
   }
 
-  trackEvent("gallery_interaction", params);
+  // Map to GA4 event
+  const gaEventName = action === "image_click" ? "image_click" : 
+                      action === "video_play" ? "video_play" : 
+                      "gallery_interaction";
+  
+  trackEvent(gaEventName, params);
+
+  // Also track server-side for analytics dashboard
+  if (typeof window !== "undefined") {
+    const eventType = action === "image_click" ? "image_click" :
+                     action === "video_play" ? "video_play" :
+                     action === "filter" ? "filter_use" :
+                     "page_view";
+    
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event_type: eventType,
+        page_path: window.location.pathname,
+        metadata: params,
+      }),
+    }).catch(() => {
+      // Silently fail - analytics shouldn't break the app
+    });
+  }
 }
 
 /**
@@ -123,6 +167,21 @@ export function trackCallToAction(
   }
 
   trackEvent("cta_click", params);
+
+  // Also track server-side for analytics dashboard
+  if (typeof window !== "undefined") {
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event_type: "cta_click",
+        page_path: window.location.pathname,
+        metadata: params,
+      }),
+    }).catch(() => {
+      // Silently fail - analytics shouldn't break the app
+    });
+  }
 }
 
 /**
@@ -182,11 +241,28 @@ export function trackExternalLink(
   linkText: string,
   linkLocation: string
 ): void {
-  trackEvent("external_link_click", {
+  const params = {
     link_url: url,
     link_text: linkText,
     link_location: linkLocation,
-  });
+  };
+
+  trackEvent("external_link_click", params);
+
+  // Also track server-side for analytics dashboard
+  if (typeof window !== "undefined") {
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event_type: "external_link_click",
+        page_path: window.location.pathname,
+        metadata: params,
+      }),
+    }).catch(() => {
+      // Silently fail - analytics shouldn't break the app
+    });
+  }
 }
 
 /**

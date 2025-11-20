@@ -1,0 +1,20 @@
+{
+  "node": {
+    "0005d9bb392bda1e3b2f04777eb5a6c53eedc14efb": {
+      "workers": {
+        "app/(dashboard)/analytics/page": {
+          "moduleId": "[project]/admin-dashboard/.next-internal/server/app/(dashboard)/analytics/page/actions.js { ACTIONS_MODULE0 => \"[project]/admin-dashboard/src/app/(dashboard)/layout.tsx [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "admin-dashboard/src/app/(dashboard)/layout.tsx"
+        }
+      },
+      "layer": {
+        "app/(dashboard)/analytics/page": "rsc"
+      },
+      "exportedName": "$$RSC_SERVER_ACTION_0",
+      "filename": "admin-dashboard/src/app/(dashboard)/layout.tsx"
+    }
+  },
+  "edge": {}
+}
