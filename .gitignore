@@ -42,3 +42,9 @@ next-env.d.ts
 
 # image backups (keep locally, don't commit to git)
 public/images/gallery-backup/
+
+# admin-dashboard build artifacts and dependencies
+admin-dashboard/node_modules/
+admin-dashboard/.next/
+admin-dashboard/out/
+admin-dashboard/.vercel/
