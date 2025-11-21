@@ -80,6 +80,25 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Site settings table (for configurable site-wide settings)
+CREATE TABLE IF NOT EXISTS site_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key VARCHAR(100) UNIQUE NOT NULL,
+  value TEXT,
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create index for site_settings key lookups
+CREATE INDEX IF NOT EXISTS idx_site_settings_key ON site_settings(key);
+
+-- Create trigger for site_settings updated_at
+CREATE TRIGGER update_site_settings_updated_at
+  BEFORE UPDATE ON site_settings
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_projects_category ON projects(category);
 CREATE INDEX IF NOT EXISTS idx_projects_featured ON projects(featured);

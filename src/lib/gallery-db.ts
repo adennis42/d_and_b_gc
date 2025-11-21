@@ -86,11 +86,11 @@ function transformProject(
 export async function getAllProjects(): Promise<Project[]> {
   try {
     // Fetch all projects ordered by their order field
-    const projects = await sql<ProjectRow>`
+    const projects = await sql`
       SELECT id, title, category, description, featured, "order"
       FROM projects
       ORDER BY "order" ASC, created_at ASC
-    `;
+    ` as ProjectRow[];
 
     // postgres package returns arrays directly
     const projectsArray = Array.isArray(projects) ? projects : [];
@@ -101,20 +101,20 @@ export async function getAllProjects(): Promise<Project[]> {
     const projectIds = projectsArray.map((p) => p.id);
 
     // Fetch all images for these projects
-    const images = await sql<ImageRow>`
+    const images = await sql`
       SELECT id, project_id, url, alt, width, height, blur_data_url, "order"
       FROM project_images
       WHERE project_id = ANY(${projectIds})
       ORDER BY project_id, "order" ASC
-    `;
+    ` as ImageRow[];
 
     // Fetch all videos for these projects
-    const videos = await sql<VideoRow>`
+    const videos = await sql`
       SELECT id, project_id, video_id, alt, width, height, thumbnail_url, "order"
       FROM project_videos
       WHERE project_id = ANY(${projectIds})
       ORDER BY project_id, "order" ASC
-    `;
+    ` as VideoRow[];
 
     // Group images and videos by project_id
     const imagesByProject = new Map<string, ImageRow[]>();
@@ -162,12 +162,12 @@ export async function getProjectsByCategory(
   category: 'kitchen' | 'bathroom' | 'sunroom' | 'millwork'
 ): Promise<Project[]> {
   try {
-    const projects = await sql<ProjectRow>`
+    const projects = await sql`
       SELECT id, title, category, description, featured, "order"
       FROM projects
       WHERE category = ${category}
       ORDER BY "order" ASC, created_at ASC
-    `;
+    ` as ProjectRow[];
 
     // postgres package returns arrays directly
     const projectsArray = Array.isArray(projects) ? projects : [];
@@ -177,19 +177,19 @@ export async function getProjectsByCategory(
 
     const projectIds = projectsArray.map((p) => p.id);
 
-    const images = await sql<ImageRow>`
+    const images = await sql`
       SELECT id, project_id, url, alt, width, height, blur_data_url, "order"
       FROM project_images
       WHERE project_id = ANY(${projectIds})
       ORDER BY project_id, "order" ASC
-    `;
+    ` as ImageRow[];
 
-    const videos = await sql<VideoRow>`
+    const videos = await sql`
       SELECT id, project_id, video_id, alt, width, height, thumbnail_url, "order"
       FROM project_videos
       WHERE project_id = ANY(${projectIds})
       ORDER BY project_id, "order" ASC
-    `;
+    ` as VideoRow[];
 
     const imagesByProject = new Map<string, ImageRow[]>();
     const videosByProject = new Map<string, VideoRow[]>();
@@ -231,12 +231,12 @@ export async function getProjectsByCategory(
  */
 export async function getFeaturedProjects(): Promise<Project[]> {
   try {
-    const projects = await sql<ProjectRow>`
+    const projects = await sql`
       SELECT id, title, category, description, featured, "order"
       FROM projects
       WHERE featured = true
       ORDER BY "order" ASC, created_at ASC
-    `;
+    ` as ProjectRow[];
 
     // postgres package returns arrays directly
     const projectsArray = Array.isArray(projects) ? projects : [];
@@ -246,19 +246,19 @@ export async function getFeaturedProjects(): Promise<Project[]> {
 
     const projectIds = projectsArray.map((p) => p.id);
 
-    const images = await sql<ImageRow>`
+    const images = await sql`
       SELECT id, project_id, url, alt, width, height, blur_data_url, "order"
       FROM project_images
       WHERE project_id = ANY(${projectIds})
       ORDER BY project_id, "order" ASC
-    `;
+    ` as ImageRow[];
 
-    const videos = await sql<VideoRow>`
+    const videos = await sql`
       SELECT id, project_id, video_id, alt, width, height, thumbnail_url, "order"
       FROM project_videos
       WHERE project_id = ANY(${projectIds})
       ORDER BY project_id, "order" ASC
-    `;
+    ` as VideoRow[];
 
     const imagesByProject = new Map<string, ImageRow[]>();
     const videosByProject = new Map<string, VideoRow[]>();
@@ -301,12 +301,12 @@ export async function getFeaturedProjects(): Promise<Project[]> {
  */
 export async function getProjectById(id: string): Promise<Project | null> {
   try {
-    const projectResult = await sql<ProjectRow>`
+    const projectResult = await sql`
       SELECT id, title, category, description, featured, "order"
       FROM projects
       WHERE id = ${id}
       LIMIT 1
-    `;
+    ` as ProjectRow[];
 
     // postgres package returns arrays directly
     const projectsArray = Array.isArray(projectResult) ? projectResult : [];
@@ -316,19 +316,19 @@ export async function getProjectById(id: string): Promise<Project | null> {
 
     const project = projectsArray[0];
 
-    const images = await sql<ImageRow>`
+    const images = await sql`
       SELECT id, project_id, url, alt, width, height, blur_data_url, "order"
       FROM project_images
       WHERE project_id = ${id}
       ORDER BY "order" ASC
-    `;
+    ` as ImageRow[];
 
-    const videos = await sql<VideoRow>`
+    const videos = await sql`
       SELECT id, project_id, video_id, alt, width, height, thumbnail_url, "order"
       FROM project_videos
       WHERE project_id = ${id}
       ORDER BY "order" ASC
-    `;
+    ` as VideoRow[];
 
     // postgres package returns arrays directly
     const imagesArray = Array.isArray(images) ? images : [];
@@ -352,11 +352,11 @@ export async function getCategoryCounts(): Promise<{
   total: number;
 }> {
   try {
-    const counts = await sql<{ category: string; count: string }>`
+    const counts = await sql`
       SELECT category, COUNT(*) as count
       FROM projects
       GROUP BY category
-    `;
+    ` as { category: string; count: string }[];
 
     // postgres package returns arrays directly
     const countsArray = Array.isArray(counts) ? counts : [];

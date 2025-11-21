@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Hero } from "@/components/home/Hero";
+import { HeroDataLoader } from "@/components/home/HeroDataLoader";
 import { Services } from "@/components/home/Services";
 import { CTA } from "@/components/home/CTA";
 import { getHomeMetadata } from "@/lib/metadata";
@@ -18,7 +18,7 @@ export default function HomePage() {
   return (
     <main>
       {/* Hero Section */}
-      <Hero />
+      <HeroDataLoader />
 
       {/* Services Overview Section */}
       <Services />

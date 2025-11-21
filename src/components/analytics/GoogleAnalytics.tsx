@@ -42,7 +42,7 @@ declare global {
       targetId: string | Date,
       config?: Record<string, unknown>
     ) => void;
-    dataLayer: unknown[];
+    // dataLayer is already declared by @next/third-parties/google
   }
 }
 

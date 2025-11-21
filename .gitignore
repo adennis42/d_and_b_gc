@@ -44,6 +44,8 @@ next-env.d.ts
 
 # image backups (keep locally, don't commit to git)
 public/images/gallery-backup/
+# Exclude gallery images from git (stored in Vercel Blob Storage)
+public/images/gallery/
 
 # admin-dashboard build artifacts and dependencies
 admin-dashboard/node_modules/

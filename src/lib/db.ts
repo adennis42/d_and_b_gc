@@ -43,8 +43,11 @@ export async function query<T = unknown>(
   try {
     // postgres package doesn't have a .query() method with params array
     // Use template literal syntax instead
-    const result = await sql.unsafe(queryText, params || []);
-    return Array.isArray(result) ? result : [result];
+    // Cast params to any[] to satisfy TypeScript (unsafe method accepts any[])
+    const result = await sql.unsafe(queryText, (params || []) as any[]);
+    // Convert RowList to array
+    const arrayResult = Array.isArray(result) ? Array.from(result) : [result];
+    return arrayResult as T[];
   } catch (error) {
     console.error('Database query error:', error);
     throw error;
@@ -90,7 +93,8 @@ export async function execute(
   params?: unknown[]
 ): Promise<number> {
   try {
-    const result = await sql.unsafe(queryText, params || []);
+    // Cast params to any[] to satisfy TypeScript (unsafe method accepts any[])
+    const result = await sql.unsafe(queryText, (params || []) as any[]);
     // postgres package returns array, count is length
     return Array.isArray(result) ? result.length : 1;
   } catch (error) {

@@ -15,12 +15,14 @@ import { trackCallToAction } from "@/lib/analytics";
  * - Mobile responsive with proper text sizing
  * - Semantic HTML and ARIA labels for accessibility
  */
-export function Hero() {
-  // Phase 2: Replace with actual hero image path
-  // Recommended: Use a high-quality kitchen or bathroom remodeling image
-  // Image should be optimized (WebP format, ~1920x1080px for desktop)
-  // For now, using a gradient background as fallback until image is added
-  const heroImageSrc = "/images/hero.jpg"; // Update with your hero image path
+export function Hero({
+  imageUrl = "/images/hero.jpg",
+  imageAlt = "Beautiful kitchen and bathroom remodeling showcase",
+}: {
+  imageUrl?: string;
+  imageAlt?: string;
+}) {
+  const heroImageSrc = imageUrl;
 
   return (
     <section
@@ -34,11 +36,10 @@ export function Hero() {
           className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-background"
           aria-hidden="true"
         />
-        {/* Background Image - Add your hero image to /public/images/hero.jpg */}
-        {/* For now, the gradient will show until you add the image */}
+        {/* Background Image - Configured via admin dashboard (stored in Vercel Blob Storage) */}
         <Image
           src={heroImageSrc}
-          alt="Beautiful kitchen and bathroom remodeling showcase"
+          alt={imageAlt}
           fill
           priority
           className="object-cover"
