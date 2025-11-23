@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { YouTubeVideo } from "./YouTubeVideo";
+import { trackGalleryView } from "@/lib/analytics";
 import type { Project } from "@/types";
 
 interface LightboxProps {
@@ -83,6 +84,17 @@ export function Lightbox({
       setCurrentMediaIndex(Math.min(initialImageIndex, maxIndex));
     }
   }, [project, initialImageIndex, mediaItems.length]);
+
+  // Track image/video views when lightbox opens or media changes
+  useEffect(() => {
+    if (open && project && currentMedia) {
+      if (isImage && currentImage) {
+        trackGalleryView(project.category, project.id, "image_click");
+      } else if (isVideo && currentVideo) {
+        trackGalleryView(project.category, project.id, "video_play");
+      }
+    }
+  }, [open, project, currentMediaIndex, isImage, isVideo, currentImage, currentVideo, currentMedia]);
 
   // Prevent body scroll when lightbox is open (Radix Dialog handles this, but we ensure it)
   useEffect(() => {

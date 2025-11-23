@@ -99,6 +99,58 @@ CREATE TRIGGER update_site_settings_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+-- Site content table (for structured content sections like hero, services, CTA)
+CREATE TABLE IF NOT EXISTS site_content (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  section VARCHAR(100) NOT NULL, -- 'hero', 'services', 'about', 'cta', etc.
+  key VARCHAR(100) NOT NULL, -- 'headline', 'subheadline', 'services', etc.
+  value JSONB NOT NULL, -- Flexible JSON structure for content
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(section, key)
+);
+
+-- Create indexes for site_content
+CREATE INDEX IF NOT EXISTS idx_site_content_section ON site_content(section);
+CREATE INDEX IF NOT EXISTS idx_site_content_section_key ON site_content(section, key);
+
+-- Create trigger for site_content updated_at
+CREATE TRIGGER update_site_content_updated_at
+  BEFORE UPDATE ON site_content
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Promotional banners table (for special offers, announcements, etc.)
+CREATE TABLE IF NOT EXISTS promotional_banners (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  icon_name VARCHAR(100), -- Lucide React icon name
+  background_color VARCHAR(7) DEFAULT '#3B82F6', -- Hex color code
+  text_color VARCHAR(7) DEFAULT '#FFFFFF', -- Hex color code
+  button_text VARCHAR(100),
+  button_link VARCHAR(500),
+  button_color VARCHAR(7) DEFAULT '#FFFFFF', -- Hex color code
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  is_dismissible BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for promotional banners
+CREATE INDEX IF NOT EXISTS idx_promotional_banners_active ON promotional_banners(is_active);
+CREATE INDEX IF NOT EXISTS idx_promotional_banners_dates ON promotional_banners(start_date, end_date);
+CREATE INDEX IF NOT EXISTS idx_promotional_banners_active_dates ON promotional_banners(is_active, start_date, end_date);
+
+-- Create trigger for promotional_banners updated_at
+CREATE TRIGGER update_promotional_banners_updated_at
+  BEFORE UPDATE ON promotional_banners
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_projects_category ON projects(category);
 CREATE INDEX IF NOT EXISTS idx_projects_featured ON projects(featured);

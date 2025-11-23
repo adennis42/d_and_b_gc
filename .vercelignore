@@ -1,0 +1,18 @@
+# Ignore admin-dashboard directory during Vercel build
+# The admin-dashboard is a separate Next.js app and should be deployed separately
+admin-dashboard/
+
+# Ignore scripts directory (not needed for build)
+scripts/
+
+# Ignore documentation files
+*.md
+!README.md
+
+# Ignore database schema files (not needed for build)
+database/
+
+# Ignore backup directories
+public/images/gallery-backup/
+public/images/gallery/
+

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { trackButtonClick } from "@/lib/analytics";
 
 /**
  * MobileMenu component - Handles mobile navigation with slide-in animation
@@ -104,7 +105,10 @@ export function MobileMenu() {
                             : "hover:bg-muted"
                         }
                       `}
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        trackButtonClick(link.label, "mobile-menu", link.href);
+                        setIsOpen(false);
+                      }}
                       aria-current={isActive ? "page" : undefined}
                     >
                       {link.label}

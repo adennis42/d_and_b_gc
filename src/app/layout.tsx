@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { StructuredData } from "@/components/StructuredData";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SkipToContent } from "@/components/accessibility/SkipToContent";
+import { BannerLoader } from "@/components/banner/BannerLoader";
 import { defaultMetadata } from "@/lib/metadata";
 
 const geistSans = Geist({
@@ -46,6 +47,8 @@ export default function RootLayout({
       >
         {/* Skip to main content link for accessibility */}
         <SkipToContent />
+        {/* Promotional Banner */}
+        <BannerLoader />
         {/* JSON-LD Structured Data for LocalBusiness schema */}
         {/* Note: JSON-LD structured data works fine in the body and is recommended by Google */}
         <StructuredData

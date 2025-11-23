@@ -1,3 +1,5 @@
+"use client";
+
 import { ChefHat, Droplet } from "lucide-react";
 import {
   Card,
@@ -6,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { trackButtonClick } from "@/lib/analytics";
 
 /**
  * Services component - Displays main service offerings

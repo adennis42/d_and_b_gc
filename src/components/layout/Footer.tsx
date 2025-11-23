@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Facebook, Star } from "lucide-react";
+import { trackButtonClick, trackExternalLink } from "@/lib/analytics";
 
 /**
  * Footer component - Site footer with contact info, social links, and navigation
@@ -110,6 +113,7 @@ export function Footer() {
                   <Link
                     href={link.href}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
+                    onClick={() => trackButtonClick(link.label, "footer-nav", link.href)}
                   >
                     {link.label}
                   </Link>
@@ -143,6 +147,7 @@ export function Footer() {
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
                     aria-label={social.ariaLabel}
+                    onClick={() => trackExternalLink(social.href, social.name, "footer-social")}
                   >
                     <Icon className="h-5 w-5" aria-hidden="true" />
                     <span className="sr-only">{social.name}</span>

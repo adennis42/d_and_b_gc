@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { trackCallToAction } from "@/lib/analytics";
 
 /**
  * CTA component - Call-to-action section
@@ -25,6 +28,7 @@ export function CTA() {
               href="/schedule"
               className="inline-flex items-center justify-center rounded-md bg-background px-8 py-4 text-base font-medium text-foreground hover:bg-background/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
               aria-label="Schedule your free consultation"
+              onClick={() => trackCallToAction("cta-section", "schedule-consultation", "/schedule")}
             >
               Schedule Your Consultation
             </Link>
@@ -32,6 +36,7 @@ export function CTA() {
               href="/gallery"
               className="inline-flex items-center justify-center rounded-md border border-primary-foreground/20 bg-transparent px-8 py-4 text-base font-medium hover:bg-primary-foreground/10 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
               aria-label="Browse our portfolio gallery"
+              onClick={() => trackCallToAction("cta-section", "browse-portfolio", "/gallery")}
             >
               Browse Our Portfolio
             </Link>

@@ -18,9 +18,17 @@ import { trackCallToAction } from "@/lib/analytics";
 export function Hero({
   imageUrl = "/images/hero.jpg",
   imageAlt = "Beautiful kitchen and bathroom remodeling showcase",
+  headline = "Transform Your Home with Expert Craftsmanship",
+  subheadline = "Specializing in high-end kitchen and bathroom remodeling that combines exceptional craftsmanship with timeless design. Every detail matters.",
+  primaryCTA = { text: "View Our Work", link: "/gallery" },
+  secondaryCTA = { text: "Schedule Consultation", link: "/schedule" },
 }: {
   imageUrl?: string;
   imageAlt?: string;
+  headline?: string;
+  subheadline?: string;
+  primaryCTA?: { text: string; link: string };
+  secondaryCTA?: { text: string; link: string };
 }) {
   const heroImageSrc = imageUrl;
 
@@ -57,12 +65,10 @@ export function Hero({
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 drop-shadow-lg">
-            Transform Your Home with Expert Craftsmanship
+            {headline}
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white/95 mb-10 max-w-3xl mx-auto drop-shadow-md leading-relaxed">
-            Specializing in high-end kitchen and bathroom remodeling that
-            combines exceptional craftsmanship with timeless design. Every
-            detail matters.
+            {subheadline}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
@@ -71,11 +77,11 @@ export function Hero({
               className="text-base sm:text-lg px-8 py-6 h-auto shadow-lg"
             >
               <Link
-                href="/gallery"
-                aria-label="View our portfolio gallery"
-                onClick={() => trackCallToAction("hero", "view-gallery", "/gallery")}
+                href={primaryCTA.link}
+                aria-label={primaryCTA.text}
+                onClick={() => trackCallToAction("hero", "primary-cta", primaryCTA.link)}
               >
-                View Our Work
+                {primaryCTA.text}
               </Link>
             </Button>
             <Button
@@ -85,13 +91,13 @@ export function Hero({
               className="text-base sm:text-lg px-8 py-6 h-auto bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 shadow-lg"
             >
               <Link
-                href="/schedule"
-                aria-label="Schedule a free consultation"
+                href={secondaryCTA.link}
+                aria-label={secondaryCTA.text}
                 onClick={() =>
-                  trackCallToAction("hero", "schedule-consultation", "/schedule")
+                  trackCallToAction("hero", "secondary-cta", secondaryCTA.link)
                 }
               >
-                Schedule Consultation
+                {secondaryCTA.text}
               </Link>
             </Button>
           </div>

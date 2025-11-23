@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { MobileMenu } from "./MobileMenu";
+import { trackButtonClick } from "@/lib/analytics";
 
 /**
  * Header component - Main site navigation
@@ -28,6 +31,7 @@ export function Header() {
             href="/"
             className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:rounded-md"
             aria-label={`${companyName} - Home`}
+            onClick={() => trackButtonClick("Logo", "header", "/")}
           >
             {companyName}
           </Link>
@@ -39,6 +43,7 @@ export function Header() {
                 <Link
                   href={link.href}
                   className="px-4 py-2 rounded-md text-sm font-medium hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  onClick={() => trackButtonClick(link.label, "header-nav", link.href)}
                 >
                   {link.label}
                 </Link>
