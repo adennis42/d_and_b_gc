@@ -130,49 +130,110 @@ export async function updateBanner(
   updates: Partial<Omit<PromotionalBanner, 'id' | 'created_at' | 'updated_at'>>
 ): Promise<PromotionalBanner> {
   try {
-    const updatesObj: Record<string, unknown> = {};
-    
-    if (updates.title !== undefined) updatesObj.title = updates.title;
-    if (updates.description !== undefined) updatesObj.description = updates.description;
-    if (updates.icon_name !== undefined) updatesObj.icon_name = updates.icon_name;
-    if (updates.background_color !== undefined) updatesObj.background_color = updates.background_color;
-    if (updates.text_color !== undefined) updatesObj.text_color = updates.text_color;
-    if (updates.button_text !== undefined) updatesObj.button_text = updates.button_text;
-    if (updates.button_link !== undefined) updatesObj.button_link = updates.button_link;
-    if (updates.button_color !== undefined) updatesObj.button_color = updates.button_color;
-    if (updates.start_date !== undefined) updatesObj.start_date = updates.start_date.toISOString().split('T')[0];
-    if (updates.end_date !== undefined) updatesObj.end_date = updates.end_date.toISOString().split('T')[0];
-    if (updates.is_active !== undefined) updatesObj.is_active = updates.is_active;
-    if (updates.is_dismissible !== undefined) updatesObj.is_dismissible = updates.is_dismissible;
-    if (updates.show_countdown !== undefined) updatesObj.show_countdown = updates.show_countdown;
-    
     // Build dynamic UPDATE query
     const setClauses: string[] = [];
-    const values: unknown[] = [];
+    const values: (string | number | boolean | null)[] = [];
     let paramIndex = 1;
     
-    Object.entries(updatesObj).forEach(([key, value]) => {
-      if (key === 'start_date' || key === 'end_date') {
-        setClauses.push(`${key} = $${paramIndex}::date`);
-      } else {
-        setClauses.push(`${key} = $${paramIndex}`);
-      }
-      values.push(value);
+    // Only include fields that are explicitly provided (not undefined)
+    if (updates.title !== undefined && updates.title !== null) {
+      setClauses.push(`title = $${paramIndex}`);
+      values.push(String(updates.title));
       paramIndex++;
-    });
+    }
+    if (updates.description !== undefined) {
+      setClauses.push(`description = $${paramIndex}`);
+      values.push(updates.description === null || updates.description === '' ? null : String(updates.description));
+      paramIndex++;
+    }
+    if (updates.icon_name !== undefined) {
+      setClauses.push(`icon_name = $${paramIndex}`);
+      values.push(updates.icon_name === null || updates.icon_name === '' ? null : String(updates.icon_name));
+      paramIndex++;
+    }
+    if (updates.background_color !== undefined && updates.background_color !== null) {
+      setClauses.push(`background_color = $${paramIndex}`);
+      values.push(String(updates.background_color));
+      paramIndex++;
+    }
+    if (updates.text_color !== undefined && updates.text_color !== null) {
+      setClauses.push(`text_color = $${paramIndex}`);
+      values.push(String(updates.text_color));
+      paramIndex++;
+    }
+    if (updates.button_text !== undefined) {
+      setClauses.push(`button_text = $${paramIndex}`);
+      values.push(updates.button_text === null || updates.button_text === '' ? null : String(updates.button_text));
+      paramIndex++;
+    }
+    if (updates.button_link !== undefined) {
+      setClauses.push(`button_link = $${paramIndex}`);
+      values.push(updates.button_link === null || updates.button_link === '' ? null : String(updates.button_link));
+      paramIndex++;
+    }
+    if (updates.button_color !== undefined && updates.button_color !== null) {
+      setClauses.push(`button_color = $${paramIndex}`);
+      values.push(String(updates.button_color));
+      paramIndex++;
+    }
+    if (updates.start_date !== undefined && updates.start_date !== null) {
+      setClauses.push(`start_date = $${paramIndex}::date`);
+      const dateStr = updates.start_date instanceof Date 
+        ? updates.start_date.toISOString().split('T')[0]
+        : String(updates.start_date).split('T')[0];
+      values.push(dateStr);
+      paramIndex++;
+    }
+    if (updates.end_date !== undefined && updates.end_date !== null) {
+      setClauses.push(`end_date = $${paramIndex}::date`);
+      const dateStr = updates.end_date instanceof Date
+        ? updates.end_date.toISOString().split('T')[0]
+        : String(updates.end_date).split('T')[0];
+      values.push(dateStr);
+      paramIndex++;
+    }
+    if (updates.is_active !== undefined) {
+      setClauses.push(`is_active = $${paramIndex}`);
+      values.push(Boolean(updates.is_active));
+      paramIndex++;
+    }
+    if (updates.is_dismissible !== undefined) {
+      setClauses.push(`is_dismissible = $${paramIndex}`);
+      values.push(Boolean(updates.is_dismissible));
+      paramIndex++;
+    }
+    if (updates.show_countdown !== undefined) {
+      setClauses.push(`show_countdown = $${paramIndex}`);
+      values.push(Boolean(updates.show_countdown));
+      paramIndex++;
+    }
     
     if (setClauses.length === 0) {
       // No updates, just return the banner
-      return await getBannerById(id) as PromotionalBanner;
+      const banner = await getBannerById(id);
+      if (!banner) {
+        throw new Error('Banner not found');
+      }
+      return banner;
     }
     
+    // Add updated_at
+    setClauses.push('updated_at = CURRENT_TIMESTAMP');
+    
+    // Add WHERE clause
+    const query = `UPDATE promotional_banners SET ${setClauses.join(', ')} WHERE id = $${paramIndex}::uuid RETURNING *`;
     values.push(id);
+    
     const result = await sql.unsafe(
-      `UPDATE promotional_banners SET ${setClauses.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = $${paramIndex}::uuid RETURNING *`,
-      values
+      query,
+      values as (string | number | boolean | null)[]
     );
     
-    return result[0] as PromotionalBanner;
+    if (result.length === 0) {
+      throw new Error('Banner not found');
+    }
+    
+    return result[0] as unknown as PromotionalBanner;
   } catch (error) {
     console.error('Error updating banner:', error);
     throw error;
