@@ -24,8 +24,12 @@ function getSqlClient() {
     const connectionString = process.env.POSTGRES_URL || process.env.PRISMA_DATABASE_URL;
     
     if (!connectionString) {
-      // During build time, throw a helpful error
-      throw new Error('POSTGRES_URL or PRISMA_DATABASE_URL environment variable is required. Make sure to set it in Vercel environment variables.');
+      // During build time (static generation), we may not have database access
+      // Throw a more specific error that can be caught gracefully
+      const error = new Error('POSTGRES_URL or PRISMA_DATABASE_URL environment variable is required. Make sure to set it in Vercel environment variables.');
+      // Add a property to identify this as a build-time error
+      (error as any).isBuildTimeError = true;
+      throw error;
     }
 
     // Create a client that works with both pooled and direct connections

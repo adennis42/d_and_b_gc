@@ -215,13 +215,13 @@ export async function updateBanner(
     console.log('Values:', values);
     console.log('Values types:', values.map(v => typeof v));
 
-    const result = await sql.unsafe(query, values);
+    const result = await sql.unsafe(query, values as (string | number | boolean | null)[]);
     
     if (result.length === 0) {
       throw new Error('Banner not found');
     }
     
-    return result[0] as PromotionalBanner;
+    return result[0] as unknown as PromotionalBanner;
   } catch (error) {
     console.error('Error updating banner:', error);
     console.error('Error details:', {

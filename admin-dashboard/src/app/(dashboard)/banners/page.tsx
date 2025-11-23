@@ -70,12 +70,8 @@ export default function BannersPage() {
     if (!banner.is_active) return false;
     // Use a consistent date format to avoid hydration mismatches
     const today = new Date().toISOString().split('T')[0];
-    const startDate = typeof banner.start_date === 'string' 
-      ? banner.start_date.split('T')[0]
-      : new Date(banner.start_date).toISOString().split('T')[0];
-    const endDate = typeof banner.end_date === 'string'
-      ? banner.end_date.split('T')[0]
-      : new Date(banner.end_date).toISOString().split('T')[0];
+    const startDate = new Date(banner.start_date).toISOString().split('T')[0];
+    const endDate = new Date(banner.end_date).toISOString().split('T')[0];
     return today >= startDate && today <= endDate;
   };
 
