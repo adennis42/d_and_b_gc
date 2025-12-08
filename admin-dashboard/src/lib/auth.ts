@@ -22,9 +22,38 @@ declare module "next-auth" {
   }
 }
 
+// Normalize AUTH_URL to ensure it has a protocol
+// NextAuth v5 reads this from environment and uses it for callback URLs
+function normalizeAuthUrl() {
+  const authUrl = process.env.AUTH_URL;
+  if (!authUrl) {
+    // Default to localhost in development
+    return process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3001' 
+      : undefined;
+  }
+  
+  // If it already has a protocol, return as-is
+  if (authUrl.startsWith('http://') || authUrl.startsWith('https://')) {
+    return authUrl;
+  }
+  
+  // Add protocol based on environment
+  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+  return `${protocol}://${authUrl}`;
+}
+
+// Normalize AUTH_URL before NextAuth reads it
+const normalizedAuthUrl = normalizeAuthUrl();
+if (normalizedAuthUrl) {
+  process.env.AUTH_URL = normalizedAuthUrl;
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
-  trustHost: true, // Required for NextAuth v5 in some configurations
+  trustHost: true, // Required for NextAuth v5 - automatically detects URL from request
+  debug: process.env.NODE_ENV === 'development', // Enable debug logging in development
+  basePath: "/api/auth", // Explicitly set the base path for NextAuth routes
   providers: [
     Credentials({
       credentials: {
@@ -33,7 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error("Email and password are required");
         }
 
         try {
@@ -47,8 +76,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // postgres package returns arrays directly
           const users = Array.isArray(result) ? result : [];
+          
           if (users.length === 0) {
-            return null;
+            // User doesn't exist - throw error that will be caught by NextAuth
+            // NextAuth v5 will pass this error message to the client
+            throw new Error("ACCOUNT_NOT_FOUND");
           }
 
           const user = users[0];
@@ -60,9 +92,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
 
           if (!isValid) {
-            return null;
+            // Invalid password - throw error (same message for security - don't reveal if email exists)
+            throw new Error("ACCOUNT_NOT_FOUND");
           }
 
+          // Authentication successful
           return {
             id: user.id as string,
             email: user.email as string,
@@ -70,8 +104,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: (user.role as string) || "admin",
           };
         } catch (error) {
-          console.error("Auth error:", error);
-          return null;
+          // Re-throw our custom error so NextAuth can handle it
+          if (error instanceof Error && error.message === "ACCOUNT_NOT_FOUND") {
+            throw error;
+          }
+          // Log unexpected errors but don't expose them to the user
+          console.error("[NextAuth] Auth error:", error);
+          // For any other error, also return account not found for security
+          throw new Error("ACCOUNT_NOT_FOUND");
         }
       },
     }),

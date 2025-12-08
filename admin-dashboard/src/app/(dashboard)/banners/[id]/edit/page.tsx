@@ -60,6 +60,7 @@ export default function EditBannerPage() {
     is_active: true,
     is_dismissible: true,
     show_countdown: false,
+    ttl_days: null as number | null,
   });
 
   useEffect(() => {
@@ -86,6 +87,7 @@ export default function EditBannerPage() {
         is_active: banner.is_active,
         is_dismissible: banner.is_dismissible,
         show_countdown: banner.show_countdown ?? false,
+        ttl_days: banner.ttl_days ?? null,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load banner');
@@ -386,6 +388,22 @@ export default function EditBannerPage() {
                     <Label htmlFor="show_countdown" className="cursor-pointer">
                       Show countdown timer (displays days remaining until end date)
                     </Label>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ttl_days">Auto-delete after end date (days, optional)</Label>
+                    <Input
+                      id="ttl_days"
+                      type="number"
+                      min="0"
+                      placeholder="e.g., 7 (delete 7 days after end date)"
+                      value={formData.ttl_days || ''}
+                      onChange={(e) => setFormData({ ...formData, ttl_days: e.target.value ? parseInt(e.target.value) : null })}
+                      className="bg-slate-800 border-slate-700 text-slate-100"
+                    />
+                    <p className="text-xs text-slate-400">
+                      Leave empty to keep banner indefinitely. Set number of days after end date to automatically delete.
+                    </p>
                   </div>
                 </CardContent>
               </Card>

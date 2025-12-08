@@ -55,6 +55,7 @@ export default function NewBannerPage() {
     is_active: true,
     is_dismissible: true,
     show_countdown: false,
+    ttl_days: null as number | null,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -341,6 +342,22 @@ export default function NewBannerPage() {
                     <Label htmlFor="show_countdown" className="cursor-pointer">
                       Show countdown timer (displays days remaining until end date)
                     </Label>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ttl_days">Auto-delete after end date (days, optional)</Label>
+                    <Input
+                      id="ttl_days"
+                      type="number"
+                      min="0"
+                      placeholder="e.g., 7 (delete 7 days after end date)"
+                      value={formData.ttl_days || ''}
+                      onChange={(e) => setFormData({ ...formData, ttl_days: e.target.value ? parseInt(e.target.value) : null })}
+                      className="bg-slate-800 border-slate-700 text-slate-100"
+                    />
+                    <p className="text-xs text-slate-400">
+                      Leave empty to keep banner indefinitely. Set number of days after end date to automatically delete.
+                    </p>
                   </div>
                 </CardContent>
               </Card>

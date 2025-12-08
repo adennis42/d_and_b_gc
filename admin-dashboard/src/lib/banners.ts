@@ -20,6 +20,7 @@ export interface PromotionalBanner {
   is_active: boolean;
   is_dismissible: boolean;
   show_countdown: boolean;
+  ttl_days: number | null; // Number of days after end_date to automatically delete the banner
   created_at: Date;
   updated_at: Date;
 }
@@ -75,7 +76,7 @@ export async function createBanner(banner: Omit<PromotionalBanner, 'id' | 'creat
       INSERT INTO promotional_banners (
         title, description, icon_name, background_color, text_color,
         button_text, button_link, button_color, start_date, end_date,
-        is_active, is_dismissible, show_countdown
+        is_active, is_dismissible, show_countdown, ttl_days
       )
       VALUES (
         ${banner.title},
@@ -90,7 +91,8 @@ export async function createBanner(banner: Omit<PromotionalBanner, 'id' | 'creat
         ${banner.end_date.toISOString().split('T')[0]}::date,
         ${banner.is_active},
         ${banner.is_dismissible},
-        ${banner.show_countdown ?? false}
+        ${banner.show_countdown ?? false},
+        ${banner.ttl_days ?? null}
       )
       RETURNING *
     `;
@@ -186,6 +188,11 @@ export async function updateBanner(
     if (updates.show_countdown !== undefined) {
       setParts.push(`show_countdown = $${paramIndex}`);
       values.push(Boolean(updates.show_countdown));
+      paramIndex++;
+    }
+    if (updates.ttl_days !== undefined) {
+      setParts.push(`ttl_days = $${paramIndex}`);
+      values.push(updates.ttl_days === null ? null : Number(updates.ttl_days));
       paramIndex++;
     }
 
