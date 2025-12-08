@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
       is_active,
       is_dismissible,
       show_countdown,
+      ttl_days,
     } = body;
 
     if (!title || !start_date || !end_date) {
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
       is_active: is_active !== undefined ? is_active : true,
       is_dismissible: is_dismissible !== undefined ? is_dismissible : true,
       show_countdown: show_countdown !== undefined ? show_countdown : false,
+      ttl_days: ttl_days !== undefined ? (ttl_days === null ? null : Number(ttl_days)) : null,
     });
 
     return NextResponse.json(banner, { status: 201 });
