@@ -23,16 +23,31 @@ export default function LoginPage() {
         email,
         password,
         redirect: false,
+        callbackUrl: "/projects",
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
-      } else {
+        console.error("Sign in error:", result.error);
+        // Show user-friendly error message for authentication failures
+        // We use a generic message for security (don't reveal if email exists)
+        if (result.error === "ACCOUNT_NOT_FOUND" || 
+            result.error === "CredentialsSignin" || 
+            result.error.includes("ACCOUNT_NOT_FOUND")) {
+          setError("Account not found. Please contact an administrator to create your account.");
+        } else {
+          setError("Login failed. Please contact an administrator if you need help.");
+        }
+      } else if (result?.ok) {
         router.push("/projects");
         router.refresh();
+      } else {
+        setError("Login failed. Please contact an administrator if you need help.");
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      console.error("Login error:", err);
+      setError(err instanceof Error 
+        ? `An error occurred: ${err.message}` 
+        : "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

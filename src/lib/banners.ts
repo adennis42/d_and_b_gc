@@ -20,20 +20,27 @@ export interface PromotionalBanner {
   is_active: boolean;
   is_dismissible: boolean;
   show_countdown: boolean;
+  ttl_days: number | null; // Number of days after end_date to automatically delete the banner
   created_at: Date;
   updated_at: Date;
 }
 
 /**
  * Get the currently active banner (if any)
- * Returns the most recent active banner (always visible unless dismissed)
- * Note: Date range checking is handled client-side for countdown display
+ * Returns the most recent active banner that is within its date range
+ * Filters out expired banners (end_date < current date)
+ * Uses date-only comparison to avoid timezone issues
  */
 export async function getActiveBanner(): Promise<PromotionalBanner | null> {
   try {
+    // Get current date in YYYY-MM-DD format for comparison
+    const today = new Date().toISOString().split('T')[0];
+    
     const result = await sql`
       SELECT * FROM promotional_banners
       WHERE is_active = true
+        AND start_date::date <= ${today}::date
+        AND end_date::date >= ${today}::date
       ORDER BY created_at DESC
       LIMIT 1
     `;
@@ -42,7 +49,24 @@ export async function getActiveBanner(): Promise<PromotionalBanner | null> {
       return null;
     }
     
-    return result[0] as PromotionalBanner;
+    const banner = result[0] as PromotionalBanner;
+    
+    // Double-check expiration on the application side as well
+    const endDate = new Date(banner.end_date);
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0); // Reset to start of day
+    
+    // If banner has expired (end_date is before today), don't return it
+    if (endDate < todayDate) {
+      console.log('Banner expired:', {
+        id: banner.id,
+        end_date: banner.end_date,
+        today: todayDate.toISOString(),
+      });
+      return null;
+    }
+    
+    return banner;
   } catch (error) {
     console.error('Error getting active banner:', error);
     return null;
@@ -95,7 +119,7 @@ export async function createBanner(banner: Omit<PromotionalBanner, 'id' | 'creat
       INSERT INTO promotional_banners (
         title, description, icon_name, background_color, text_color,
         button_text, button_link, button_color, start_date, end_date,
-        is_active, is_dismissible, show_countdown
+        is_active, is_dismissible, show_countdown, ttl_days
       )
       VALUES (
         ${banner.title},
@@ -110,7 +134,8 @@ export async function createBanner(banner: Omit<PromotionalBanner, 'id' | 'creat
         ${banner.end_date.toISOString().split('T')[0]}::date,
         ${banner.is_active},
         ${banner.is_dismissible},
-        ${banner.show_countdown ?? false}
+        ${banner.show_countdown ?? false},
+        ${banner.ttl_days ?? null}
       )
       RETURNING *
     `;
@@ -207,6 +232,11 @@ export async function updateBanner(
       values.push(Boolean(updates.show_countdown));
       paramIndex++;
     }
+    if (updates.ttl_days !== undefined) {
+      setClauses.push(`ttl_days = $${paramIndex}`);
+      values.push(updates.ttl_days === null ? null : Number(updates.ttl_days));
+      paramIndex++;
+    }
     
     if (setClauses.length === 0) {
       // No updates, just return the banner
@@ -251,6 +281,29 @@ export async function deleteBanner(id: string): Promise<void> {
     `;
   } catch (error) {
     console.error('Error deleting banner:', error);
+    throw error;
+  }
+}
+
+/**
+ * Clean up expired banners that have passed their TTL
+ * Should be called periodically (e.g., via Vercel Cron Job)
+ * Deletes banners where end_date + ttl_days < current timestamp
+ */
+export async function cleanupExpiredBanners(): Promise<number> {
+  try {
+    const result = await sql`
+      DELETE FROM promotional_banners
+      WHERE ttl_days IS NOT NULL
+        AND end_date + (ttl_days || ' days')::interval < CURRENT_TIMESTAMP
+      RETURNING id
+    `;
+    
+    const deletedCount = Array.isArray(result) ? result.length : 0;
+    console.log(`Cleaned up ${deletedCount} expired banner(s)`);
+    return deletedCount;
+  } catch (error) {
+    console.error('Error cleaning up expired banners:', error);
     throw error;
   }
 }

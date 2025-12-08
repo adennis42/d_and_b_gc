@@ -110,29 +110,29 @@ export function PromotionalBanner({ banner }: PromotionalBannerProps) {
       }}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 py-4 md:py-5">
+        <div className="flex items-center justify-between gap-3 py-[12.8px] md:py-[16px]">
           {/* Content */}
-          <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             {IconComponent && (
               <div className="flex-shrink-0">
-                <div className="p-2 rounded-lg bg-black/10 backdrop-blur-sm">
-                  <IconComponent className="w-5 h-5 md:w-6 md:h-6" size={24} />
+                <div className="p-1.5 rounded-lg bg-black/10 backdrop-blur-sm">
+                  <IconComponent className="w-4 h-4 md:w-5 md:h-5" size={20} />
                 </div>
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h3 className="font-bold text-base md:text-lg leading-tight">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-bold text-sm md:text-base leading-tight">
                   {banner.title}
                 </h3>
                 {banner.show_countdown && countdownText && (
-                  <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-black/15 backdrop-blur-sm border border-black/10 whitespace-nowrap">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-black/15 backdrop-blur-sm border border-black/10 whitespace-nowrap">
                     {countdownText}
                   </span>
                 )}
               </div>
               {banner.description && (
-                <p className="text-sm md:text-base opacity-95 line-clamp-2 mt-1.5 leading-relaxed">
+                <p className="text-xs md:text-sm opacity-95 line-clamp-2 mt-1 leading-relaxed">
                   {banner.description}
                 </p>
               )}
@@ -144,7 +144,7 @@ export function PromotionalBanner({ banner }: PromotionalBannerProps) {
             <div className="flex-shrink-0 hidden sm:block">
               <Link
                 href={banner.button_link}
-                className="inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent"
+                className="inline-flex items-center justify-center rounded-lg px-4 py-1.5 text-xs font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent"
                 style={{
                   backgroundColor: banner.button_color,
                   color: banner.background_color,
@@ -160,11 +160,11 @@ export function PromotionalBanner({ banner }: PromotionalBannerProps) {
           {banner.is_dismissible && (
             <button
               onClick={handleDismiss}
-              className="flex-shrink-0 p-2 rounded-lg hover:bg-black/15 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent active:scale-95"
+              className="flex-shrink-0 p-1.5 rounded-lg hover:bg-black/15 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent active:scale-95"
               aria-label="Dismiss banner"
               style={{ color: banner.text_color }}
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>

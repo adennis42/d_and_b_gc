@@ -1,0 +1,43 @@
+# Admin Dashboard .vercelignore
+# This overrides the root .vercelignore when building from admin-dashboard directory
+
+# Ignore documentation files (but keep README if needed)
+*.md
+!README.md
+
+# Ignore backup directories
+public/images/gallery-backup/
+
+# Ignore node_modules (handled by Vercel automatically)
+node_modules/
+
+# Ignore build artifacts
+.next/
+out/
+dist/
+
+# Ignore environment files (use Vercel env vars)
+.env*
+!.env.template
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore test coverage
+coverage/
+.nyc_output/
+
+# Ignore logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+

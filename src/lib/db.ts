@@ -21,12 +21,27 @@ let sqlClient: ReturnType<typeof postgres> | null = null;
 
 function getSqlClient() {
   if (!sqlClient) {
-    const connectionString = process.env.POSTGRES_URL || process.env.PRISMA_DATABASE_URL;
+    // Prioritize direct connection URLs over Prisma Accelerate URLs
+    // The postgres package doesn't support Prisma Accelerate (prisma+postgres://) URLs
+    let connectionString = process.env.POSTGRES_URL;
+    
+    // If POSTGRES_URL is not set, check PRISMA_DATABASE_URL
+    // But skip Prisma Accelerate URLs (they start with prisma+postgres://)
+    if (!connectionString && process.env.PRISMA_DATABASE_URL) {
+      const prismaUrl = process.env.PRISMA_DATABASE_URL;
+      // Only use if it's a direct connection (starts with postgres://)
+      // Skip Prisma Accelerate URLs (prisma+postgres://)
+      if (prismaUrl.startsWith('postgres://') || prismaUrl.startsWith('postgresql://')) {
+        connectionString = prismaUrl;
+      } else {
+        console.warn('Skipping Prisma Accelerate URL. Please set POSTGRES_URL or use a direct PRISMA_DATABASE_URL.');
+      }
+    }
     
     if (!connectionString) {
       // During build time (static generation), we may not have database access
       // Throw a more specific error that can be caught gracefully
-      const error = new Error('POSTGRES_URL or PRISMA_DATABASE_URL environment variable is required. Make sure to set it in Vercel environment variables.');
+      const error = new Error('POSTGRES_URL or direct PRISMA_DATABASE_URL environment variable is required. Prisma Accelerate URLs are not supported. Make sure to set it in Vercel environment variables.');
       // Add a property to identify this as a build-time error
       (error as any).isBuildTimeError = true;
       throw error;
