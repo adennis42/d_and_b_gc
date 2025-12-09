@@ -9,19 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { extractYouTubeId, getYouTubeThumbnail } from "@/lib/video-utils";
-import { Upload, X, Plus, GripVertical, Video, Image as ImageIcon } from "lucide-react";
+import { Plus, Video } from "lucide-react";
 import Image from "next/image";
 import type { Project } from "@/types";
+import { ImageUpload, type UploadedImage } from "@/components/ui/image-upload";
+import { DraggableImageList, type DraggableImage } from "@/components/ui/draggable-image-list";
 
-interface ImageData {
-  id?: string;
-  url: string;
-  alt: string;
-  width: number;
-  height: number;
-  blurDataURL?: string;
-  order: number;
-}
+// Use UploadedImage type from component
+type ImageData = UploadedImage;
 
 interface VideoData {
   id?: string;
@@ -50,9 +45,7 @@ export default function NewProjectPage() {
   const [videoUrl, setVideoUrl] = useState("");
 
   // Handle image upload
-  const handleImageUpload = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-
+  const handleImageUpload = async (files: FileList): Promise<UploadedImage[]> => {
     setUploading(true);
     try {
       const uploadPromises = Array.from(files).map(async (file) => {
@@ -80,10 +73,10 @@ export default function NewProjectPage() {
       });
 
       const uploadedImages = await Promise.all(uploadPromises);
-      setImages([...images, ...uploadedImages]);
+      return uploadedImages;
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload images. Please try again.");
+      throw error;
     } finally {
       setUploading(false);
     }
@@ -114,7 +107,8 @@ export default function NewProjectPage() {
 
   // Remove image
   const removeImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index).map((img, i) => ({ ...img, order: i })));
+    const newImages = images.filter((_, i) => i !== index).map((img, i) => ({ ...img, order: i }));
+    setImages(newImages);
   };
 
   // Remove video
@@ -236,66 +230,30 @@ export default function NewProjectPage() {
         {/* Images */}
         <div className="bg-slate-900/80 backdrop-blur-sm shadow-lg border border-slate-800 rounded-xl p-6 space-y-4">
           <h2 className="text-xl font-semibold mb-4 text-slate-100">Images</h2>
+          <p className="text-sm text-slate-400 mb-4">
+            Upload images and drag to reorder them. The order determines how they appear in the gallery.
+          </p>
 
-          {/* Upload Area */}
-          <div className="border-2 border-dashed border-slate-700 rounded-lg p-8 text-center hover:border-blue-500/50 transition-colors">
-            <input
-              type="file"
-              id="image-upload"
-              multiple
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e.target.files)}
-              className="hidden"
-              disabled={uploading}
-            />
-            <label
-              htmlFor="image-upload"
-              className="cursor-pointer flex flex-col items-center"
-            >
-              <Upload className="h-12 w-12 text-slate-500 mb-4" />
-              <span className="text-sm text-slate-300">
-                {uploading ? "Uploading..." : "Click to upload images or drag and drop"}
-              </span>
-              <span className="text-xs text-slate-500 mt-1">
-                PNG, JPG, WEBP up to 10MB each
-              </span>
-            </label>
-          </div>
+          {/* Upload Component */}
+          <ImageUpload
+            images={images}
+            onImagesChange={setImages}
+            onUpload={handleImageUpload}
+            uploading={uploading}
+            maxSizeMB={10}
+          />
 
-          {/* Image List */}
+          {/* Draggable Image List */}
           {images.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-              {images.map((image, index) => (
-                <div key={index} className="relative group">
-                  <div className="aspect-[4/3] relative rounded-lg overflow-hidden border-2 border-slate-700">
-                    <Image
-                      src={image.url}
-                      alt={image.alt}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all shadow-lg"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                  <div className="mt-2">
-                    <Input
-                      value={image.alt}
-                      onChange={(e) => {
-                        const newImages = [...images];
-                        newImages[index].alt = e.target.value;
-                        setImages(newImages);
-                      }}
-                      placeholder="Image description"
-                      className="text-xs bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500"
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-slate-300 mb-3">
+                Reorder Images (drag to change order)
+              </h3>
+              <DraggableImageList
+                images={images}
+                onImagesChange={setImages}
+                onRemove={removeImage}
+              />
             </div>
           )}
         </div>
