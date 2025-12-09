@@ -8,6 +8,47 @@ import { auth } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 
 /**
+ * Revalidate the main website's gallery page cache
+ * Called after project changes to ensure immediate updates
+ */
+async function revalidateMainWebsite() {
+  const revalidateSecret = process.env.REVALIDATE_SECRET_TOKEN;
+  const mainSiteUrl = process.env.MAIN_SITE_URL || 'https://dbcontractorsny.com';
+  
+  if (!revalidateSecret) {
+    logger.warn('REVALIDATE_SECRET_TOKEN not set - skipping cache revalidation');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${mainSiteUrl}/api/revalidate`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${revalidateSecret}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      logger.warn('Failed to revalidate main website cache', {
+        metadata: {
+          status: response.status,
+          statusText: response.statusText,
+        },
+      });
+    } else {
+      logger.info('Successfully revalidated main website cache');
+    }
+  } catch (error) {
+    logger.warn('Error calling revalidation endpoint', {
+      metadata: {
+        error: error instanceof Error ? error.message : String(error),
+      },
+    });
+  }
+}
+
+/**
  * GET /api/projects/[id] - Get a single project with images and videos
  */
 export async function GET(
@@ -286,6 +327,9 @@ export async function PUT(
       },
     });
 
+    // Revalidate main website cache to show updated project immediately
+    await revalidateMainWebsite();
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     const duration = Date.now() - startTime;
@@ -380,6 +424,9 @@ export async function DELETE(
         durationMs: duration,
       },
     });
+
+    // Revalidate main website cache to remove deleted project immediately
+    await revalidateMainWebsite();
 
     return NextResponse.json({ success: true });
   } catch (error) {
