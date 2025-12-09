@@ -58,7 +58,21 @@ export default function NewProjectPage() {
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to upload ${file.name}`);
+          const errorData = await response.json().catch(() => ({}));
+          
+          // Handle 413 specifically
+          if (response.status === 413) {
+            throw new Error(
+              errorData.message || 
+              `File "${file.name}" is too large. Maximum size is 4MB. Please compress the image before uploading.`
+            );
+          }
+          
+          throw new Error(
+            errorData.message || 
+            errorData.error || 
+            `Failed to upload ${file.name}`
+          );
         }
 
         const result = await response.json();
