@@ -169,21 +169,28 @@ export async function POST(request: NextRequest) {
     `;
 
     const project = Array.isArray(projectResult) ? projectResult[0] : projectResult;
-    projectId = project.id;
+    
+    if (!project || !project.id) {
+      throw new Error('Failed to create project: no ID returned from database');
+    }
+    
+    // Use const to ensure TypeScript knows it's defined
+    const createdProjectId: string = project.id;
+    projectId = createdProjectId;
 
     // Insert images
     if (images && Array.isArray(images) && images.length > 0) {
       logger.debug('Inserting project images', {
         userId,
         userEmail,
-        metadata: { projectId, imageCount: images.length },
+        metadata: { projectId: createdProjectId, imageCount: images.length },
       });
 
       for (let i = 0; i < images.length; i++) {
         const img = images[i];
         await sql`
           INSERT INTO project_images (project_id, url, alt, width, height, blur_data_url, "order")
-          VALUES (${projectId}, ${img.url}, ${img.alt}, ${img.width}, ${img.height}, ${img.blurDataURL || null}, ${i})
+          VALUES (${createdProjectId}, ${img.url}, ${img.alt || null}, ${img.width || null}, ${img.height || null}, ${img.blurDataURL || null}, ${i})
         `;
       }
     }
@@ -193,14 +200,14 @@ export async function POST(request: NextRequest) {
       logger.debug('Inserting project videos', {
         userId,
         userEmail,
-        metadata: { projectId, videoCount: videos.length },
+        metadata: { projectId: createdProjectId, videoCount: videos.length },
       });
 
       for (let i = 0; i < videos.length; i++) {
         const vid = videos[i];
         await sql`
           INSERT INTO project_videos (project_id, video_id, alt, width, height, thumbnail_url, "order")
-          VALUES (${projectId}, ${vid.videoId}, ${vid.alt}, ${vid.width}, ${vid.height}, ${vid.thumbnailUrl || null}, ${i})
+          VALUES (${createdProjectId}, ${vid.videoId}, ${vid.alt || null}, ${vid.width || null}, ${vid.height || null}, ${vid.thumbnailUrl || null}, ${i})
         `;
       }
     }
@@ -209,9 +216,9 @@ export async function POST(request: NextRequest) {
     logger.operationSuccess('create project', {
       userId,
       userEmail,
-      resourceId: projectId,
+      resourceId: createdProjectId,
       metadata: {
-        projectId,
+        projectId: createdProjectId,
         title,
         category,
         imageCount: images?.length || 0,
