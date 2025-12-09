@@ -12,10 +12,11 @@ export const metadata = getGalleryMetadata();
 
 /**
  * Cache revalidation settings
- * Revalidate every 60 seconds to ensure fresh data
+ * Force dynamic rendering to ensure fresh data on every request
  * Admin dashboard can trigger immediate revalidation via API route
  */
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 /**
  * Gallery page component
