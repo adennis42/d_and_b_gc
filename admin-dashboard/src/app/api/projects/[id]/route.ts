@@ -151,6 +151,12 @@ export async function PUT(
     userId = session.user?.id;
     userEmail = session.user?.email;
     const { id } = await params;
+    
+    if (!id) {
+      logger.warn('Project update attempted without project ID');
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
+    }
+    
     projectId = id;
 
     const body = await request.json();
