@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { extractYouTubeId, getYouTubeThumbnail } from "@/lib/video-utils";
-import { Plus, Video } from "lucide-react";
+import { Plus, Video, X } from "lucide-react";
 import Image from "next/image";
 import { ImageUpload, type UploadedImage } from "@/components/ui/image-upload";
 import { DraggableImageList, type DraggableImage } from "@/components/ui/draggable-image-list";
