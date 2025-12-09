@@ -102,7 +102,13 @@ export default function NewProjectPage() {
 
     const videoId = extractYouTubeId(videoUrl.trim());
     if (!videoId || videoId.length !== 11) {
-      alert("Invalid YouTube URL. Please enter a valid YouTube video URL.");
+      alert(
+        "Invalid YouTube URL. Please enter a valid YouTube video or Shorts URL.\n\n" +
+        "Examples:\n" +
+        "- Regular video: https://www.youtube.com/watch?v=VIDEO_ID\n" +
+        "- Shorts: https://www.youtube.com/shorts/VIDEO_ID\n" +
+        "- Short URL: https://youtu.be/VIDEO_ID"
+      );
       return;
     }
 
@@ -281,7 +287,7 @@ export default function NewProjectPage() {
             <Input
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
-              placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
+              placeholder="Enter YouTube URL (regular video or Shorts)"
               className="flex-1 bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500"
             />
             <Button
