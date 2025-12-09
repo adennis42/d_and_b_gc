@@ -8,6 +8,7 @@ import { useState, useRef, DragEvent } from "react";
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { Input } from "./input";
+import { compressImage, shouldCompress } from "@/lib/image-compression";
 
 export interface UploadedImage {
   id?: string;
@@ -72,17 +73,17 @@ export function ImageUpload({
       return;
     }
 
-    // Check file sizes
+    // Check file sizes - warn but don't block (will compress if needed)
     const oversizedFiles = imageFiles.filter(
       (file) => file.size > maxSizeMB * 1024 * 1024
     );
     if (oversizedFiles.length > 0) {
-      alert(
-        `Some files exceed ${maxSizeMB}MB limit: ${oversizedFiles
-          .map((f) => f.name)
+      // Don't block, just inform that compression will happen
+      console.log(
+        `Large files detected, will compress: ${oversizedFiles
+          .map((f) => `${f.name} (${(f.size / (1024 * 1024)).toFixed(1)}MB)`)
           .join(", ")}`
       );
-      return;
     }
 
     // Create FileList from filtered files
@@ -105,16 +106,56 @@ export function ImageUpload({
 
   const handleFileUpload = async (files: FileList) => {
     try {
-      const uploadedImages = await onUpload(files);
+      // Process files: compress if needed
+      const fileArray = Array.from(files);
+      const processedFiles: File[] = [];
+
+      for (const file of fileArray) {
+        // Check if compression is needed (files over 4MB)
+        if (shouldCompress(file, 4)) {
+          try {
+            const compressed = await compressImage(file, {
+              maxWidth: 1920,
+              maxHeight: 1440,
+              quality: 0.85,
+              maxSizeMB: 4,
+            });
+            processedFiles.push(compressed);
+          } catch (compressionError) {
+            console.warn(`Failed to compress ${file.name}, uploading original:`, compressionError);
+            // If compression fails, try original (might fail with 413, but worth trying)
+            processedFiles.push(file);
+          }
+        } else {
+          processedFiles.push(file);
+        }
+      }
+
+      // Create new FileList from processed files
+      const dataTransfer = new DataTransfer();
+      processedFiles.forEach((file) => dataTransfer.items.add(file));
+
+      const uploadedImages = await onUpload(dataTransfer.files);
       // Update order for new images based on current images length
       const newImages = uploadedImages.map((img, i) => ({
         ...img,
         order: images.length + i,
       }));
       onImagesChange([...images, ...newImages]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Upload error:", error);
-      alert("Failed to upload images. Please try again.");
+      
+      // Check for 413 error specifically
+      const errorMessage = error?.message || String(error);
+      if (errorMessage.includes('413') || errorMessage.includes('too large') || errorMessage.includes('too large')) {
+        alert(
+          errorMessage || 
+          "File is too large. Maximum size is 4MB. Large images are automatically compressed, " +
+          "but this image may be extremely large. Please compress it manually or use a smaller image."
+        );
+      } else {
+        alert(errorMessage || "Failed to upload images. Please try again.");
+      }
     }
   };
 
@@ -172,7 +213,7 @@ export function ImageUpload({
               : "Click to upload images or drag and drop"}
           </span>
           <span className="text-xs text-slate-500 mt-1">
-            PNG, JPG, WEBP up to {maxSizeMB}MB each
+            PNG, JPG, WEBP up to {maxSizeMB}MB each (large images will be automatically compressed)
           </span>
         </label>
       </div>

@@ -44,6 +44,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate file size (Vercel limit is 4.5MB, use 4MB to be safe)
+    const maxSizeBytes = 4 * 1024 * 1024; // 4MB
+    const fileSizeMB = file.size / (1024 * 1024);
+    
+    if (file.size > maxSizeBytes) {
+      logger.warn('File too large for upload', {
+        userId,
+        userEmail,
+        metadata: {
+          fileName: file.name,
+          fileSizeMB: fileSizeMB.toFixed(2),
+          maxSizeMB: 4,
+        },
+      });
+      return NextResponse.json(
+        { 
+          error: 'File too large',
+          message: `File size (${fileSizeMB.toFixed(1)}MB) exceeds maximum allowed size (4MB). Please compress the image before uploading.`,
+        },
+        { status: 413 }
+      );
+    }
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       logger.warn('Invalid file type attempted for upload', {
@@ -94,6 +117,13 @@ export async function POST(request: NextRequest) {
     const duration = Date.now() - startTime;
     const err = error instanceof Error ? error : new Error(String(error));
     
+    // Check for 413 or body size errors
+    const isSizeError = 
+      err.message?.includes('413') ||
+      err.message?.includes('too large') ||
+      err.message?.includes('PayloadTooLargeError') ||
+      err.message?.includes('request entity too large');
+    
     logger.operationFailure('image upload', err, {
       userId,
       userEmail,
@@ -101,8 +131,19 @@ export async function POST(request: NextRequest) {
         durationMs: duration,
         hasBlobToken: !!process.env.BLOB_READ_WRITE_TOKEN,
         errorType: err.name,
+        isSizeError,
       },
     });
+    
+    if (isSizeError) {
+      return NextResponse.json(
+        { 
+          error: 'File too large',
+          message: 'The image file is too large. Maximum size is 4MB. Large images are automatically compressed before upload - if you see this error, the image may be extremely large. Please compress it manually or use a smaller image.',
+        },
+        { status: 413 }
+      );
+    }
     
     return NextResponse.json(
       { 
