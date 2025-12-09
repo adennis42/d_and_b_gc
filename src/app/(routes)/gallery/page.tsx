@@ -11,6 +11,13 @@ import { getGalleryMetadata } from "@/lib/metadata";
 export const metadata = getGalleryMetadata();
 
 /**
+ * Cache revalidation settings
+ * Revalidate every 60 seconds to ensure fresh data
+ * Admin dashboard can trigger immediate revalidation via API route
+ */
+export const revalidate = 60;
+
+/**
  * Gallery page component
  * Displays portfolio of completed kitchen and bathroom remodeling projects
  * Features:
