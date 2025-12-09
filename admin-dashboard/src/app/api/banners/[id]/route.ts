@@ -8,27 +8,71 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { getBannerById, updateBanner, deleteBanner } from '@/lib/banners';
+import { logger } from '@/lib/logger';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const startTime = Date.now();
+  let userId: string | undefined;
+  let userEmail: string | undefined;
+  let bannerId: string | undefined;
+
   try {
     // Check authentication
     const session = await auth();
     if (!session) {
+      logger.warn('Banner fetch attempted without authentication');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    userId = session.user?.id;
+    userEmail = session.user?.email;
     const { id } = await params;
+    bannerId = id;
+
+    logger.operationStart('fetch banner', {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+    });
+
     const banner = await getBannerById(id);
     if (!banner) {
+      logger.warn('Banner not found', {
+        userId,
+        userEmail,
+        resourceId: bannerId,
+      });
       return NextResponse.json({ error: 'Banner not found' }, { status: 404 });
     }
 
+    const duration = Date.now() - startTime;
+    logger.operationSuccess('fetch banner', {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: {
+        bannerId,
+        title: banner.title,
+        isActive: banner.is_active,
+        durationMs: duration,
+      },
+    });
+
     return NextResponse.json(banner);
   } catch (error) {
-    console.error('Error fetching banner:', error);
+    const duration = Date.now() - startTime;
+    const err = error instanceof Error ? error : new Error(String(error));
+    
+    logger.operationFailure('fetch banner', err, {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: { durationMs: duration },
+    });
+
     return NextResponse.json(
       { error: 'Failed to fetch banner' },
       { status: 500 }
@@ -40,14 +84,24 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const startTime = Date.now();
+  let userId: string | undefined;
+  let userEmail: string | undefined;
+  let bannerId: string | undefined;
+
   try {
     // Check authentication
     const session = await auth();
     if (!session) {
+      logger.warn('Banner update attempted without authentication');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    userId = session.user?.id;
+    userEmail = session.user?.email;
     const { id } = await params;
+    bannerId = id;
+
     const body = await request.json();
     const updates: Partial<{
       title: string;
@@ -86,11 +140,46 @@ export async function PUT(
       updates.show_countdown = Boolean(body.show_countdown);
     }
 
+    logger.operationStart('update banner', {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: {
+        fieldsToUpdate: Object.keys(updates),
+        hasTitle: 'title' in updates,
+        hasDates: 'start_date' in updates || 'end_date' in updates,
+        isActiveChange: 'is_active' in updates ? updates.is_active : undefined,
+      },
+    });
+
     const banner = await updateBanner(id, updates);
+
+    const duration = Date.now() - startTime;
+    logger.operationSuccess('update banner', {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: {
+        bannerId,
+        title: banner.title,
+        isActive: banner.is_active,
+        durationMs: duration,
+      },
+    });
+
     return NextResponse.json(banner);
   } catch (error) {
-    console.error('Error updating banner:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to update banner';
+    const duration = Date.now() - startTime;
+    const err = error instanceof Error ? error : new Error(String(error));
+    
+    logger.operationFailure('update banner', err, {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: { durationMs: duration },
+    });
+
+    const errorMessage = err.message;
     return NextResponse.json(
       { error: errorMessage },
       { status: 500 }
@@ -102,18 +191,72 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const startTime = Date.now();
+  let userId: string | undefined;
+  let userEmail: string | undefined;
+  let bannerId: string | undefined;
+
   try {
     // Check authentication
     const session = await auth();
     if (!session) {
+      logger.warn('Banner deletion attempted without authentication');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    userId = session.user?.id;
+    userEmail = session.user?.email;
     const { id } = await params;
+    bannerId = id;
+
+    // Get banner info before deletion for logging
+    const banner = await getBannerById(id);
+
+    logger.operationStart('delete banner', {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: {
+        bannerTitle: banner?.title,
+        isActive: banner?.is_active,
+      },
+    });
+
+    if (!banner) {
+      logger.warn('Banner not found for deletion', {
+        userId,
+        userEmail,
+        resourceId: bannerId,
+      });
+      return NextResponse.json({ error: 'Banner not found' }, { status: 404 });
+    }
+
     await deleteBanner(id);
+
+    const duration = Date.now() - startTime;
+    logger.operationSuccess('delete banner', {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: {
+        bannerId,
+        bannerTitle: banner.title,
+        durationMs: duration,
+      },
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting banner:', error);
+    const duration = Date.now() - startTime;
+    const err = error instanceof Error ? error : new Error(String(error));
+    
+    logger.operationFailure('delete banner', err, {
+      userId,
+      userEmail,
+      resourceId: bannerId,
+      metadata: { durationMs: duration },
+    });
+
     return NextResponse.json(
       { error: 'Failed to delete banner' },
       { status: 500 }
