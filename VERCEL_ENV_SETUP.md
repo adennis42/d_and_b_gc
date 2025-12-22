@@ -48,7 +48,7 @@ For Vercel deployment, you need to add environment variables in the Vercel dashb
 
 #### SEO & Structured Data (Recommended)
 - `NEXT_PUBLIC_SITE_URL` - Your production site URL (e.g., https://dbcontractorsny.com)
-- `NEXT_PUBLIC_BUSINESS_NAME` - Your company/business name (e.g., "D&B General Contractors")
+- `NEXT_PUBLIC_BUSINESS_NAME` - Your company/business name (e.g., "Raise D & B")
 - `NEXT_PUBLIC_BUSINESS_STREET` - Business street address
 - `NEXT_PUBLIC_BUSINESS_CITY` - Business city
 - `NEXT_PUBLIC_BUSINESS_STATE` - Business state/province

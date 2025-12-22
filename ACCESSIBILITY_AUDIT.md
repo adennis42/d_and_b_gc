@@ -82,7 +82,7 @@ This document outlines the accessibility improvements implemented throughout the
 **Added ARIA Labels**:
 - ✅ Navigation: `aria-label="Main navigation"`
 - ✅ Mobile menu: `aria-label="Toggle menu"`, `aria-expanded`
-- ✅ Logo link: `aria-label="D&B General Contractors - Home"`
+- ✅ Logo link: `aria-label="Raise D & B - Home"`
 - ✅ Filter buttons: `aria-label` with project counts
 - ✅ Gallery cards: `aria-label` with project titles
 - ✅ Lightbox: `aria-labelledby`, `aria-describedby`

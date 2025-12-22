@@ -1,6 +1,6 @@
 "use client";
 
-import { ChefHat, Droplet } from "lucide-react";
+import { ChefHat, Droplet, Hammer, Sun } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import { trackButtonClick } from "@/lib/analytics";
 /**
  * Services component - Displays main service offerings
  * Features:
- * - Two main service cards: Kitchen and Bathroom Remodeling
+ * - Four main service cards: Kitchen, Bathroom, Millwork, and Sunrooms
  * - Each card includes icon, title, description, and features list
  * - Responsive CSS Grid layout (1 column mobile, 2 columns desktop)
  * - Hover effects for interactivity
@@ -45,6 +45,32 @@ export function Services() {
         "Vanity & storage solutions",
         "Shower & tub upgrades",
         "Plumbing & ventilation",
+      ],
+    },
+    {
+      title: "Millwork",
+      description:
+        "Custom millwork and woodworking solutions that add elegance and functionality to your home.",
+      icon: Hammer,
+      features: [
+        "Custom cabinetry & built-ins",
+        "Crown molding & trim work",
+        "Wainscoting & paneling",
+        "Custom doors & windows",
+        "Architectural details",
+      ],
+    },
+    {
+      title: "Sunrooms",
+      description:
+        "Bright, airy sunroom additions that bring the outdoors in and expand your living space.",
+      icon: Sun,
+      features: [
+        "Custom sunroom design",
+        "Energy-efficient windows",
+        "Climate control systems",
+        "Seamless indoor-outdoor flow",
+        "Year-round comfort",
       ],
     },
   ];

@@ -39,7 +39,7 @@ This document outlines the meta tag optimizations performed across all pages to 
 - Description: 147 chars ✓ Good
 
 **After:**
-- Title: "Kitchen & Bathroom Remodeling | D&B Contractors" (52 chars) ✅ Optimal
+- Title: "Kitchen & Bathroom Remodeling | Raise D & B" (50 chars) ✅ Optimal
 - Description: 156 chars ✅ Optimal
 - OG Image: `/images/hero.jpg` ✅ Set
 - Keywords: Enhanced with "kitchen renovation", "bathroom renovation" ✅
@@ -56,7 +56,7 @@ This document outlines the meta tag optimizations performed across all pages to 
 - Description: 158 chars ⚠️ Slightly too long
 
 **After:**
-- Title: "About D&B Contractors | Expert Remodeling Team" (50 chars) ✅ Optimal
+- Title: "About Raise D & B | Expert Remodeling Team" (47 chars) ✅ Optimal
 - Description: 158 chars ✅ Optimal (at limit)
 - OG Image: `/images/about-og.jpg` ✅ Set
 - Keywords: Enhanced with "award-winning", "craftsmanship", "service areas" ✅
@@ -90,7 +90,7 @@ This document outlines the meta tag optimizations performed across all pages to 
 - Description: 140 chars ✓ Good
 
 **After:**
-- Title: "Schedule Free Consultation | D&B Contractors" (50 chars) ✅ Optimal
+- Title: "Schedule Free Consultation | Raise D & B" (45 chars) ✅ Optimal
 - Description: 160 chars ✅ Optimal
 - OG Image: `/images/schedule-og.jpg` ✅ Set
 - Keywords: Enhanced with "book consultation", "remodeling consultation", "project estimate" ✅
