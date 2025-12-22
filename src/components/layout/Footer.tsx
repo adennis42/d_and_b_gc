@@ -15,7 +15,7 @@ import { trackButtonClick, trackExternalLink } from "@/lib/analytics";
  */
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const companyName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors";
+  const companyName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "Raise D & B";
 
   const quickLinks = [
     { href: "/", label: "Home" },
@@ -49,13 +49,6 @@ export function Footer() {
               {companyName}
             </h3>
             <div className="space-y-2 text-sm text-muted-foreground">
-              {/* Street Address */}
-              {process.env.NEXT_PUBLIC_BUSINESS_STREET && (
-                <p className="flex items-start">
-                  <span className="sr-only">Address</span>
-                  <span>{process.env.NEXT_PUBLIC_BUSINESS_STREET}</span>
-                </p>
-              )}
               {/* City, State, ZIP */}
               {(process.env.NEXT_PUBLIC_BUSINESS_CITY ||
                 process.env.NEXT_PUBLIC_BUSINESS_STATE ||
@@ -128,6 +121,8 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>Kitchen Remodeling</li>
               <li>Bathroom Remodeling</li>
+              <li>Millwork</li>
+              <li>Sunrooms</li>
               <li>Custom Design</li>
               <li>Consultation</li>
             </ul>

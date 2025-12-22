@@ -90,10 +90,9 @@ export default function AboutPage() {
   ];
 
   const serviceAreas = [
-    "City Name",
-    "Surrounding Area",
-    "Metro Region",
-    "Additional Cities",
+    "Suffolk County",
+    "Nassau County",
+    "Long Island",
   ];
 
   const differentiators = [
@@ -139,11 +138,11 @@ export default function AboutPage() {
           {/* About Company Section */}
           <section className="mb-16 md:mb-24">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">
-              About Contractor Name
+              About Paul Schief
             </h2>
             <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
               <p>
-                With over [X] years of experience in high-end residential
+                With over 40 years of experience in high-end residential
                 remodeling, Contractor Name has established itself as a trusted
                 leader in kitchen and bathroom renovations. Our commitment to
                 excellence, attention to detail, and customer satisfaction sets

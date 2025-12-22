@@ -85,14 +85,14 @@ interface StructuredDataProps {
  *     addressCountry: "US",
  *   }}
  *   telephone="+1-555-123-4567"
- *   email="info@dbcontractorsny.com"
+ *   email="info@raisedesignandbuild.com"
  *   openingHours={["Mo-Fr 08:00-17:00", "Sa 09:00-13:00"]}
  *   serviceAreas={["New York", "Long Island", "Westchester County"]}
  * />
  * ```
  */
 export function StructuredData({
-  businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors",
+  businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "Raise D & B",
   description = "Professional general contractor specializing in high-end residential bathroom and kitchen remodels. Transform your home with expert craftsmanship and custom design.",
   address,
   telephone,
@@ -117,7 +117,6 @@ export function StructuredData({
   if (address) {
     localBusinessSchema.address = {
       "@type": "PostalAddress",
-      streetAddress: address.streetAddress,
       addressLocality: address.addressLocality,
       addressRegion: address.addressRegion,
       postalCode: address.postalCode,

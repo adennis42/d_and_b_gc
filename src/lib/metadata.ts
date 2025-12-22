@@ -6,7 +6,7 @@ import type { Metadata } from "next";
  * Company name can be overridden via NEXT_PUBLIC_BUSINESS_NAME environment variable
  */
 const siteConfig = {
-  name: process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors",
+  name: process.env.NEXT_PUBLIC_BUSINESS_NAME || "Raise D & B",
   description:
     "Professional general contractor specializing in high-end residential bathroom and kitchen remodels. Transform your home with expert craftsmanship and custom design.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://dbcontractorsny.com/",
@@ -151,7 +151,7 @@ export function generateMetadata(options: {
  */
 export function getHomeMetadata(): Metadata {
   return generateMetadata({
-    title: "Kitchen & Bathroom Remodeling | D&B Contractors",
+    title: "Kitchen & Bathroom Remodeling | Raise D & B",
     description:
       "Expert kitchen and bathroom remodeling contractor. Transform your home with custom design, premium materials, and exceptional craftsmanship. Free consultations.",
     path: "/",
@@ -176,7 +176,7 @@ export function getHomeMetadata(): Metadata {
  */
 export function getAboutMetadata(): Metadata {
   return generateMetadata({
-    title: "About D&B Contractors | Expert Remodeling Team",
+    title: "About Raise D & B | Expert Remodeling Team",
     description:
       "Learn about our expert team, proven 4-step process, and commitment to excellence in high-end kitchen and bathroom remodeling. Award-winning craftsmanship.",
     path: "/about",
@@ -226,7 +226,7 @@ export function getGalleryMetadata(): Metadata {
  */
 export function getScheduleMetadata(): Metadata {
   return generateMetadata({
-    title: "Schedule Free Consultation | D&B Contractors",
+    title: "Schedule Free Consultation | Raise D & B",
     description:
       "Schedule a free consultation for your kitchen or bathroom remodeling project. Book online or contact us directly. Expert guidance and custom design solutions.",
     path: "/schedule",

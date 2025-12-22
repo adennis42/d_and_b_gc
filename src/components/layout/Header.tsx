@@ -13,7 +13,7 @@ import { trackButtonClick } from "@/lib/analytics";
  * - Professional, clean design using Tailwind CSS
  */
 export function Header() {
-  const companyName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "D&B General Contractors";
+  const companyName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "Raise Design & Build";
   
   const navLinks = [
     { href: "/", label: "Home" },

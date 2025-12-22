@@ -25,45 +25,70 @@ export const metadata = getScheduleMetadata();
  * - Make sure the calendar is set to "Public" for embedding
  */
 function GoogleCalendarEmbed() {
-  // Option 1: Google Calendar Appointment Scheduling (preferred for consultations)
+  // Google Calendar Appointment Scheduling (for booking available times)
   const scheduleId = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_SCHEDULE_ID;
-  
-  // Option 2: Standard calendar embed (fallback)
-  const calendarId = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_ID;
-  const timezone = "America/New_York"; // Update with your timezone
 
-  // If using Appointment Scheduling (recommended)
+  // Show button to navigate to appointment scheduling page
   if (scheduleId) {
-    const appointmentUrl = `https://calendar.google.com/calendar/appointments/schedules/${scheduleId}`;
+    // Support both old format (calendar.google.com) and new format (calendar.app.google)
+    const appointmentUrl = scheduleId.startsWith('http') 
+      ? scheduleId 
+      : `https://calendar.app.google/${scheduleId}`;
     
     return (
-      <div className="w-full aspect-video rounded-lg overflow-hidden border shadow-sm">
-        <iframe
-          src={appointmentUrl}
-          className="w-full h-full border-0"
-          title="Schedule a consultation"
-          allow="encrypted-media"
-          loading="lazy"
-        />
+      <div className="w-full rounded-lg border shadow-sm p-8 md:p-12 bg-card">
+        <div className="text-center space-y-6 max-w-2xl mx-auto">
+          <div className="flex justify-center">
+            <div className="p-4 rounded-full bg-primary/10">
+              <Calendar className="h-12 w-12 text-primary" />
+            </div>
+          </div>
+          <div>
+            <h3 className="text-2xl md:text-3xl font-bold mb-3">
+              Book Your Consultation
+            </h3>
+            <p className="text-muted-foreground text-lg">
+              Click the button below to view available appointment times and schedule your free consultation.
+            </p>
+          </div>
+          <a
+            href={appointmentUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-4 text-base font-medium text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl"
+          >
+            <Calendar className="mr-2 h-5 w-5" />
+            View Available Times & Book Appointment
+          </a>
+          <p className="text-sm text-muted-foreground">
+            The booking page will open in a new window
+          </p>
+        </div>
       </div>
     );
   }
 
-  // If using standard calendar embed
+  // Fallback: If calendar ID is set but no appointment scheduling
+  const calendarId = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_ID;
   if (calendarId) {
+    const timezone = "America/New_York";
     const calendarUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(
       calendarId
     )}&ctz=${encodeURIComponent(timezone)}`;
 
     return (
-      <div className="w-full aspect-video rounded-lg overflow-hidden border shadow-sm">
-        <iframe
-          src={calendarUrl}
-          className="w-full h-full border-0"
-          title="Schedule a consultation"
-          allow="encrypted-media"
-          loading="lazy"
-        />
+      <div className="w-full rounded-lg overflow-hidden border shadow-sm">
+        <div className="relative" style={{ paddingBottom: '75%' }}> {/* 4:3 aspect ratio (800x600) */}
+          <iframe
+            src={calendarUrl}
+            className="absolute top-0 left-0 w-full h-full"
+            title="View available consultation times"
+            allow="encrypted-media"
+            loading="lazy"
+            style={{ border: 0 }}
+            scrolling="no"
+          />
+        </div>
       </div>
     );
   }
@@ -169,7 +194,7 @@ export default function SchedulePage() {
           </div>
         </section>
 
-        {/* Google Calendar Embed */}
+        {/* Google Calendar Appointment Scheduling */}
         <section className="mb-12 md:mb-16">
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
             Book Your Consultation
