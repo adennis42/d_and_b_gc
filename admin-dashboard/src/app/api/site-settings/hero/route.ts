@@ -7,6 +7,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { sql } from '@/lib/db';
+import { logger } from '@/lib/logger';
+
+/**
+ * Revalidate the main website's homepage cache
+ * Called after hero image changes to ensure immediate updates
+ */
+async function revalidateMainWebsite() {
+  const revalidateSecret = process.env.REVALIDATE_SECRET_TOKEN;
+  const mainSiteUrl = process.env.MAIN_SITE_URL || 'https://dbcontractorsny.com';
+  
+  if (!revalidateSecret) {
+    logger.warn('REVALIDATE_SECRET_TOKEN not set - skipping cache revalidation');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${mainSiteUrl}/api/revalidate`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${revalidateSecret}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      logger.warn('Failed to revalidate main website cache', {
+        metadata: {
+          status: response.status,
+          statusText: response.statusText,
+        },
+      });
+    } else {
+      logger.info('Successfully revalidated main website cache');
+    }
+  } catch (error) {
+    logger.warn('Error calling revalidation endpoint', {
+      metadata: {
+        error: error instanceof Error ? error.message : String(error),
+      },
+    });
+  }
+}
 
 export async function GET() {
   try {
@@ -74,6 +116,9 @@ export async function POST(request: NextRequest) {
           updated_at = CURRENT_TIMESTAMP
       `;
     }
+
+    // Revalidate main website cache so changes appear immediately
+    await revalidateMainWebsite();
 
     return NextResponse.json({ success: true });
   } catch (error) {

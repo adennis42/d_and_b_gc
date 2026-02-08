@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
-import { CheckCircle2, MapPin, Award, Users, Clock } from "lucide-react";
+import { CheckCircle2, MapPin, Shield, Users, Clock } from "lucide-react";
 import { getAboutMetadata } from "@/lib/metadata";
 
 /**
@@ -89,18 +89,14 @@ export default function AboutPage() {
     },
   ];
 
-  const serviceAreas = [
-    "Suffolk County",
-    "Nassau County",
-    "Long Island",
-  ];
+  const serviceAreas = ["Suffolk County", "Nassau County", "Long Island"];
 
   const differentiators = [
     {
-      icon: Award,
-      title: "Award-Winning Craftsmanship",
+      icon: Shield,
+      title: "Maintaining Standards",
       description:
-        "Recognized for excellence in residential remodeling with industry awards and certifications.",
+        "We stay consistent, we stay accountable, and we stand behind our work. When you choose us, you’re choosing a team that values honesty, reliability, and results that last.",
     },
     {
       icon: Users,
@@ -137,30 +133,40 @@ export default function AboutPage() {
 
           {/* About Company Section */}
           <section className="mb-16 md:mb-24">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">
-              About Paul Schief
-            </h2>
             <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
               <p>
-                With over 40 years of experience in high-end residential
-                remodeling, Contractor Name has established itself as a trusted
-                leader in kitchen and bathroom renovations. Our commitment to
-                excellence, attention to detail, and customer satisfaction sets
-                us apart in the industry.
+                Our company is a true family operation rooted in craftsmanship
+                and integrity. Led by a second-generation master carpenter,
+                Paul, with over 40 years of hands-on experience, we bring
+                decades of building expertise to every project. He learned the
+                trade the traditional way—on the job, day after day, perfecting
+                the details that make a home truly special. After building
+                houses in the 80s/90s, as the industry changed, Paul shifted his
+                focus to interior millwork, kitchens, and bathrooms, bringing
+                the same level of precision and craftsmanship to each project.
               </p>
               <p>
-                We specialize in transforming residential spaces into beautiful,
-                functional environments that reflect our clients' unique styles
-                and needs. Every project is approached with meticulous planning,
-                expert craftsmanship, and premium materials to ensure lasting
-                quality and value.
+                Today, he works alongside his son, Paul Jr, on every site,
+                carrying forward a legacy built on skill, trust, and pride in a
+                job well done. Ensuring quality that only comes from people who
+                take joy in their craft. Complementing this is his daughter,
+                Jessica, who adds a design-forward perspective, helping clients
+                with design choices, interior layouts, and finish selections to
+                create spaces that feel cohesive, elevated, and uniquely theirs.
+                When the pandemic reshaped the way people lived in and used
+                their homes, we expanded our services to include custom
+                sunrooms—designing and installing bright, beautiful spaces that
+                bring the outdoors in. This includes full sunroom fit-outs,
+                blending our construction background with our passion for
+                creating comfortable, functional spaces
               </p>
               <p>
-                Our team combines traditional craftsmanship with modern design
-                sensibilities, working closely with homeowners, designers, and
-                architects to bring visions to life. From initial consultation
-                to final walkthrough, we maintain clear communication and
-                deliver results that exceed expectations.
+                At the heart of our company is a commitment to honest work,
+                personal service, and exceptional results. As a Design & Build
+                operation, you’ll save thousands compared to boutique showrooms
+                that overcharge and under-listen. We aim higher than your
+                expectations to delivery you a space that is a masterpiece of
+                craftsmanship and sophistication.
               </p>
             </div>
           </section>
