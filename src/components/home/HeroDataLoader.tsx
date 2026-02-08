@@ -8,6 +8,12 @@ import { getHeroContent } from '@/lib/site-content';
 import { Hero } from './Hero';
 
 /**
+ * Force dynamic rendering to prevent caching
+ * This ensures fresh hero content on every request
+ */
+export const dynamic = 'force-dynamic';
+
+/**
  * Server component wrapper that fetches hero settings
  * This allows us to use async database queries while keeping
  * the Hero component as a client component for interactivity
@@ -19,6 +25,11 @@ export async function HeroDataLoader() {
     getHeroImageAlt(),
     getHeroContent(),
   ]);
+
+  // Debug logging (remove in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[HeroDataLoader] Hero content from database:', JSON.stringify(heroContent, null, 2));
+  }
 
   // Use database content or fallback to defaults
   const headline = heroContent?.headline || 'Transform Your Home with Expert Craftsmanship';

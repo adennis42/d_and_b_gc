@@ -11,6 +11,14 @@ import { getHomeMetadata } from "@/lib/metadata";
 export const metadata = getHomeMetadata();
 
 /**
+ * Cache revalidation settings
+ * Force dynamic rendering to ensure fresh hero content on every request
+ * Admin dashboard can trigger immediate revalidation via API route
+ */
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+/**
  * Homepage component
  * Phase 2: Add compelling content, hero image/video, testimonials, and enhanced CTAs
  */
@@ -20,11 +28,8 @@ export default function HomePage() {
       {/* Hero Section */}
       <HeroDataLoader />
 
-      {/* Services Overview Section */}
-      <Services />
-
-      {/* About Preview Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
+            {/* About Preview Section */}
+            <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
@@ -47,6 +52,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+
+      {/* Services Overview Section */}
+      <Services />
 
       {/* Call-to-Action Section */}
       <CTA />

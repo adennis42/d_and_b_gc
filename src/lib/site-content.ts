@@ -33,7 +33,19 @@ export async function getSiteContent(
       return null;
     }
     
-    return result[0].value as Record<string, unknown>;
+    // PostgreSQL JSONB is automatically parsed by the postgres package
+    // But ensure it's an object, not a string
+    const value = result[0].value;
+    if (typeof value === 'string') {
+      // If it's a string, try to parse it
+      try {
+        return JSON.parse(value) as Record<string, unknown>;
+      } catch {
+        return null;
+      }
+    }
+    
+    return value as Record<string, unknown>;
   } catch (error) {
     console.error(`Error getting site content ${section}.${key}:`, error);
     return null;
