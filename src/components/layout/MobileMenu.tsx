@@ -31,10 +31,10 @@ export function MobileMenu() {
     };
   }, [isOpen]);
 
+  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com";
+  
   const navLinks = [
-    { href: "/", label: "Home" },
     { href: "/about", label: "About" },
-    { href: "/gallery", label: "Gallery" },
     { href: "/schedule", label: "Schedule" },
   ];
 
@@ -116,6 +116,21 @@ export function MobileMenu() {
                   </li>
                 );
               })}
+              {/* Instagram Link */}
+              <li>
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-4 py-3 rounded-md text-lg font-medium hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  onClick={() => {
+                    trackButtonClick("Instagram", "mobile-menu", instagramUrl);
+                    setIsOpen(false);
+                  }}
+                >
+                  Instagram
+                </a>
+              </li>
             </ul>
           </nav>
         </div>

@@ -1,139 +1,112 @@
 "use client";
 
-import { ChefHat, Droplet, Hammer, Sun } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { trackButtonClick } from "@/lib/analytics";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ScrollReveal } from "@/components/animations/ScrollReveal";
+import { StaggerChildren } from "@/components/animations/StaggerChildren";
 
 /**
- * Services component - Displays main service offerings
+ * Services component - Visual-first service showcase with scroll animations
  * Features:
- * - Four main service cards: Kitchen, Bathroom, Millwork, and Sunrooms
- * - Each card includes icon, title, description, and features list
- * - Responsive CSS Grid layout (1 column mobile, 2 columns desktop)
- * - Hover effects for interactivity
- * - Clean, uncluttered design using Shadcn Card components
+ * - Large image-focused cards with minimal text
+ * - Horizontal scrolling on desktop, vertical stack on mobile
+ * - Scroll-triggered stagger animations
+ * - Hover effects with subtle scale and parallax
+ * - Design-forward approach emphasizing aesthetics
  */
 export function Services() {
   const services = [
     {
       title: "Kitchen Remodeling",
-      description:
-        "Transform your kitchen into a beautiful, functional space that combines style with practicality.",
-      icon: ChefHat,
-      features: [
-        "Custom cabinetry design",
-        "Premium appliance installation",
-        "Countertop selection & installation",
-        "Lighting & electrical work",
-        "Plumbing & fixture upgrades",
-      ],
+      tagline: "Beautiful, functional spaces",
+      image: "/images/services/kitchen.jpg", // Placeholder - will be added via admin
+      gradient: "from-amber-100 to-orange-50",
     },
     {
       title: "Bathroom Remodeling",
-      description:
-        "Create a luxurious bathroom retreat with high-end fixtures and thoughtful design details.",
-      icon: Droplet,
-      features: [
-        "Custom tile work & design",
-        "Luxury fixture installation",
-        "Vanity & storage solutions",
-        "Shower & tub upgrades",
-        "Plumbing & ventilation",
-      ],
+      tagline: "Luxurious retreats",
+      image: "/images/services/bathroom.jpg", // Placeholder - will be added via admin
+      gradient: "from-blue-100 to-cyan-50",
     },
     {
       title: "Millwork",
-      description:
-        "Custom millwork and woodworking solutions that add elegance and functionality to your home.",
-      icon: Hammer,
-      features: [
-        "Custom cabinetry & built-ins",
-        "Crown molding & trim work",
-        "Wainscoting & paneling",
-        "Custom doors & windows",
-        "Architectural details",
-      ],
+      tagline: "Custom craftsmanship",
+      image: "/images/services/millwork.jpg", // Placeholder - will be added via admin
+      gradient: "from-stone-100 to-neutral-50",
     },
     {
       title: "Sunrooms",
-      description:
-        "Bright, airy sunroom additions that bring the outdoors in and expand your living space.",
-      icon: Sun,
-      features: [
-        "Custom sunroom design",
-        "Energy-efficient windows",
-        "Climate control systems",
-        "Seamless indoor-outdoor flow",
-        "Year-round comfort",
-      ],
+      tagline: "Bright, airy additions",
+      image: "/images/services/sunroom.jpg", // Placeholder - will be added via admin
+      gradient: "from-green-100 to-emerald-50",
     },
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-20 md:py-32 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+        {/* Section Header */}
+        <ScrollReveal direction="fade" className="text-center mb-16 md:mb-24">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-neutral-900">
             Our Services
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            We specialize in high-end residential remodeling with meticulous
-            attention to detail and expert craftsmanship.
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light">
+            Design-forward remodeling that transforms your space
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* CSS Grid: 1 column mobile, 2 columns desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {services.map((service) => {
-            const Icon = service.icon;
-            return (
-              <Card
+        {/* Services Grid - Large cards with images */}
+        <StaggerChildren staggerDelay={0.15}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {services.map((service, index) => (
+              <motion.div
                 key={service.title}
-                className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="group relative overflow-hidden rounded-lg aspect-[4/5] cursor-pointer"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <Icon className="h-6 w-6" aria-hidden="true" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-2xl mb-2">
-                        {service.title}
-                      </CardTitle>
-                      <CardDescription className="text-base">
-                        {service.description}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-2 text-sm text-muted-foreground"
-                      >
-                        <span
-                          className="text-primary mt-1"
-                          aria-hidden="true"
-                        >
-                          •
-                        </span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                {/* Image Container */}
+                <div className="absolute inset-0">
+                  {/* Placeholder gradient - replace with actual image when available */}
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-80 group-hover:opacity-100 transition-opacity duration-500`}
+                  />
+                  {/* When images are available, uncomment this:
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  />
+                  */}
+                </div>
+
+                {/* Content Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 md:p-8">
+                  <motion.h3
+                    className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    {service.title}
+                  </motion.h3>
+                  <motion.p
+                    className="text-white/90 text-lg font-light drop-shadow-md"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    {service.tagline}
+                  </motion.p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </StaggerChildren>
       </div>
     </section>
   );
