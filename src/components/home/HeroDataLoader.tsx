@@ -35,8 +35,7 @@ export async function HeroDataLoader() {
   const headline = heroContent?.headline || 'Transform Your Home with Expert Craftsmanship';
   const subheadline = heroContent?.subheadline || 
     'Specializing in high-end kitchen and bathroom remodeling that combines exceptional craftsmanship with timeless design. Every detail matters.';
-  const primaryCTA = heroContent?.primaryCTA || { text: 'View Our Work', link: '/gallery' };
-  const secondaryCTA = heroContent?.secondaryCTA || { text: 'Schedule Consultation', link: '/schedule' };
+  const primaryCTA = heroContent?.primaryCTA || { text: 'Schedule Consultation', link: '/schedule' };
 
   return (
     <Hero 
@@ -45,7 +44,6 @@ export async function HeroDataLoader() {
       headline={headline}
       subheadline={subheadline}
       primaryCTA={primaryCTA}
-      secondaryCTA={secondaryCTA}
     />
   );
 }
