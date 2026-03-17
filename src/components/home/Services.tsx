@@ -4,48 +4,19 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/animations/ScrollReveal";
 import { StaggerChildren } from "@/components/animations/StaggerChildren";
+import type { ServiceItem } from "@/lib/site-content";
 
-/**
- * Services component - Visual-first service showcase with scroll animations
- * Features:
- * - Large image-focused cards with minimal text
- * - Horizontal scrolling on desktop, vertical stack on mobile
- * - Scroll-triggered stagger animations
- * - Hover effects with subtle scale and parallax
- * - Design-forward approach emphasizing aesthetics
- */
-export function Services() {
-  const services = [
-    {
-      title: "Kitchen Remodeling",
-      tagline: "Beautiful, functional spaces",
-      image: "/images/services/kitchen.jpg", // Placeholder - will be added via admin
-      gradient: "from-amber-100 to-orange-50",
-    },
-    {
-      title: "Bathroom Remodeling",
-      tagline: "Luxurious retreats",
-      image: "/images/services/bathroom.jpg", // Placeholder - will be added via admin
-      gradient: "from-blue-100 to-cyan-50",
-    },
-    {
-      title: "Millwork",
-      tagline: "Custom craftsmanship",
-      image: "/images/services/millwork.jpg", // Placeholder - will be added via admin
-      gradient: "from-stone-100 to-neutral-50",
-    },
-    {
-      title: "Sunrooms",
-      tagline: "Bright, airy additions",
-      image: "/images/services/sunroom.jpg", // Placeholder - will be added via admin
-      gradient: "from-green-100 to-emerald-50",
-    },
-  ];
+const GRADIENTS = [
+  "from-amber-100 to-orange-50",
+  "from-blue-100 to-cyan-50",
+  "from-stone-100 to-neutral-50",
+  "from-green-100 to-emerald-50",
+];
 
+export function Services({ services }: { services: ServiceItem[] }) {
   return (
     <section className="py-20 md:py-32 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
         <ScrollReveal direction="fade" className="text-center mb-16 md:mb-24">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-neutral-900">
             Our Services
@@ -55,7 +26,6 @@ export function Services() {
           </p>
         </ScrollReveal>
 
-        {/* Services Grid - Large cards with images */}
         <StaggerChildren staggerDelay={0.15}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {services.map((service, index) => (
@@ -65,24 +35,24 @@ export function Services() {
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                {/* Image Container */}
+                {/* Background: real image if set, otherwise gradient */}
                 <div className="absolute inset-0">
-                  {/* Placeholder gradient - replace with actual image when available */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-80 group-hover:opacity-100 transition-opacity duration-500`}
-                  />
-                  {/* When images are available, uncomment this:
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  />
-                  */}
+                  {service.imageUrl ? (
+                    <Image
+                      src={service.imageUrl}
+                      alt={service.imageAlt || service.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    />
+                  ) : (
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${GRADIENTS[index % GRADIENTS.length]} opacity-80 group-hover:opacity-100 transition-opacity duration-500`}
+                    />
+                  )}
                 </div>
 
-                {/* Content Overlay */}
+                {/* Text overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 md:p-8">
                   <motion.h3
                     className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg"

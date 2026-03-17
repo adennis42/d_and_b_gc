@@ -1,29 +1,63 @@
 /**
  * Site content utilities (Admin Dashboard)
- * Functions to get and update structured site content
- * Uses the same database as the main website
+ * Functions to get and update structured site content stored in the
+ * site_content table (section + key → JSONB value)
  */
 
 import { sql } from './db';
 
-/**
- * Get content for a specific section and key
- */
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+export interface BusinessInfo {
+  name: string;
+  phone: string;
+  email: string;
+  instagramUrl: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
+export interface ServiceItem {
+  title: string;
+  tagline: string;
+  imageUrl: string | null;
+  imageAlt: string;
+}
+
+export interface InstagramPost {
+  imageUrl: string | null;
+  caption: string;
+  permalink: string;
+}
+
+export interface AboutPreview {
+  imageUrl: string | null;
+  imageAlt: string;
+  heading: string;
+  bodyText: string;
+}
+
+export interface CtaContent {
+  heading: string;
+  bodyText: string;
+  buttonText: string;
+  buttonLink: string;
+}
+
+// ─── Generic helpers ──────────────────────────────────────────────────────────
+
 export async function getSiteContent(
   section: string,
   key: string
 ): Promise<Record<string, unknown> | null> {
   try {
     const result = await sql`
-      SELECT value FROM site_content 
-      WHERE section = ${section} AND key = ${key} 
+      SELECT value FROM site_content
+      WHERE section = ${section} AND key = ${key}
       LIMIT 1
     `;
-    
-    if (result.length === 0) {
-      return null;
-    }
-    
+    if (result.length === 0) return null;
     return result[0].value as Record<string, unknown>;
   } catch (error) {
     console.error(`Error getting site content ${section}.${key}:`, error);
@@ -31,21 +65,18 @@ export async function getSiteContent(
   }
 }
 
-/**
- * Set content for a specific section and key
- */
 export async function setSiteContent(
   section: string,
   key: string,
-  value: Record<string, unknown>,
+  value: Record<string, unknown> | unknown[],
   description?: string
 ): Promise<void> {
   try {
     await sql`
       INSERT INTO site_content (section, key, value, description)
       VALUES (${section}, ${key}, ${JSON.stringify(value)}::jsonb, ${description || null})
-      ON CONFLICT (section, key) 
-      DO UPDATE SET 
+      ON CONFLICT (section, key)
+      DO UPDATE SET
         value = EXCLUDED.value,
         description = COALESCE(EXCLUDED.description, site_content.description),
         updated_at = CURRENT_TIMESTAMP
@@ -56,18 +87,17 @@ export async function setSiteContent(
   }
 }
 
-// Hero section helpers
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+
 export async function getHeroContent(): Promise<{
   headline?: string;
   subheadline?: string;
   primaryCTA?: { text: string; link: string };
-  secondaryCTA?: { text: string; link: string };
 } | null> {
   return (await getSiteContent('hero', 'content')) as {
     headline?: string;
     subheadline?: string;
     primaryCTA?: { text: string; link: string };
-    secondaryCTA?: { text: string; link: string };
   } | null;
 }
 
@@ -75,8 +105,118 @@ export async function setHeroContent(content: {
   headline?: string;
   subheadline?: string;
   primaryCTA?: { text: string; link: string };
-  secondaryCTA?: { text: string; link: string };
 }): Promise<void> {
   await setSiteContent('hero', 'content', content, 'Hero section text content');
 }
 
+// ─── Business Info ────────────────────────────────────────────────────────────
+
+const businessDefaults: BusinessInfo = {
+  name: 'Raise Design & Build',
+  phone: '',
+  email: '',
+  instagramUrl: '',
+  city: '',
+  state: '',
+  zip: '',
+};
+
+export async function getBusinessInfo(): Promise<BusinessInfo> {
+  const raw = await getSiteContent('business', 'info');
+  return { ...businessDefaults, ...(raw as Partial<BusinessInfo> | null) };
+}
+
+export async function setBusinessInfo(info: BusinessInfo): Promise<void> {
+  await setSiteContent('business', 'info', info as unknown as Record<string, unknown>, 'Business contact and identity information');
+}
+
+// ─── Services ─────────────────────────────────────────────────────────────────
+
+const servicesDefaults: ServiceItem[] = [
+  { title: 'Kitchen Remodeling', tagline: 'Beautiful, functional spaces', imageUrl: null, imageAlt: '' },
+  { title: 'Bathroom Remodeling', tagline: 'Luxurious retreats', imageUrl: null, imageAlt: '' },
+  { title: 'Millwork', tagline: 'Custom craftsmanship', imageUrl: null, imageAlt: '' },
+  { title: 'Sunrooms', tagline: 'Bright, airy additions', imageUrl: null, imageAlt: '' },
+];
+
+export async function getServicesItems(): Promise<ServiceItem[]> {
+  try {
+    const result = await sql`
+      SELECT value FROM site_content
+      WHERE section = 'services' AND key = 'items'
+      LIMIT 1
+    `;
+    if (result.length === 0) return servicesDefaults;
+    const items = result[0].value as ServiceItem[];
+    return Array.isArray(items) ? items : servicesDefaults;
+  } catch {
+    return servicesDefaults;
+  }
+}
+
+export async function setServicesItems(items: ServiceItem[]): Promise<void> {
+  await setSiteContent('services', 'items', items as unknown as Record<string, unknown>, 'Service cards on homepage');
+}
+
+// ─── Instagram Posts ──────────────────────────────────────────────────────────
+
+const instagramDefaults: InstagramPost[] = Array.from({ length: 6 }, () => ({
+  imageUrl: null,
+  caption: '',
+  permalink: '',
+}));
+
+export async function getInstagramPosts(): Promise<InstagramPost[]> {
+  try {
+    const result = await sql`
+      SELECT value FROM site_content
+      WHERE section = 'instagram' AND key = 'posts'
+      LIMIT 1
+    `;
+    if (result.length === 0) return instagramDefaults;
+    const posts = result[0].value as InstagramPost[];
+    return Array.isArray(posts) ? posts : instagramDefaults;
+  } catch {
+    return instagramDefaults;
+  }
+}
+
+export async function setInstagramPosts(posts: InstagramPost[]): Promise<void> {
+  await setSiteContent('instagram', 'posts', posts as unknown as Record<string, unknown>, 'Curated Instagram grid photos');
+}
+
+// ─── About Preview ────────────────────────────────────────────────────────────
+
+const aboutDefaults: AboutPreview = {
+  imageUrl: null,
+  imageAlt: '',
+  heading: 'Design-First Approach',
+  bodyText: 'We transform high-end residential spaces with meticulous attention to detail and expert craftsmanship.',
+};
+
+export async function getAboutPreview(): Promise<AboutPreview> {
+  const raw = await getSiteContent('about', 'preview');
+  return { ...aboutDefaults, ...(raw as Partial<AboutPreview> | null) };
+}
+
+export async function setAboutPreview(preview: AboutPreview): Promise<void> {
+  await setSiteContent('about', 'preview', preview as unknown as Record<string, unknown>, 'About preview section on homepage');
+}
+
+// ─── CTA Content ──────────────────────────────────────────────────────────────
+
+const ctaDefaults: CtaContent = {
+  heading: 'Ready to Start Your Project?',
+  bodyText: 'Schedule a free consultation to discuss your remodeling vision',
+  buttonText: 'Schedule Your Consultation',
+  buttonLink: '/schedule',
+};
+
+export async function getCtaContent(): Promise<CtaContent> {
+  const raw = await getSiteContent('cta', 'content');
+  return { ...ctaDefaults, ...(raw as Partial<CtaContent> | null) };
+}
+
+export async function setCtaContent(content: CtaContent): Promise<void> {
+  await setSiteContent('cta', 'content', content as unknown as Record<string, unknown>, 'CTA section on homepage');
+}

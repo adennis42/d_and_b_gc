@@ -8,6 +8,7 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SkipToContent } from "@/components/accessibility/SkipToContent";
 import { BannerLoader } from "@/components/banner/BannerLoader";
 import { defaultMetadata } from "@/lib/metadata";
+import { getBusinessInfo } from "@/lib/site-content";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +30,13 @@ const geistMono = Geist_Mono({
  */
 export const metadata = defaultMetadata;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const business = await getBusinessInfo();
+
   return (
     <html lang="en">
       <head>
@@ -87,11 +90,19 @@ export default function RootLayout({
           logo={process.env.NEXT_PUBLIC_BUSINESS_LOGO || "/images/logo.png"}
           image={process.env.NEXT_PUBLIC_BUSINESS_IMAGE || "/images/og-image.jpg"}
         />
-        <Header />
+        <Header businessName={business.name} instagramUrl={business.instagramUrl} />
         <main id="main-content" className="flex-1" tabIndex={-1}>
           {children}
         </main>
-        <Footer />
+        <Footer
+          businessName={business.name}
+          instagramUrl={business.instagramUrl}
+          phone={business.phone}
+          email={business.email}
+          city={business.city}
+          state={business.state}
+          zip={business.zip}
+        />
         <Toaster position="top-center" richColors />
         {/* Google Analytics - Only loads in production */}
         {/* Page views are tracked automatically by GA4 */}

@@ -10,28 +10,16 @@ import { trackButtonClick } from "@/lib/analytics";
  * MobileMenu component - Handles mobile navigation with slide-in animation
  * Client component required for state management and animations
  */
-export function MobileMenu() {
+export function MobileMenu({ instagramUrl = "" }: { instagramUrl?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close menu when route changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  useEffect(() => { setIsOpen(false); }, [pathname]);
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+    document.body.style.overflow = isOpen ? "hidden" : "unset";
+    return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
-
-  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com";
   
   const navLinks = [
     { href: "/about", label: "About" },
