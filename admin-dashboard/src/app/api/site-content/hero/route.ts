@@ -7,48 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { getHeroContent, setHeroContent } from '@/lib/site-content';
-import { logger } from '@/lib/logger';
-
-/**
- * Revalidate the main website's homepage cache
- * Called after hero content changes to ensure immediate updates
- */
-async function revalidateMainWebsite() {
-  const revalidateSecret = process.env.REVALIDATE_SECRET_TOKEN;
-  const mainSiteUrl = process.env.MAIN_SITE_URL || 'https://dbcontractorsny.com';
-  
-  if (!revalidateSecret) {
-    logger.warn('REVALIDATE_SECRET_TOKEN not set - skipping cache revalidation');
-    return;
-  }
-
-  try {
-    const response = await fetch(`${mainSiteUrl}/api/revalidate`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${revalidateSecret}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      logger.warn('Failed to revalidate main website cache', {
-        metadata: {
-          status: response.status,
-          statusText: response.statusText,
-        },
-      });
-    } else {
-      logger.info('Successfully revalidated main website cache');
-    }
-  } catch (error) {
-    logger.warn('Error calling revalidation endpoint', {
-      metadata: {
-        error: error instanceof Error ? error.message : String(error),
-      },
-    });
-  }
-}
+import { revalidateMainWebsite } from '@/lib/revalidate';
 
 export async function GET() {
   try {
@@ -77,13 +36,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { headline, subheadline, primaryCTA, secondaryCTA } = body;
+    const { headline, subheadline, primaryCTA } = body;
 
     await setHeroContent({
       headline,
       subheadline,
       primaryCTA,
-      secondaryCTA,
     });
 
     // Revalidate main website cache so changes appear immediately
