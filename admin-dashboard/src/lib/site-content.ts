@@ -68,7 +68,8 @@ export async function getSiteContent(
 export async function setSiteContent(
   section: string,
   key: string,
-  value: Record<string, unknown> | unknown[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any,
   description?: string
 ): Promise<void> {
   try {
@@ -127,7 +128,7 @@ export async function getBusinessInfo(): Promise<BusinessInfo> {
 }
 
 export async function setBusinessInfo(info: BusinessInfo): Promise<void> {
-  await setSiteContent('business', 'info', info as unknown as Record<string, unknown>, 'Business contact and identity information');
+  await setSiteContent('business', 'info', info, 'Business contact and identity information');
 }
 
 // ─── Services ─────────────────────────────────────────────────────────────────
@@ -155,7 +156,7 @@ export async function getServicesItems(): Promise<ServiceItem[]> {
 }
 
 export async function setServicesItems(items: ServiceItem[]): Promise<void> {
-  await setSiteContent('services', 'items', items as unknown as Record<string, unknown>, 'Service cards on homepage');
+  await setSiteContent('services', 'items', items, 'Service cards on homepage');
 }
 
 // ─── Instagram Posts ──────────────────────────────────────────────────────────
@@ -182,7 +183,7 @@ export async function getInstagramPosts(): Promise<InstagramPost[]> {
 }
 
 export async function setInstagramPosts(posts: InstagramPost[]): Promise<void> {
-  await setSiteContent('instagram', 'posts', posts as unknown as Record<string, unknown>, 'Curated Instagram grid photos');
+  await setSiteContent('instagram', 'posts', posts, 'Curated Instagram grid photos');
 }
 
 // ─── About Preview ────────────────────────────────────────────────────────────
@@ -200,7 +201,7 @@ export async function getAboutPreview(): Promise<AboutPreview> {
 }
 
 export async function setAboutPreview(preview: AboutPreview): Promise<void> {
-  await setSiteContent('about', 'preview', preview as unknown as Record<string, unknown>, 'About preview section on homepage');
+  await setSiteContent('about', 'preview', preview, 'About preview section on homepage');
 }
 
 // ─── CTA Content ──────────────────────────────────────────────────────────────
@@ -218,5 +219,5 @@ export async function getCtaContent(): Promise<CtaContent> {
 }
 
 export async function setCtaContent(content: CtaContent): Promise<void> {
-  await setSiteContent('cta', 'content', content as unknown as Record<string, unknown>, 'CTA section on homepage');
+  await setSiteContent('cta', 'content', content, 'CTA section on homepage');
 }
