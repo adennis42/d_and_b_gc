@@ -224,6 +224,109 @@ interface Project {
 - Analytics tracking conversions
 - Google Calendar integration tested
 
+## Phase 5: Modern Minimalist UI Overhaul ✓
+**Goal**: Transform website into modern, minimalist design-focused experience with Squarespace-style animations
+
+**Design Philosophy**:
+- Shift from construction to design focus
+- Emphasize aesthetic, design-forward approach
+- Minimalist, clean layouts with intentional white space
+- Premium, high-end visual language
+- Focus on visual storytelling over technical details
+- Optimized for 20-second viewer engagement
+
+**Key Changes Implemented**:
+
+1. **Animation System**:
+   - Installed `framer-motion` for scroll animations
+   - Created reusable animation components:
+     - `ScrollReveal` - Scroll-triggered fade/slide animations
+     - `FadeIn` - Simple fade-in component
+     - `Parallax` - Parallax scroll effects
+     - `StaggerChildren` - Sequential child animations
+   - All animations respect `prefers-reduced-motion` for accessibility
+
+2. **Hero Section**:
+   - Large typography (80-120px on desktop)
+   - Single prominent CTA button
+   - Fade-in animations with staggered delays
+   - Parallax background effect
+   - Removed secondary CTA for simplified decision-making
+
+3. **Services Section**:
+   - Visual-first cards with large images
+   - Removed feature lists, focus on taglines
+   - Scroll-triggered stagger animations
+   - Hover effects with subtle scale
+
+4. **Instagram Integration**:
+   - Created `InstagramFeed` component to replace gallery
+   - Grid layout: 3 columns desktop, 2 mobile
+   - Hover effects with caption overlays
+   - "View More on Instagram" CTA
+
+5. **About Preview Section**:
+   - Split-screen layout (image + text)
+   - Minimal text (2-3 sentences max)
+   - Scroll animations: slide in from opposite sides
+
+6. **CTA Section**:
+   - Single prominent button
+   - Large, centered text
+   - Subtle breathing animation (pulse effect)
+   - Minimal background
+
+7. **Navigation**:
+   - Minimalist header: logo + 3-4 links max
+   - Transparent background that becomes solid on scroll
+   - Instagram icon always visible
+   - Removed Gallery link
+
+8. **Footer**:
+   - Single-column, centered layout
+   - Minimal: logo, Instagram link, contact info
+   - Instagram primary social link
+
+9. **Gallery Page**:
+   - Redirected to Instagram profile
+   - Simple landing page with auto-redirect
+
+10. **Typography & Spacing**:
+    - Hero headline: 4rem - 7rem (responsive)
+    - Section headings: 3rem - 4rem
+    - Body text: 1.125rem - 1.25rem
+    - Line height: 1.6 - 1.8 (generous spacing)
+    - Section padding: 8rem - 12rem vertical (desktop)
+
+11. **Color Refinement**:
+    - Softer, more sophisticated primary colors
+    - Increased use of neutrals (grays, beiges)
+    - Subtle accent colors
+    - High contrast for text readability
+
+**Technical Implementation**:
+- All animations use GPU-accelerated properties (transform, opacity)
+- Smooth scroll behavior enabled
+- Accessibility: All animations respect `prefers-reduced-motion`
+- Performance: Animations only trigger when elements enter viewport
+- Mobile-optimized: Responsive animations and layouts
+
+**Files Modified**:
+- `src/components/home/Hero.tsx` - Complete redesign
+- `src/components/home/Services.tsx` - Visual-first redesign
+- `src/components/home/CTA.tsx` - Simplified single CTA
+- `src/components/home/InstagramFeed.tsx` - New component
+- `src/components/layout/Header.tsx` - Minimalist navigation
+- `src/components/layout/Footer.tsx` - Simplified footer
+- `src/components/layout/MobileMenu.tsx` - Updated links
+- `src/app/page.tsx` - Updated layout structure
+- `src/app/(routes)/gallery/page.tsx` - Instagram redirect
+- `src/app/globals.css` - Typography and spacing updates
+- `src/components/animations/*` - New animation components
+
+**Environment Variables**:
+- `NEXT_PUBLIC_INSTAGRAM_URL` - Instagram profile URL for links
+
 ## Future Enhancements (Post-Launch)
 - Testimonials section with customer reviews
 - Blog for SEO content (remodeling tips, trends)
@@ -233,6 +336,7 @@ interface Project {
 - Lead capture with progressive disclosure
 - A/B testing on CTAs
 - Admin dashboard for gallery management
+- Instagram API integration for dynamic feed
 
 ## Development Workflow
 1. Work on feature branch
@@ -255,6 +359,9 @@ GOOGLE_API_KEY=
 
 # Analytics
 NEXT_PUBLIC_GA_ID=
+
+# Social Media
+NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/yourhandle
 
 # Image Storage (if using Cloudinary)
 CLOUDINARY_CLOUD_NAME=
