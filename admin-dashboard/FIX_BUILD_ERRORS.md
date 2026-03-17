@@ -59,7 +59,7 @@ The environment variable has quotes around it, which makes it invalid.
    - Click **Edit**
 
 3. **Remove Quotes**
-   - The value should be: `REDACTED_POSTGRES_URI`
+   - The value should be: `postgres://YOUR_USERNAME:YOUR_PASSWORD@db.prisma.io:5432/postgres?sslmode=require`
    - **DO NOT include quotes** around it
    - It should start with `postgres://` and end with `require` (no quotes)
    - Click **Save**
