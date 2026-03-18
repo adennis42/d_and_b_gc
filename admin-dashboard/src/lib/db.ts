@@ -54,6 +54,12 @@ function sqlTemplate(strings: TemplateStringsArray, ...values: any[]) {
   return (client as any).unsafe(query, params);
 };
 
+// Expose sql.json() for explicit JSONB serialization (avoids double-encoding via JSON.stringify)
+(sqlTemplate as any).json = (value: any) => {
+  const client = getSqlClient();
+  return (client as any).json(value);
+};
+
 // Export sql as the template function with attached methods
 const sql = sqlTemplate as ReturnType<typeof postgres>;
 

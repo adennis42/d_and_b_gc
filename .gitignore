@@ -52,3 +52,4 @@ admin-dashboard/node_modules/
 admin-dashboard/.next/
 admin-dashboard/out/
 admin-dashboard/.vercel/
+.env*.local

@@ -73,9 +73,11 @@ export async function setSiteContent(
   description?: string
 ): Promise<void> {
   try {
+    // Pass the raw value object — postgres handles JSONB serialization.
+    // Do NOT use JSON.stringify()::jsonb as that double-encodes (stores a JSON string, not object).
     await sql`
       INSERT INTO site_content (section, key, value, description)
-      VALUES (${section}, ${key}, ${JSON.stringify(value)}::jsonb, ${description || null})
+      VALUES (${section}, ${key}, ${sql.json(value)}, ${description || null})
       ON CONFLICT (section, key)
       DO UPDATE SET
         value = EXCLUDED.value,
