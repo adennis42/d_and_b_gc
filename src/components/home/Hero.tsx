@@ -71,7 +71,7 @@ export function Hero({
           <motion.h1
             initial={{ opacity: shouldReduceMotion ? 1 : 0, y: shouldReduceMotion ? 0 : 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.5, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
             className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[120px] font-bold tracking-tight text-white mb-8 md:mb-12 leading-[1.1] drop-shadow-2xl"
           >
             {headline}
@@ -81,7 +81,7 @@ export function Hero({
           <motion.p
             initial={{ opacity: shouldReduceMotion ? 1 : 0, y: shouldReduceMotion ? 0 : 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.7, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
             className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white/90 mb-12 md:mb-16 max-w-4xl mx-auto leading-relaxed font-light drop-shadow-lg"
           >
             {subheadline}
@@ -91,7 +91,7 @@ export function Hero({
           <motion.div
             initial={{ opacity: shouldReduceMotion ? 1 : 0, scale: shouldReduceMotion ? 1 : 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: shouldReduceMotion ? 0 : 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: shouldReduceMotion ? 0 : 0.9, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
           >
             <Button
               asChild
