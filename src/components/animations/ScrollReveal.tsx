@@ -41,7 +41,7 @@ export function ScrollReveal({
       transition: {
         duration: shouldReduceMotion ? 0 : duration,
         delay: shouldReduceMotion ? 0 : delay,
-        ease: [0.25, 0.46, 0.45, 0.94], // Custom easing for smooth feel
+        ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number], // Custom easing for smooth feel
       },
     },
   };
