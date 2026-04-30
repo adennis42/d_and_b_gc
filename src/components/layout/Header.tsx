@@ -6,12 +6,7 @@ import { motion } from "framer-motion";
 import { Menu, X, ArrowRight, Instagram } from "lucide-react";
 import { trackButtonClick, trackExternalLink } from "@/lib/analytics";
 
-const NAV_LINKS = [
-  { href: "/work",     label: "Work" },
-  { href: "/studio",   label: "Studio" },
-  { href: "/process",  label: "Process" },
-  { href: "/contact",  label: "Contact" },
-];
+const NAV_LINKS: { href: string; label: string }[] = [];
 
 /** Raise Design & Build wordmark — CSS-only, no logo file */
 function Wordmark({ inverted = false }: { inverted?: boolean }) {
