@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -9,18 +9,21 @@ import { SkipToContent } from "@/components/accessibility/SkipToContent";
 import { BannerLoader } from "@/components/banner/BannerLoader";
 import { defaultMetadata } from "@/lib/metadata";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-display",
   subsets: ["latin"],
-  display: "swap", // Optimize font loading
-  preload: true, // Preload critical font
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  preload: true,
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
-  display: "swap", // Optimize font loading
-  preload: false, // Not critical, don't preload
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
 });
 
 /**
@@ -42,7 +45,7 @@ export default function RootLayout({
         {/* The display: "swap" ensures text remains visible during font load */}
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${cormorant.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
         {/* Skip to main content link for accessibility */}

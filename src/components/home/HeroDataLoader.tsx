@@ -31,18 +31,12 @@ export async function HeroDataLoader() {
     console.log('[HeroDataLoader] Hero content from database:', JSON.stringify(heroContent, null, 2));
   }
 
-  // Use database content or fallback to defaults
-  const headline = heroContent?.headline || 'Transform Your Home with Expert Craftsmanship';
-  const subheadline = heroContent?.subheadline || 
-    'Specializing in high-end kitchen and bathroom remodeling that combines exceptional craftsmanship with timeless design. Every detail matters.';
-  const primaryCTA = heroContent?.primaryCTA || { text: 'Schedule Consultation', link: '/schedule' };
+  const primaryCTA = heroContent?.primaryCTA || { text: 'Schedule a Visit', link: '/schedule' };
 
   return (
     <Hero 
       imageUrl={heroImageUrl} 
       imageAlt={heroImageAlt}
-      headline={headline}
-      subheadline={subheadline}
       primaryCTA={primaryCTA}
     />
   );

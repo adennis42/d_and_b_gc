@@ -1,112 +1,190 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { ScrollReveal } from "@/components/animations/ScrollReveal";
-import { StaggerChildren } from "@/components/animations/StaggerChildren";
+import { ArrowDownRight } from "lucide-react";
 
-/**
- * Services component - Visual-first service showcase with scroll animations
- * Features:
- * - Large image-focused cards with minimal text
- * - Horizontal scrolling on desktop, vertical stack on mobile
- * - Scroll-triggered stagger animations
- * - Hover effects with subtle scale and parallax
- * - Design-forward approach emphasizing aesthetics
- */
-export function Services() {
-  const services = [
-    {
-      title: "Kitchen Remodeling",
-      tagline: "Beautiful, functional spaces",
-      image: "/images/services/kitchen.jpg", // Placeholder - will be added via admin
-      gradient: "from-amber-100 to-orange-50",
-    },
-    {
-      title: "Bathroom Remodeling",
-      tagline: "Luxurious retreats",
-      image: "/images/services/bathroom.jpg", // Placeholder - will be added via admin
-      gradient: "from-blue-100 to-cyan-50",
-    },
-    {
-      title: "Millwork",
-      tagline: "Custom craftsmanship",
-      image: "/images/services/millwork.jpg", // Placeholder - will be added via admin
-      gradient: "from-stone-100 to-neutral-50",
-    },
-    {
-      title: "Sunrooms",
-      tagline: "Bright, airy additions",
-      image: "/images/services/sunroom.jpg", // Placeholder - will be added via admin
-      gradient: "from-green-100 to-emerald-50",
-    },
-  ];
+const SERVICES = [
+  {
+    title: "Kitchens",
+    description: "From custom cabinetry to stone countertops — spaces built around how you live.",
+    image: "/images/services/kitchen.jpg",
+    href: "/work#kitchens",
+  },
+  {
+    title: "Bathrooms",
+    description: "Quiet luxury. Thoughtful details. Finishes that last decades.",
+    image: "/images/services/bathroom.jpg",
+    href: "/work#bathrooms",
+  },
+  {
+    title: "Sunrooms",
+    description: "Light-filled additions that blur the line between indoors and out.",
+    image: "/images/services/sunroom.jpg",
+    href: "/work#sunrooms",
+  },
+  {
+    title: "Millwork",
+    description: "Built-ins, mantels, wainscoting. The kind of craftsmanship you notice in twenty years.",
+    image: "/images/services/millwork.jpg",
+    href: "/work#millwork",
+  },
+];
+
+function ServiceCard({ service, index }: { service: typeof SERVICES[0]; index: number }) {
+  const ease: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
 
   return (
-    <section className="py-20 md:py-32 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <ScrollReveal direction="fade" className="text-center mb-16 md:mb-24">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-neutral-900">
-            Our Services
-          </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light">
-            Design-forward remodeling that transforms your space
-          </p>
-        </ScrollReveal>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.64, delay: index * 0.08, ease }}
+      whileHover={{ y: -4 }}
+      style={{ transition: "box-shadow 0.48s ease, transform 0.48s ease" }}
+    >
+      <Link
+        href={service.href}
+        style={{ display: "block", textDecoration: "none" }}
+        aria-label={`View ${service.title} work`}
+      >
+        {/* 4:5 portrait image */}
+        <div
+          style={{
+            position: "relative",
+            aspectRatio: "4/5",
+            overflow: "hidden",
+            borderRadius: "4px",
+            background: "#E2D8C6",
+            boxShadow: "0 2px 8px rgba(27,26,23,0.06), 0 1px 2px rgba(27,26,23,0.04)",
+          }}
+          className="service-card-image"
+        >
+          <Image
+            src={service.image}
+            alt={service.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 25vw"
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to top, rgba(27,26,23,0.25) 0%, transparent 50%)",
+            }}
+          />
+        </div>
 
-        {/* Services Grid - Large cards with images */}
-        <StaggerChildren staggerDelay={0.15}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                className="group relative overflow-hidden rounded-lg aspect-[4/5] cursor-pointer"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-              >
-                {/* Image Container */}
-                <div className="absolute inset-0">
-                  {/* Placeholder gradient - replace with actual image when available */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-80 group-hover:opacity-100 transition-opacity duration-500`}
-                  />
-                  {/* When images are available, uncomment this:
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  />
-                  */}
-                </div>
-
-                {/* Content Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 md:p-8">
-                  <motion.h3
-                    className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    {service.title}
-                  </motion.h3>
-                  <motion.p
-                    className="text-white/90 text-lg font-light drop-shadow-md"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    {service.tagline}
-                  </motion.p>
-                </div>
-              </motion.div>
-            ))}
+        {/* Card text */}
+        <div style={{ padding: "16px 2px 0" }}>
+          <div className="flex items-start justify-between">
+            <h3
+              style={{
+                fontFamily: "var(--font-display, 'Cormorant Garamond', serif)",
+                fontSize: "2.25rem",
+                fontWeight: 400,
+                lineHeight: 1.2,
+                letterSpacing: "-0.01em",
+                color: "#1B1A17",
+                margin: 0,
+                transition: "color 0.32s ease",
+              }}
+              className="service-card-title"
+            >
+              {service.title}
+            </h3>
+            <ArrowDownRight
+              size={20}
+              strokeWidth={1.25}
+              style={{ color: "#A39E94", flexShrink: 0, marginTop: "6px", transition: "color 0.32s ease" }}
+              className="service-card-arrow"
+            />
           </div>
-        </StaggerChildren>
+          <p
+            style={{
+              fontFamily: "var(--font-sans, 'Inter', sans-serif)",
+              fontSize: "0.875rem",
+              lineHeight: 1.6,
+              color: "#76726A",
+              margin: "8px 0 0",
+            }}
+          >
+            {service.description}
+          </p>
+        </div>
+      </Link>
+
+      <style>{`
+        .service-card-image { }
+        a:hover .service-card-title { color: #A8804A; }
+        a:hover .service-card-arrow { color: #A8804A; }
+        a:hover .service-card-image { box-shadow: 0 12px 32px rgba(27,26,23,0.08), 0 4px 8px rgba(27,26,23,0.04); }
+      `}</style>
+    </motion.div>
+  );
+}
+
+export function Services() {
+  return (
+    <section
+      style={{
+        background: "var(--paper, #F5F1EA)",
+        padding: "clamp(64px, 10vw, 128px) max(24px, 4vw)",
+      }}
+    >
+      <div style={{ maxWidth: "var(--container, 1280px)", margin: "0 auto" }}>
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.64, ease: [0.25, 0.46, 0.45, 0.94] }}
+          style={{ marginBottom: "clamp(48px, 6vw, 80px)" }}
+        >
+          <div className="flex items-baseline" style={{ gap: "12px", marginBottom: "1.25rem" }}>
+            <span
+              style={{
+                fontFamily: "var(--font-display, 'Cormorant Garamond', serif)",
+                fontStyle: "italic",
+                fontSize: "18px",
+                color: "#A8804A",
+              }}
+            >
+              ii
+            </span>
+            <span className="eyebrow">Services</span>
+          </div>
+          <h2
+            style={{
+              fontFamily: "var(--font-display, 'Cormorant Garamond', serif)",
+              fontWeight: 400,
+              fontSize: "clamp(2.25rem, 4vw, 3.25rem)",
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              color: "#1B1A17",
+              maxWidth: "520px",
+              margin: 0,
+            }}
+          >
+            Where we spend<br />
+            <em style={{ fontWeight: 300 }}>our time.</em>
+          </h2>
+        </motion.div>
+
+        {/* 4-column grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+            gap: "clamp(24px, 3vw, 40px)",
+          }}
+        >
+          {SERVICES.map((service, i) => (
+            <ServiceCard key={service.title} service={service} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   );
