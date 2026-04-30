@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -10,18 +10,21 @@ import { BannerLoader } from "@/components/banner/BannerLoader";
 import { defaultMetadata } from "@/lib/metadata";
 import { getBusinessInfo } from "@/lib/site-content";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-display",
   subsets: ["latin"],
-  display: "swap", // Optimize font loading
-  preload: true, // Preload critical font
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  preload: true,
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
-  display: "swap", // Optimize font loading
-  preload: false, // Not critical, don't preload
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
 });
 
 /**
@@ -45,7 +48,7 @@ export default async function RootLayout({
         {/* The display: "swap" ensures text remains visible during font load */}
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${cormorant.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
         {/* Skip to main content link for accessibility */}
@@ -90,19 +93,11 @@ export default async function RootLayout({
           logo={process.env.NEXT_PUBLIC_BUSINESS_LOGO || "/images/logo.png"}
           image={process.env.NEXT_PUBLIC_BUSINESS_IMAGE || "/images/og-image.jpg"}
         />
-        <Header businessName={business.name} instagramUrl={business.instagramUrl} />
+        <Header />
         <main id="main-content" className="flex-1" tabIndex={-1}>
           {children}
         </main>
-        <Footer
-          businessName={business.name}
-          instagramUrl={business.instagramUrl}
-          phone={business.phone}
-          email={business.email}
-          city={business.city}
-          state={business.state}
-          zip={business.zip}
-        />
+        <Footer />
         <Toaster position="top-center" richColors />
         {/* Google Analytics - Only loads in production */}
         {/* Page views are tracked automatically by GA4 */}

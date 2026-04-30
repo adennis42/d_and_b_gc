@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, ReactNode } from "react";
 
@@ -28,7 +28,7 @@ export function ScrollReveal({
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
 
-  const variants = {
+  const variants: Variants = {
     hidden: {
       opacity: shouldReduceMotion ? 1 : 0,
       y: shouldReduceMotion ? 0 : direction === "up" ? 50 : direction === "down" ? -50 : 0,
@@ -41,7 +41,7 @@ export function ScrollReveal({
       transition: {
         duration: shouldReduceMotion ? 0 : duration,
         delay: shouldReduceMotion ? 0 : delay,
-        ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number], // Custom easing for smooth feel
+        ease: [0.25, 0.46, 0.45, 0.94], // Custom easing for smooth feel
       },
     },
   };

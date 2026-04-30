@@ -44,10 +44,69 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  /* Refined color palette - softer, more sophisticated tones */
-  --background: oklch(0.99 0.002 0);
-  --foreground: oklch(0.15 0.02 260);
+  /* ── Raise Design & Build — Modern Elegant Tokens ── */
+
+  /* Warm paper neutrals (never pure white) */
+  --paper:   #F5F1EA;
+  --paper-2: #EDE6DA;
+  --paper-3: #E2D8C6;
+  --bone:    #FAF7F2;
+  --linen:   #F0EAE0;
+
+  /* Charcoal ink (never pure black) */
+  --ink:   #1B1A17;
+  --ink-2: #2B2A26;
+  --ink-3: #4A4842;
+  --ink-4: #76726A;
+  --ink-5: #A39E94;
+
+  /* Aged brass (singular accent) */
+  --brass:      #A8804A;
+  --brass-deep: #8A6638;
+  --brass-soft: #C5A47E;
+  --brass-wash: #EFE3D0;
+
+  /* Sage (sunroom contexts) */
+  --sage:      #6B7A5E;
+  --sage-soft: #C8CDB8;
+
+  /* Functional */
+  --success: #5A7A4F;
+  --danger:  #9B3A2E;
+  --info:    #4A6B7A;
+
+  /* Borders */
+  --border-warm:   #D9D1C2;
+  --border-strong: #B8AE9C;
+  --rule:          #1B1A17;
+
+  /* Shadows (warm-tinted, never cool) */
+  --shadow-1: 0 1px 2px rgba(27,26,23,0.04);
+  --shadow-2: 0 2px 8px rgba(27,26,23,0.06), 0 1px 2px rgba(27,26,23,0.04);
+  --shadow-3: 0 12px 32px rgba(27,26,23,0.08), 0 4px 8px rgba(27,26,23,0.04);
+  --shadow-4: 0 32px 64px rgba(27,26,23,0.12), 0 8px 16px rgba(27,26,23,0.06);
+  --shadow-image: 0 24px 48px rgba(27,26,23,0.18);
+
+  /* Motion */
+  --ease-editorial: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Layout */
+  --container: 1280px;
+  --container-narrow: 880px;
+  --gutter: max(24px, 4vw);
+
+  /* Radii (restrained, editorial — never > 8px on chrome) */
+  --r-sm:   2px;
+  --r-md:   4px;
+  --r-lg:   8px;
+  --r-pill: 999px;
+
+  /* ── Shadcn compatibility aliases ── */
+  --radius: 0.5rem;
+  --background: #F5F1EA;
+  --foreground: #1B1A17;
+  --card: #FAF7F2;
+  --card-foreground: #1B1A17;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.02 260);
   --popover: oklch(1 0 0);
@@ -117,41 +176,81 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   html {
     scroll-behavior: smooth;
+    background-color: var(--paper);
+    color: var(--ink-2);
   }
-  
+
   body {
-    @apply bg-background text-foreground;
-    font-size: 1.125rem; /* Increased base font size for readability */
-    line-height: 1.7; /* Generous line height */
+    background-color: var(--paper);
+    color: var(--ink-2);
+    font-family: var(--font-sans, 'Inter', -apple-system, 'Helvetica Neue', sans-serif);
+    font-size: 1rem;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
   }
-  
-  /* Typography scale - larger, bolder headlines */
-  h1 {
-    font-size: clamp(2.5rem, 5vw, 7rem); /* 4rem - 7rem responsive */
-    font-weight: 700;
-    line-height: 1.1;
+
+  /* Display / editorial headings — Cormorant Garamond */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display, 'Cormorant Garamond', 'Garamond', 'Hoefler Text', serif);
+    font-weight: 400;
     letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--ink);
+    text-wrap: balance;
   }
-  
-  h2 {
-    font-size: clamp(2rem, 4vw, 4rem); /* 3rem - 4rem responsive */
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
+
+  h1 { font-size: clamp(3rem, 6vw, 4.5rem); }
+  h2 { font-size: clamp(2.25rem, 4vw, 3.25rem); }
+  h3 { font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.2; }
+  h4 { font-size: 1.625rem; line-height: 1.2; }
+  h5, h6 {
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-weight: 500;
+    color: var(--ink);
   }
-  
-  h3 {
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    font-weight: 600;
-    line-height: 1.3;
-  }
-  
+  h5 { font-size: 1.25rem; }
+  h6 { font-size: 1rem; font-weight: 600; }
+
   p {
-    font-size: 1.125rem; /* Increased from default */
-    line-height: 1.7; /* Generous spacing */
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+
+  /* Utility type classes */
+  .lead {
+    font-family: var(--font-display, 'Cormorant Garamond', serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+
+  .display {
+    font-family: var(--font-display, 'Cormorant Garamond', serif);
+    font-size: clamp(4rem, 8vw, 6.5rem);
+    font-weight: 300;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
+  }
+
+  .serif-italic {
+    font-family: var(--font-display, 'Cormorant Garamond', serif);
+    font-style: italic;
+    font-weight: 400;
   }
   
   /* Respect reduced motion preferences */

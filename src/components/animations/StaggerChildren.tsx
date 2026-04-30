@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, ReactNode } from "react";
 
@@ -24,7 +24,7 @@ export function StaggerChildren({
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const shouldReduceMotion = useReducedMotion();
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: shouldReduceMotion ? 1 : 0 },
     visible: {
       opacity: 1,
@@ -34,14 +34,14 @@ export function StaggerChildren({
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: shouldReduceMotion ? 1 : 0, y: shouldReduceMotion ? 0 : 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: shouldReduceMotion ? 0 : 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+        ease: [0.25, 0.46, 0.45, 0.94],
       },
     },
   };
