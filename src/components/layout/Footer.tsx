@@ -3,17 +3,10 @@ import Link from "next/link";
 import { Instagram, MapPin, Phone, Mail } from "lucide-react";
 import { trackButtonClick, trackExternalLink } from "@/lib/analytics";
 
-const WORK_LINKS = [
-  { href: "/work#kitchens",   label: "Kitchens" },
-  { href: "/work#bathrooms",  label: "Bathrooms" },
-  { href: "/work#sunrooms",   label: "Sunrooms" },
-  { href: "/work#millwork",   label: "Millwork" },
-];
+const WORK_LINKS: { href: string; label: string }[] = [];
 
 const STUDIO_LINKS = [
-  { href: "/studio",   label: "About" },
-  { href: "/process",  label: "Process" },
-  { href: "/contact",  label: "Contact" },
+  { href: "/about",    label: "About" },
   { href: "/schedule", label: "Schedule a Visit" },
 ];
 

@@ -169,7 +169,10 @@ export function Header() {
         >
           <nav style={{ padding: "3rem max(24px, 4vw)" }}>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "2rem" }}>
-              {NAV_LINKS.map((link) => (
+              {[
+                { href: "/about",    label: "About" },
+                { href: "/schedule", label: "Schedule a Visit" },
+              ].map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
