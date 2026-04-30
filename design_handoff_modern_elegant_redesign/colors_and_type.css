@@ -1,0 +1,225 @@
+/* ============================================================
+   Raise Design & Build — Design Tokens
+   High-end residential remodeling: kitchens, baths, sunrooms,
+   millwork. Warm, refined, editorial.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ---------- COLOR — base scale ---------- */
+
+  /* Warm neutrals — the "paper" of the brand */
+  --paper:        #F5F1EA; /* warm off-white, primary background */
+  --paper-2:      #EDE6DA; /* tonal section background (sand) */
+  --paper-3:      #E2D8C6; /* card / divider tint */
+  --bone:         #FAF7F2; /* near-white, panels and modals */
+  --linen:        #F0EAE0; /* hover surface on paper */
+
+  /* Charcoals — the "ink" of the brand */
+  --ink:          #1B1A17; /* near-black, headlines / primary */
+  --ink-2:        #2B2A26; /* charcoal body */
+  --ink-3:        #4A4842; /* secondary body / captions */
+  --ink-4:        #76726A; /* muted / metadata */
+  --ink-5:        #A39E94; /* hairlines, placeholders */
+
+  /* Brass — the singular metallic accent */
+  --brass:        #A8804A; /* primary accent — warm aged brass */
+  --brass-deep:   #8A6638; /* hover / press */
+  --brass-soft:   #C5A47E; /* light brass, dividers */
+  --brass-wash:   #EFE3D0; /* tinted background washes */
+
+  /* Sage — secondary accent for calm/sunroom moments */
+  --sage:         #6B7A5E; /* muted olive sage */
+  --sage-soft:    #C8CDB8;
+
+  /* Functional */
+  --success:      #5A7A4F;
+  --danger:       #9B3A2E;
+  --info:         #4A6B7A;
+
+  /* ---------- COLOR — semantic ---------- */
+  --bg:           var(--paper);
+  --bg-alt:       var(--paper-2);
+  --bg-panel:     var(--bone);
+  --surface:      var(--bone);
+  --surface-hover:var(--linen);
+
+  --fg:           var(--ink);
+  --fg-2:         var(--ink-2);
+  --fg-muted:     var(--ink-3);
+  --fg-subtle:    var(--ink-4);
+
+  --accent:       var(--brass);
+  --accent-hover: var(--brass-deep);
+  --accent-soft:  var(--brass-wash);
+
+  --border:       #D9D1C2;     /* hairline on paper */
+  --border-strong:#B8AE9C;
+  --rule:         var(--ink);  /* editorial heavy rule */
+
+  /* ---------- TYPE ---------- */
+  --font-display: 'Cormorant Garamond', 'Garamond', 'Hoefler Text', serif;
+  --font-sans:    'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* Editorial scale — display is serif, body is sans */
+  --t-eyebrow:    0.6875rem;  /* 11px tracked uppercase label */
+  --t-caption:    0.75rem;
+  --t-small:      0.875rem;
+  --t-body:       1rem;
+  --t-body-lg:    1.125rem;
+  --t-lead:       1.25rem;     /* large body / lead paragraph */
+
+  --t-h6:         1rem;
+  --t-h5:         1.25rem;
+  --t-h4:         1.625rem;
+  --t-h3:         2.25rem;
+  --t-h2:         3.25rem;
+  --t-h1:         4.5rem;
+  --t-display:    6.5rem;      /* hero, oversize editorial */
+
+  --lh-tight:     1.05;
+  --lh-snug:      1.2;
+  --lh-normal:    1.55;
+  --lh-loose:     1.75;
+
+  --tr-tight:     -0.02em;
+  --tr-normal:    0;
+  --tr-wide:      0.04em;
+  --tr-eyebrow:   0.18em;      /* the brand's signature wide tracking */
+
+  /* ---------- SPACING (4-step) ---------- */
+  --s-1:   4px;
+  --s-2:   8px;
+  --s-3:   12px;
+  --s-4:   16px;
+  --s-5:   24px;
+  --s-6:   32px;
+  --s-7:   48px;
+  --s-8:   64px;
+  --s-9:   96px;
+  --s-10:  128px;
+  --s-11:  160px;
+
+  /* ---------- RADII — restrained, editorial ---------- */
+  --r-sm:  2px;
+  --r-md:  4px;
+  --r-lg:  8px;
+  --r-pill:999px;
+
+  /* ---------- SHADOWS — soft warm depth ---------- */
+  --shadow-1: 0 1px 2px rgba(27, 26, 23, 0.04);
+  --shadow-2: 0 2px 8px rgba(27, 26, 23, 0.06), 0 1px 2px rgba(27, 26, 23, 0.04);
+  --shadow-3: 0 12px 32px rgba(27, 26, 23, 0.08), 0 4px 8px rgba(27, 26, 23, 0.04);
+  --shadow-4: 0 32px 64px rgba(27, 26, 23, 0.12), 0 8px 16px rgba(27, 26, 23, 0.06);
+  --shadow-image: 0 24px 48px rgba(27, 26, 23, 0.18);
+
+  /* ---------- MOTION ---------- */
+  --ease-out:    cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-editorial: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --dur-fast:    180ms;
+  --dur-base:    320ms;
+  --dur-slow:    640ms;
+  --dur-reveal:  900ms;
+
+  /* ---------- LAYOUT ---------- */
+  --container:   1280px;
+  --container-narrow: 880px;
+  --gutter:      max(24px, 4vw);
+}
+
+/* ===== Element-level base styles ===== */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: var(--lh-normal);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 400; /* serif sits at regular weight by default */
+  letter-spacing: var(--tr-tight);
+  line-height: var(--lh-tight);
+  color: var(--fg);
+  margin: 0;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--t-h1); }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); line-height: var(--lh-snug); }
+h4 { font-size: var(--t-h4); line-height: var(--lh-snug); letter-spacing: var(--tr-normal); }
+h5 { font-family: var(--font-sans); font-size: var(--t-h5); font-weight: 500; line-height: var(--lh-snug); letter-spacing: var(--tr-normal); margin: 0; }
+h6 { font-family: var(--font-sans); font-size: var(--t-h6); font-weight: 600; line-height: var(--lh-snug); margin: 0; }
+
+p {
+  font-size: var(--t-body);
+  line-height: var(--lh-loose);
+  color: var(--fg-2);
+  text-wrap: pretty;
+  margin: 0;
+}
+
+.lead {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--t-lead);
+  line-height: var(--lh-normal);
+  color: var(--fg-2);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--t-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tr-eyebrow);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-size: var(--t-display);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+}
+
+.serif-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+}
+
+a {
+  color: var(--fg);
+  text-decoration: none;
+  transition: opacity var(--dur-fast) var(--ease-soft);
+}
+a:hover { opacity: 0.65; }
+
+::selection { background: var(--brass); color: var(--bone); }
+
+/* Editorial heavy rule */
+.rule {
+  height: 1px;
+  background: var(--rule);
+  border: 0;
+  margin: 0;
+}
+.rule-hairline {
+  height: 1px;
+  background: var(--border);
+  border: 0;
+  margin: 0;
+}
