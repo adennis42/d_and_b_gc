@@ -197,7 +197,6 @@ const ctaDefaults: CtaContent = {
   headlinePlain: 'Bring craftsmanship to',
   headlineEmphasis: 'your space.',
   primaryCTA: { text: 'Schedule a Visit', link: '/schedule' },
-  secondaryCTA: { text: 'View Our Work', link: '/work' },
 };
 
 export async function getCtaContent(): Promise<CtaContent> {

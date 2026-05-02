@@ -11,7 +11,6 @@ const DEFAULT_CTA: CtaContent = {
   headlinePlain: "Bring craftsmanship to",
   headlineEmphasis: "your space.",
   primaryCTA: { text: "Schedule a Visit", link: "/schedule" },
-  secondaryCTA: { text: "View Our Work", link: "/work" },
 };
 
 export function CTA({ content = DEFAULT_CTA }: { content?: CtaContent }) {
