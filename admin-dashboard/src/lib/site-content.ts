@@ -38,8 +38,10 @@ export interface InstagramPost {
 export interface AboutPreview {
   imageUrl: string | null;
   imageAlt: string;
-  heading: string;
-  bodyText: string;
+  headline: string;
+  bodyParagraphs: string[];
+  teamNames: string[];
+  serviceAreas: string[];
 }
 
 export interface CtaContent {
@@ -210,17 +212,30 @@ export async function setInstagramPosts(posts: InstagramPost[]): Promise<void> {
 const aboutDefaults: AboutPreview = {
   imageUrl: null,
   imageAlt: '',
-  heading: 'Design-First Approach',
-  bodyText: 'We transform high-end residential spaces with meticulous attention to detail and expert craftsmanship.',
+  headline: 'Craft-forward remodeling on Long Island.',
+  bodyParagraphs: ['Raise Design & Build is a family-owned remodeling company serving Long Island homeowners since 2003.'],
+  teamNames: ['Paul Sr.', 'Paul Jr.', 'Jessica'],
+  serviceAreas: [],
 };
 
 export async function getAboutPreview(): Promise<AboutPreview> {
-  const raw = await getSiteContent('about', 'preview');
-  return { ...aboutDefaults, ...(raw as Partial<AboutPreview> | null) };
+  // Read from 'about.content' to match the main site's reader
+  const raw = await getSiteContent('about', 'content');
+  if (!raw) return aboutDefaults;
+  const r = raw as any;
+  return {
+    imageUrl: r.imageUrl || null,
+    imageAlt: r.imageAlt || '',
+    headline: r.headline || aboutDefaults.headline,
+    bodyParagraphs: Array.isArray(r.bodyParagraphs) ? r.bodyParagraphs : [r.bodyText || ''].filter(Boolean),
+    teamNames: Array.isArray(r.teamNames) ? r.teamNames : aboutDefaults.teamNames,
+    serviceAreas: Array.isArray(r.serviceAreas) ? r.serviceAreas : [],
+  };
 }
 
 export async function setAboutPreview(preview: AboutPreview): Promise<void> {
-  await setSiteContent('about', 'preview', preview, 'About preview section on homepage');
+  // Save to 'about.content' to match main site's reader
+  await setSiteContent('about', 'content', preview, 'About section content');
 }
 
 // ─── CTA Content ──────────────────────────────────────────────────────────────

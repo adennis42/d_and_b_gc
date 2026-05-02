@@ -446,14 +446,27 @@ function InstagramTab() {
 // ─── About Tab ──────────────────────────────────────────────────────────────
 
 function AboutTab() {
-  const [data, setData] = useState<AboutPreview>({ imageUrl: null, imageAlt: '', heading: '', bodyText: '' });
+  const [data, setData] = useState<AboutPreview>({
+    imageUrl: null, imageAlt: '',
+    headline: '', bodyParagraphs: [''], teamNames: [], serviceAreas: [],
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    fetch('/api/site-content/about-preview').then(r => r.json()).then(d => { setData(d); setLoading(false); });
+    fetch('/api/site-content/about-preview').then(r => r.json()).then((d: any) => {
+      setData({
+        imageUrl: d?.imageUrl || null,
+        imageAlt: d?.imageAlt || '',
+        headline: d?.headline || '',
+        bodyParagraphs: Array.isArray(d?.bodyParagraphs) ? d.bodyParagraphs : [d?.bodyText || ''].filter(Boolean),
+        teamNames: Array.isArray(d?.teamNames) ? d.teamNames : [],
+        serviceAreas: Array.isArray(d?.serviceAreas) ? d.serviceAreas : [],
+      });
+      setLoading(false);
+    });
   }, []);
 
   const save = async () => {
@@ -471,23 +484,41 @@ function AboutTab() {
   return (
     <Card className="bg-slate-900/80 backdrop-blur-sm border-slate-800">
       <CardHeader>
-        <CardTitle>About Preview</CardTitle>
-        <CardDescription>The split-screen about section on the homepage — photo on one side, text on the other.</CardDescription>
+        <CardTitle>About Section</CardTitle>
+        <CardDescription>The split-screen section on the homepage — photo on one side, text on the other.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
         <StatusBanner error={error} success={success} />
-        <ImageField label="About Photo" imageUrl={data.imageUrl} onUrlChange={url => setData(p => ({ ...p, imageUrl: url }))} description="Landscape image (4:3 ratio recommended)" />
+        <ImageField label="About Photo" imageUrl={data.imageUrl} onUrlChange={url => setData(p => ({ ...p, imageUrl: url }))} description="Portrait or landscape image" />
         <div className="space-y-2">
           <Label>Image Alt Text</Label>
           <Input value={data.imageAlt} onChange={e => setData(p => ({ ...p, imageAlt: e.target.value }))} placeholder="Our team working on a kitchen remodel" className="bg-slate-800 border-slate-700 text-slate-100" />
         </div>
         <div className="space-y-2">
-          <Label>Heading</Label>
-          <Input value={data.heading} onChange={e => setData(p => ({ ...p, heading: e.target.value }))} placeholder="Design-First Approach" className="bg-slate-800 border-slate-700 text-slate-100" />
+          <Label>Headline</Label>
+          <Input value={data.headline} onChange={e => setData(p => ({ ...p, headline: e.target.value }))} placeholder="Craft-forward remodeling on Long Island." className="bg-slate-800 border-slate-700 text-slate-100" />
         </div>
         <div className="space-y-2">
           <Label>Body Text</Label>
-          <Textarea value={data.bodyText} onChange={e => setData(p => ({ ...p, bodyText: e.target.value }))} rows={4} placeholder="Describe your approach, expertise, or what makes you different." className="bg-slate-800 border-slate-700 text-slate-100" />
+          <p className="text-xs text-slate-500">One paragraph per line</p>
+          <Textarea
+            value={data.bodyParagraphs.join('\n\n')}
+            onChange={e => setData(p => ({ ...p, bodyParagraphs: e.target.value.split(/\n\n+/).map(s => s.trim()).filter(Boolean) }))}
+            rows={5}
+            placeholder="Paragraph 1\n\nParagraph 2"
+            className="bg-slate-800 border-slate-700 text-slate-100"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Team Names</Label>
+          <p className="text-xs text-slate-500">One name per line</p>
+          <Textarea
+            value={data.teamNames.join('\n')}
+            onChange={e => setData(p => ({ ...p, teamNames: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) }))}
+            rows={3}
+            placeholder={"Paul Sr.\nPaul Jr.\nJessica"}
+            className="bg-slate-800 border-slate-700 text-slate-100"
+          />
         </div>
         <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
           {saving ? 'Saving…' : 'Save About Section'}
