@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Instagram, MapPin, Phone, Mail } from "lucide-react";
 import { trackButtonClick, trackExternalLink } from "@/lib/analytics";
 
-const WORK_LINKS: { href: string; label: string }[] = [];
+
 
 const STUDIO_LINKS = [
   { href: "/about",    label: "About" },
@@ -103,39 +103,6 @@ export function Footer({ business }: { business?: BusinessInfo }) {
           </nav>
         </div>
 
-        {/* Col 2 — Work */}
-        <div>
-          <p
-            style={{
-              fontFamily: "var(--font-sans, 'Inter', sans-serif)",
-              fontSize: "0.6875rem",
-              fontWeight: 500,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#76726A",
-              marginBottom: "1.25rem",
-            }}
-          >
-            Work
-          </p>
-          <nav aria-label="Work navigation">
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {WORK_LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    style={linkStyle}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#A8804A")}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#4A4842")}
-                    onClick={() => trackButtonClick(link.label, "footer-work", link.href)}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
 
         {/* Col 3 — Contact */}
         <div>
