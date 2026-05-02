@@ -45,7 +45,8 @@ export interface AboutContent {
   imageUrl: string | null;
   imageAlt: string;
   headline: string;
-  bodyParagraphs: string[];  // array of paragraphs
+  homeBlurb: string;         // short teaser shown on home page
+  bodyParagraphs: string[];  // full story shown only on /about page
   teamNames: string[];       // e.g. ["Paul Sr.", "Paul Jr.", "Jessica"]
   serviceAreas: string[];    // may differ from BusinessInfo.serviceAreas
 }
@@ -164,6 +165,7 @@ const aboutDefaults: AboutContent = {
   imageUrl: null,
   imageAlt: 'Raise Design & Build team',
   headline: 'Craft-forward remodeling on Long Island.',
+  homeBlurb: 'A family-owned remodeling company serving Long Island homeowners since 2003. Specializing in high-end kitchens, bathrooms, sunrooms, and custom millwork.',
   bodyParagraphs: [
     'Raise Design & Build is a family-owned remodeling company serving Long Island homeowners since 2003.',
     'We specialize in high-end kitchens, bathrooms, sunrooms, and custom millwork — built with honesty, precision, and care.',

@@ -51,12 +51,12 @@ export async function AboutPreviewDataLoader() {
                 {about.headline}
               </h2>
 
-              {/* Body paragraphs */}
-              {about.bodyParagraphs.map((para, i) => (
-                <p key={i} style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)", fontSize: "1rem", lineHeight: 1.75, color: "#4A4842", marginBottom: "1rem" }}>
-                  {para}
+              {/* Home blurb — short teaser, editable separately from full story */}
+              {about.homeBlurb && (
+                <p style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)", fontSize: "1rem", lineHeight: 1.75, color: "#4A4842", marginBottom: "1rem" }}>
+                  {about.homeBlurb}
                 </p>
-              ))}
+              )}
 
               {/* Team names */}
               {about.teamNames.length > 0 && (

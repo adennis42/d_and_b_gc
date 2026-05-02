@@ -448,7 +448,7 @@ function InstagramTab() {
 function AboutTab() {
   const [data, setData] = useState<AboutPreview>({
     imageUrl: null, imageAlt: '',
-    headline: '', bodyParagraphs: [''], teamNames: [], serviceAreas: [],
+    headline: '', homeBlurb: '', bodyParagraphs: [''], teamNames: [], serviceAreas: [],
   });
   const [teamNamesText, setTeamNamesText] = useState('');
   const [bodyText, setBodyText] = useState('');
@@ -465,6 +465,7 @@ function AboutTab() {
         imageUrl: d?.imageUrl || null,
         imageAlt: d?.imageAlt || '',
         headline: d?.headline || '',
+        homeBlurb: d?.homeBlurb || '',
         bodyParagraphs,
         teamNames,
         serviceAreas: Array.isArray(d?.serviceAreas) ? d.serviceAreas : [],
@@ -509,8 +510,13 @@ function AboutTab() {
           <Input value={data.headline} onChange={e => setData(p => ({ ...p, headline: e.target.value }))} placeholder="Craft-forward remodeling on Long Island." className="bg-slate-800 border-slate-700 text-slate-100" />
         </div>
         <div className="space-y-2">
-          <Label>Body Text</Label>
-          <p className="text-xs text-slate-500">One paragraph per line</p>
+          <Label>Home Page Blurb</Label>
+          <p className="text-xs text-slate-500">Short 1-2 sentence teaser shown on the home page only. Does not affect the full story on /about.</p>
+          <Textarea value={data.homeBlurb} onChange={e => setData(p => ({ ...p, homeBlurb: e.target.value }))} rows={3} placeholder="A family-owned remodeling company serving Long Island since 2003..." className="bg-slate-800 border-slate-700 text-slate-100" />
+        </div>
+        <div className="space-y-2">
+          <Label>Full Story (About Page Only)</Label>
+          <p className="text-xs text-slate-500">One paragraph per line — double blank line between paragraphs</p>
           <Textarea
             value={bodyText}
             onChange={e => setBodyText(e.target.value)}

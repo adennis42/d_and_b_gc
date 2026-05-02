@@ -39,7 +39,8 @@ export interface AboutPreview {
   imageUrl: string | null;
   imageAlt: string;
   headline: string;
-  bodyParagraphs: string[];
+  homeBlurb: string;         // short teaser on home page
+  bodyParagraphs: string[];  // full story on /about page
   teamNames: string[];
   serviceAreas: string[];
 }
@@ -213,7 +214,8 @@ const aboutDefaults: AboutPreview = {
   imageUrl: null,
   imageAlt: '',
   headline: 'Craft-forward remodeling on Long Island.',
-  bodyParagraphs: ['Raise Design & Build is a family-owned remodeling company serving Long Island homeowners since 2003.'],
+  homeBlurb: 'A family-owned remodeling company serving Long Island homeowners since 2003.',
+  bodyParagraphs: [],
   teamNames: ['Paul Sr.', 'Paul Jr.', 'Jessica'],
   serviceAreas: [],
 };
@@ -227,6 +229,7 @@ export async function getAboutPreview(): Promise<AboutPreview> {
     imageUrl: r.imageUrl || null,
     imageAlt: r.imageAlt || '',
     headline: r.headline || aboutDefaults.headline,
+    homeBlurb: r.homeBlurb || aboutDefaults.homeBlurb,
     bodyParagraphs: Array.isArray(r.bodyParagraphs) ? r.bodyParagraphs : [r.bodyText || ''].filter(Boolean),
     teamNames: Array.isArray(r.teamNames) ? r.teamNames : aboutDefaults.teamNames,
     serviceAreas: Array.isArray(r.serviceAreas) ? r.serviceAreas : [],
