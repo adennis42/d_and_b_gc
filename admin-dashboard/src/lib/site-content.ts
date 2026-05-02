@@ -84,9 +84,11 @@ export async function setSiteContent(
   try {
     // Pass the raw value object — postgres handles JSONB serialization.
     // Do NOT use JSON.stringify()::jsonb as that double-encodes (stores a JSON string, not object).
+    // Guard: if value is already a string, parse it first
+    const safeValue = typeof value === 'string' ? JSON.parse(value) : value;
     await sql`
       INSERT INTO site_content (section, key, value, description)
-      VALUES (${section}, ${key}, ${sql.json(value)}, ${description || null})
+      VALUES (${section}, ${key}, ${sql.json(safeValue)}, ${description || null})
       ON CONFLICT (section, key)
       DO UPDATE SET
         value = EXCLUDED.value,
@@ -146,7 +148,9 @@ export async function getBusinessInfo(): Promise<BusinessInfo> {
 }
 
 export async function setBusinessInfo(info: BusinessInfo): Promise<void> {
-  await setSiteContent('business', 'info', info, 'Business contact and identity information');
+  // Ensure we're saving a plain object, not a string
+  const safeInfo = typeof info === 'string' ? JSON.parse(info) : info;
+  await setSiteContent('business', 'info', safeInfo, 'Business contact and identity information');
 }
 
 // ─── Services ─────────────────────────────────────────────────────────────────

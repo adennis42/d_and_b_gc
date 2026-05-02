@@ -137,7 +137,12 @@ function BusinessTab() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    fetch('/api/site-content/business').then(r => r.json()).then(d => { setData(d); setLoading(false); });
+    fetch('/api/site-content/business').then(r => r.json()).then(d => {
+      // Guard: if DB returned a double-encoded string, parse it
+      const parsed = typeof d === 'string' ? JSON.parse(d) : d;
+      setData({ name: '', phone: '', email: '', city: '', state: '', zip: '', instagramUrl: '', facebookUrl: '', serviceAreas: [], hours: '', ...parsed });
+      setLoading(false);
+    });
   }, []);
 
   const save = async () => {
