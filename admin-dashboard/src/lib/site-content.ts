@@ -103,23 +103,20 @@ export async function setSiteContent(
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
-export async function getHeroContent(): Promise<{
-  headline?: string;
-  subheadline?: string;
+export interface HeroContent {
+  headlineLine1?: string;
+  headlineLine2?: string;
+  headlineLine3?: string;
+  eyebrow?: string;
+  creditLine?: string;
   primaryCTA?: { text: string; link: string };
-} | null> {
-  return (await getSiteContent('hero', 'content')) as {
-    headline?: string;
-    subheadline?: string;
-    primaryCTA?: { text: string; link: string };
-  } | null;
 }
 
-export async function setHeroContent(content: {
-  headline?: string;
-  subheadline?: string;
-  primaryCTA?: { text: string; link: string };
-}): Promise<void> {
+export async function getHeroContent(): Promise<HeroContent | null> {
+  return (await getSiteContent('hero', 'content')) as HeroContent | null;
+}
+
+export async function setHeroContent(content: HeroContent): Promise<void> {
   await setSiteContent('hero', 'content', content, 'Hero section text content');
 }
 

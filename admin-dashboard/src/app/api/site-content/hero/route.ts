@@ -36,11 +36,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { headline, subheadline, primaryCTA } = body;
+    const { headlineLine1, headlineLine2, headlineLine3, eyebrow, creditLine, primaryCTA } = body;
 
     await setHeroContent({
-      headline,
-      subheadline,
+      headlineLine1,
+      headlineLine2,
+      headlineLine3,
+      eyebrow,
+      creditLine,
       primaryCTA,
     });
 
