@@ -104,13 +104,24 @@ export async function getHeroContent(): Promise<HeroContent> {
 // ─── Hero Image ───────────────────────────────────────────────────────────────
 
 export async function getHeroImageUrl(): Promise<string> {
-  const raw = (await getSiteContent('hero', 'image')) as { url?: string } | null;
-  return raw?.url || '/images/hero.jpg';
+  try {
+    // Hero image is stored in site_settings table by the admin dashboard
+    const result = await sql`SELECT value FROM site_settings WHERE key = 'hero_image_url' LIMIT 1`;
+    return result.length > 0 && result[0].value ? String(result[0].value) : '/images/hero.jpg';
+  } catch {
+    return '/images/hero.jpg';
+  }
 }
 
 export async function getHeroImageAlt(): Promise<string> {
-  const raw = (await getSiteContent('hero', 'image')) as { alt?: string } | null;
-  return raw?.alt || 'Raise Design & Build — high-end remodeling on Long Island';
+  try {
+    const result = await sql`SELECT value FROM site_settings WHERE key = 'hero_image_alt' LIMIT 1`;
+    return result.length > 0 && result[0].value
+      ? String(result[0].value)
+      : 'Raise Design & Build — high-end remodeling on Long Island';
+  } catch {
+    return 'Raise Design & Build — high-end remodeling on Long Island';
+  }
 }
 
 // ─── Business Info ────────────────────────────────────────────────────────────
