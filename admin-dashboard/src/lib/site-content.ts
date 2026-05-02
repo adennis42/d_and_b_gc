@@ -12,17 +12,21 @@ export interface BusinessInfo {
   name: string;
   phone: string;
   email: string;
-  instagramUrl: string;
   city: string;
   state: string;
   zip: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  serviceAreas: string[];
+  hours: string;
 }
 
 export interface ServiceItem {
   title: string;
-  tagline: string;
+  description: string;
   imageUrl: string | null;
   imageAlt: string;
+  href: string;
 }
 
 export interface InstagramPost {
@@ -118,10 +122,13 @@ const businessDefaults: BusinessInfo = {
   name: 'Raise Design & Build',
   phone: '',
   email: '',
-  instagramUrl: '',
   city: '',
   state: '',
   zip: '',
+  instagramUrl: '',
+  facebookUrl: '',
+  serviceAreas: [],
+  hours: '',
 };
 
 export async function getBusinessInfo(): Promise<BusinessInfo> {
@@ -136,10 +143,10 @@ export async function setBusinessInfo(info: BusinessInfo): Promise<void> {
 // ─── Services ─────────────────────────────────────────────────────────────────
 
 const servicesDefaults: ServiceItem[] = [
-  { title: 'Kitchen Remodeling', tagline: 'Beautiful, functional spaces', imageUrl: null, imageAlt: '' },
-  { title: 'Bathroom Remodeling', tagline: 'Luxurious retreats', imageUrl: null, imageAlt: '' },
-  { title: 'Millwork', tagline: 'Custom craftsmanship', imageUrl: null, imageAlt: '' },
-  { title: 'Sunrooms', tagline: 'Bright, airy additions', imageUrl: null, imageAlt: '' },
+  { title: 'Kitchens',   description: 'From custom cabinetry to stone countertops.', imageUrl: null, imageAlt: '', href: '/schedule' },
+  { title: 'Bathrooms',  description: 'Quiet luxury. Thoughtful details.',            imageUrl: null, imageAlt: '', href: '/schedule' },
+  { title: 'Sunrooms',   description: 'Light-filled additions.',                       imageUrl: null, imageAlt: '', href: '/schedule' },
+  { title: 'Millwork',   description: 'Built-ins, mantels, wainscoting.',              imageUrl: null, imageAlt: '', href: '/schedule' },
 ];
 
 export async function getServicesItems(): Promise<ServiceItem[]> {

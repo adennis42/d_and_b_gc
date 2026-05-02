@@ -130,7 +130,7 @@ function StatusBanner({ error, success }: { error: string | null; success: boole
 // ─── Business Tab ───────────────────────────────────────────────────────────
 
 function BusinessTab() {
-  const [data, setData] = useState<BusinessInfo>({ name: '', phone: '', email: '', instagramUrl: '', city: '', state: '', zip: '' });
+  const [data, setData] = useState<BusinessInfo>({ name: '', phone: '', email: '', city: '', state: '', zip: '', instagramUrl: '', facebookUrl: '', serviceAreas: [], hours: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -170,12 +170,25 @@ function BusinessTab() {
         {field('name', 'Business Name', 'Raise Design & Build')}
         {field('phone', 'Phone Number', '(555) 123-4567', 'tel')}
         {field('email', 'Email Address', 'info@example.com', 'email')}
-        {field('instagramUrl', 'Instagram URL', 'https://instagram.com/youraccount', 'url')}
+        {field('hours', 'Business Hours', 'Mon–Fri 8am–5pm, Sat 9am–1pm')}
         <div className="grid grid-cols-3 gap-4">
           {field('city', 'City', 'Bay Shore')}
           {field('state', 'State', 'NY')}
           {field('zip', 'ZIP Code', '11706')}
         </div>
+        <div className="space-y-2">
+          <Label>Service Areas</Label>
+          <p className="text-xs text-slate-500">One town/area per line</p>
+          <textarea
+            rows={4}
+            className="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-md p-2 text-sm"
+            value={(data.serviceAreas || []).join('\n')}
+            onChange={e => setData(p => ({ ...p, serviceAreas: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) }))}
+            placeholder={"East Islip\nBay Shore\nIslip\nCentral Islip"}
+          />
+        </div>
+        {field('instagramUrl', 'Instagram URL', 'https://instagram.com/youraccount', 'url')}
+        {field('facebookUrl', 'Facebook URL', 'https://facebook.com/yourpage', 'url')}
         <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
           {saving ? 'Saving…' : 'Save Business Info'}
         </Button>
@@ -300,8 +313,12 @@ function ServicesTab() {
           <div key={i} className="p-4 bg-slate-800/40 rounded-lg border border-slate-700 space-y-4">
             <h3 className="text-sm font-semibold text-slate-200">{item.title}</h3>
             <div className="space-y-2">
-              <Label>Tagline</Label>
-              <Input value={item.tagline} onChange={e => update(i, { tagline: e.target.value })} placeholder="Beautiful, functional spaces" className="bg-slate-800 border-slate-700 text-slate-100" />
+              <Label>Description</Label>
+              <Input value={item.description || ''} onChange={e => update(i, { description: e.target.value })} placeholder="From custom cabinetry to stone countertops..." className="bg-slate-800 border-slate-700 text-slate-100" />
+            </div>
+            <div className="space-y-2">
+              <Label>Link (href)</Label>
+              <Input value={item.href || ''} onChange={e => update(i, { href: e.target.value })} placeholder="/schedule" className="bg-slate-800 border-slate-700 text-slate-100" />
             </div>
             <ImageField label="Service Image" imageUrl={item.imageUrl} onUrlChange={url => update(i, { imageUrl: url })} description="Portrait image works best (4:5 ratio)" />
             <div className="space-y-2">
