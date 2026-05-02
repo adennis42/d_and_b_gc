@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { FormSkeleton } from "@/components/forms/FormSkeleton";
 import { Clock, Calendar, MessageSquare, CheckCircle2 } from "lucide-react";
@@ -167,8 +166,6 @@ export default function SchedulePage() {
   return (
     <main className="py-8 md:py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb Navigation */}
-        <Breadcrumbs items={[{ label: "Schedule", href: undefined }]} />
 
         {/* Page Title */}
         <div className="mb-8 md:mb-12">

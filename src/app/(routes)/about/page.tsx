@@ -1,4 +1,3 @@
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { CheckCircle2, MapPin, Shield, Users, Clock } from "lucide-react";
 import { getAboutMetadata } from "@/lib/metadata";
 
@@ -123,8 +122,6 @@ export default function AboutPage() {
       <LocalBusinessStructuredData />
       <main className="py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb Navigation */}
-          <Breadcrumbs items={[{ label: "About", href: undefined }]} />
 
           {/* Page Title */}
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
