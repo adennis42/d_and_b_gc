@@ -191,7 +191,7 @@ function BusinessTab() {
             rows={4}
             className="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-md p-2 text-sm"
             value={(data.serviceAreas || []).join('\n')}
-            onChange={e => setData(p => ({ ...p, serviceAreas: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) }))}
+            onChange={e => setData(p => ({ ...p, serviceAreas: e.target.value.split('\n').filter(s => s.trim().length > 0) }))}
             placeholder={"East Islip\nBay Shore\nIslip\nCentral Islip"}
           />
         </div>
@@ -514,7 +514,7 @@ function AboutTab() {
           <p className="text-xs text-slate-500">One name per line</p>
           <Textarea
             value={data.teamNames.join('\n')}
-            onChange={e => setData(p => ({ ...p, teamNames: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) }))}
+            onChange={e => setData(p => ({ ...p, teamNames: e.target.value.split('\n').filter(s => s.trim().length > 0) }))}
             rows={3}
             placeholder={"Paul Sr.\nPaul Jr.\nJessica"}
             className="bg-slate-800 border-slate-700 text-slate-100"
