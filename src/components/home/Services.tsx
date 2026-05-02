@@ -5,34 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
 
-const SERVICES = [
-  {
-    title: "Kitchens",
-    description: "From custom cabinetry to stone countertops — spaces built around how you live.",
-    image: "/images/services/kitchen.jpg",
-    href: "/work#kitchens",
-  },
-  {
-    title: "Bathrooms",
-    description: "Quiet luxury. Thoughtful details. Finishes that last decades.",
-    image: "/images/services/bathroom.jpg",
-    href: "/work#bathrooms",
-  },
-  {
-    title: "Sunrooms",
-    description: "Light-filled additions that blur the line between indoors and out.",
-    image: "/images/services/sunroom.jpg",
-    href: "/work#sunrooms",
-  },
-  {
-    title: "Millwork",
-    description: "Built-ins, mantels, wainscoting. The kind of craftsmanship you notice in twenty years.",
-    image: "/images/services/millwork.jpg",
-    href: "/work#millwork",
-  },
-];
+// Services data comes from DB via ServicesDataLoader — no hardcoding here
 
-function ServiceCard({ service, index }: { service: typeof SERVICES[0]; index: number }) {
+function ServiceCard({ service, index }: { service: ServiceItem; index: number }) {
   const ease: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
 
   return (
@@ -45,7 +20,7 @@ function ServiceCard({ service, index }: { service: typeof SERVICES[0]; index: n
       style={{ transition: "box-shadow 0.48s ease, transform 0.48s ease" }}
     >
       <Link
-        href={service.href}
+        href={service.href || '/schedule'}
         style={{ display: "block", textDecoration: "none" }}
         aria-label={`View ${service.title} work`}
       >
@@ -62,8 +37,8 @@ function ServiceCard({ service, index }: { service: typeof SERVICES[0]; index: n
           className="service-card-image"
         >
           <Image
-            src={service.image}
-            alt={service.title}
+            src={service.imageUrl || '/images/placeholder.jpg'}
+            alt={service.imageAlt || service.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 25vw"
@@ -126,7 +101,9 @@ function ServiceCard({ service, index }: { service: typeof SERVICES[0]; index: n
   );
 }
 
-export function Services() {
+import type { ServiceItem } from '@/lib/site-content';
+
+export function Services({ services = [] }: { services?: ServiceItem[] }) {
   return (
     <section
       style={{
@@ -181,7 +158,7 @@ export function Services() {
             gap: "clamp(24px, 3vw, 40px)",
           }}
         >
-          {SERVICES.map((service, i) => (
+          {services.map((service, i) => (
             <ServiceCard key={service.title} service={service} index={i} />
           ))}
         </div>

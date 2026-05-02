@@ -8,10 +8,12 @@ import { trackCallToAction } from "@/lib/analytics";
 
 export function Hero({
   imageUrl = "/images/hero.jpg",
-  imageAlt = "Raise Design & Build — high-end kitchen and bathroom remodeling on Long Island",
+  imageAlt = "Raise Design & Build — high-end remodeling on Long Island",
   headlineLine1 = "Craftsmanship",
   headlineLine2 = "at every",
   headlineLine3 = "detail.",
+  eyebrow = "Kitchens · Baths · Sunrooms · Millwork",
+  creditLine = "Long Island, New York — Est. 2003",
   primaryCTA = { text: "Schedule a Visit", link: "/schedule" },
 }: {
   imageUrl?: string;
@@ -19,6 +21,8 @@ export function Hero({
   headlineLine1?: string;
   headlineLine2?: string;
   headlineLine3?: string;
+  eyebrow?: string;
+  creditLine?: string;
   primaryCTA?: { text: string; link: string };
 }) {
   const shouldReduceMotion = useReducedMotion();
@@ -67,7 +71,7 @@ export function Hero({
         }}
         aria-hidden="true"
       >
-        Long Island, New York — Est. 2003
+        {creditLine}
       </div>
 
       {/* Content */}
@@ -108,7 +112,7 @@ export function Hero({
                 color: "rgba(250,247,242,0.6)",
               }}
             >
-              Kitchens · Baths · Sunrooms · Millwork
+              {eyebrow}
             </span>
           </motion.div>
 

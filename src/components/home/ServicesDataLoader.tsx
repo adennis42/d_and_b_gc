@@ -4,5 +4,6 @@ import { Services } from './Services';
 export const dynamic = 'force-dynamic';
 
 export async function ServicesDataLoader() {
-  return <Services />;
+  const services = await getServicesItems();
+  return <Services services={services} />;
 }

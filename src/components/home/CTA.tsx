@@ -4,9 +4,19 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { trackCallToAction } from "@/lib/analytics";
+import type { CtaContent } from "@/lib/site-content";
 
-export function CTA() {
+// Defaults used when rendering without a data loader (e.g. Storybook, tests)
+const DEFAULT_CTA: CtaContent = {
+  headlinePlain: "Bring craftsmanship to",
+  headlineEmphasis: "your space.",
+  primaryCTA: { text: "Schedule a Visit", link: "/schedule" },
+  secondaryCTA: { text: "View Our Work", link: "/work" },
+};
+
+export function CTA({ content = DEFAULT_CTA }: { content?: CtaContent }) {
   const ease: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
+  const { headlinePlain, headlineEmphasis, primaryCTA, secondaryCTA } = content;
 
   return (
     <section
@@ -56,18 +66,13 @@ export function CTA() {
             textWrap: "balance",
           }}
         >
-          Bring craftsmanship to{" "}
-          <em
-            style={{
-              fontWeight: 300,
-              color: "#A8804A",
-            }}
-          >
-            your space.
+          {headlinePlain}{" "}
+          <em style={{ fontWeight: 300, color: "#A8804A" }}>
+            {headlineEmphasis}
           </em>
         </motion.h2>
 
-        {/* CTA */}
+        {/* CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -76,63 +81,49 @@ export function CTA() {
           style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}
         >
           <Link
-            href="/schedule"
+            href={primaryCTA.link}
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
+              display: "inline-flex", alignItems: "center", gap: "8px",
               fontFamily: "var(--font-sans, 'Inter', sans-serif)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#FAF7F2",
-              background: "#1B1A17",
-              border: "1px solid #1B1A17",
-              padding: "14px 28px",
-              textDecoration: "none",
-              borderRadius: "4px",
+              fontSize: "11px", fontWeight: 500, letterSpacing: "0.18em",
+              textTransform: "uppercase", color: "#FAF7F2",
+              background: "#1B1A17", border: "1px solid #1B1A17",
+              padding: "14px 28px", textDecoration: "none", borderRadius: "4px",
               transition: "opacity 0.18s ease",
             }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.85")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-            onClick={() => trackCallToAction("cta-section", "schedule", "/schedule")}
+            onClick={() => trackCallToAction("cta-section", "primary", primaryCTA.link)}
           >
-            Schedule a Visit
+            {primaryCTA.text}
             <ArrowRight size={14} strokeWidth={1.25} />
           </Link>
 
-          <Link
-            href="/work"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              fontFamily: "var(--font-sans, 'Inter', sans-serif)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#1B1A17",
-              background: "transparent",
-              border: "1px solid #1B1A17",
-              padding: "14px 28px",
-              textDecoration: "none",
-              borderRadius: "4px",
-              transition: "all 0.18s ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "#1B1A17";
-              (e.currentTarget as HTMLElement).style.color = "#FAF7F2";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "transparent";
-              (e.currentTarget as HTMLElement).style.color = "#1B1A17";
-            }}
-            onClick={() => trackCallToAction("cta-section", "view-work", "/work")}
-          >
-            View Our Work
-          </Link>
+          {secondaryCTA && (
+            <Link
+              href={secondaryCTA.link}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "8px",
+                fontFamily: "var(--font-sans, 'Inter', sans-serif)",
+                fontSize: "11px", fontWeight: 500, letterSpacing: "0.18em",
+                textTransform: "uppercase", color: "#1B1A17",
+                background: "transparent", border: "1px solid #1B1A17",
+                padding: "14px 28px", textDecoration: "none", borderRadius: "4px",
+                transition: "all 0.18s ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "#1B1A17";
+                (e.currentTarget as HTMLElement).style.color = "#FAF7F2";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "transparent";
+                (e.currentTarget as HTMLElement).style.color = "#1B1A17";
+              }}
+              onClick={() => trackCallToAction("cta-section", "secondary", secondaryCTA.link)}
+            >
+              {secondaryCTA.text}
+            </Link>
+          )}
         </motion.div>
       </div>
     </section>

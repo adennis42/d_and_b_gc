@@ -2,6 +2,9 @@
  * Site content utilities (Main Website — read only)
  * Fetches structured content from the site_content table.
  * All writes go through the admin dashboard API.
+ *
+ * RULE: Nothing content-related should be hardcoded in components.
+ *       All configurable text, images, and links come from here.
  */
 
 import { sql } from './db';
@@ -12,17 +15,39 @@ export interface BusinessInfo {
   name: string;
   phone: string;
   email: string;
-  instagramUrl: string;
   city: string;
   state: string;
   zip: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  serviceAreas: string[];   // e.g. ["East Islip", "Bay Shore", "Islip", ...]
+  hours: string;
+}
+
+export interface HeroContent {
+  headlineLine1: string;
+  headlineLine2: string;
+  headlineLine3: string;
+  eyebrow: string;          // e.g. "Kitchens · Baths · Sunrooms · Millwork"
+  creditLine: string;       // vertical credit text, e.g. "Long Island, New York — Est. 2003"
+  primaryCTA: { text: string; link: string };
 }
 
 export interface ServiceItem {
   title: string;
-  tagline: string;
+  description: string;
   imageUrl: string | null;
   imageAlt: string;
+  href: string;
+}
+
+export interface AboutContent {
+  imageUrl: string | null;
+  imageAlt: string;
+  headline: string;
+  bodyParagraphs: string[];  // array of paragraphs
+  teamNames: string[];       // e.g. ["Paul Sr.", "Paul Jr.", "Jessica"]
+  serviceAreas: string[];    // may differ from BusinessInfo.serviceAreas
 }
 
 export interface InstagramPost {
@@ -31,18 +56,11 @@ export interface InstagramPost {
   permalink: string;
 }
 
-export interface AboutPreview {
-  imageUrl: string | null;
-  imageAlt: string;
-  heading: string;
-  bodyText: string;
-}
-
 export interface CtaContent {
-  heading: string;
-  bodyText: string;
-  buttonText: string;
-  buttonLink: string;
+  headlinePlain: string;     // text before the brass italic emphasis
+  headlineEmphasis: string;  // brass italic portion, e.g. "your space."
+  primaryCTA: { text: string; link: string };
+  secondaryCTA?: { text: string; link: string };
 }
 
 // ─── Generic getter ───────────────────────────────────────────────────────────
@@ -68,16 +86,30 @@ async function getSiteContent(section: string, key: string): Promise<unknown | n
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
-export async function getHeroContent(): Promise<{
-  headline?: string;
-  subheadline?: string;
-  primaryCTA?: { text: string; link: string };
-} | null> {
-  return getSiteContent('hero', 'content') as Promise<{
-    headline?: string;
-    subheadline?: string;
-    primaryCTA?: { text: string; link: string };
-  } | null>;
+const heroDefaults: HeroContent = {
+  headlineLine1: 'Craftsmanship',
+  headlineLine2: 'at every',
+  headlineLine3: 'detail.',
+  eyebrow: 'Kitchens · Baths · Sunrooms · Millwork',
+  creditLine: 'Long Island, New York — Est. 2003',
+  primaryCTA: { text: 'Schedule a Visit', link: '/schedule' },
+};
+
+export async function getHeroContent(): Promise<HeroContent> {
+  const raw = (await getSiteContent('hero', 'content')) as Partial<HeroContent> | null;
+  return { ...heroDefaults, ...raw };
+}
+
+// ─── Hero Image ───────────────────────────────────────────────────────────────
+
+export async function getHeroImageUrl(): Promise<string> {
+  const raw = (await getSiteContent('hero', 'image')) as { url?: string } | null;
+  return raw?.url || '/images/hero.jpg';
+}
+
+export async function getHeroImageAlt(): Promise<string> {
+  const raw = (await getSiteContent('hero', 'image')) as { alt?: string } | null;
+  return raw?.alt || 'Raise Design & Build — high-end remodeling on Long Island';
 }
 
 // ─── Business Info ────────────────────────────────────────────────────────────
@@ -86,10 +118,13 @@ const businessDefaults: BusinessInfo = {
   name: 'Raise Design & Build',
   phone: '',
   email: '',
-  instagramUrl: '',
   city: '',
   state: '',
   zip: '',
+  instagramUrl: '',
+  facebookUrl: '',
+  serviceAreas: [],
+  hours: '',
 };
 
 export async function getBusinessInfo(): Promise<BusinessInfo> {
@@ -100,10 +135,10 @@ export async function getBusinessInfo(): Promise<BusinessInfo> {
 // ─── Services ─────────────────────────────────────────────────────────────────
 
 const servicesDefaults: ServiceItem[] = [
-  { title: 'Kitchen Remodeling', tagline: 'Beautiful, functional spaces', imageUrl: null, imageAlt: '' },
-  { title: 'Bathroom Remodeling', tagline: 'Luxurious retreats', imageUrl: null, imageAlt: '' },
-  { title: 'Millwork', tagline: 'Custom craftsmanship', imageUrl: null, imageAlt: '' },
-  { title: 'Sunrooms', tagline: 'Bright, airy additions', imageUrl: null, imageAlt: '' },
+  { title: 'Kitchens',   description: 'From custom cabinetry to stone countertops — spaces built around how you live.', imageUrl: null, imageAlt: 'Kitchen remodeling', href: '/schedule' },
+  { title: 'Bathrooms',  description: 'Quiet luxury. Thoughtful details. Finishes that last decades.',                  imageUrl: null, imageAlt: 'Bathroom remodeling', href: '/schedule' },
+  { title: 'Sunrooms',   description: 'Light-filled additions that blur the line between indoors and out.',             imageUrl: null, imageAlt: 'Sunroom addition', href: '/schedule' },
+  { title: 'Millwork',   description: 'Built-ins, mantels, wainscoting. The kind of craftsmanship you notice in twenty years.', imageUrl: null, imageAlt: 'Custom millwork', href: '/schedule' },
 ];
 
 export async function getServicesItems(): Promise<ServiceItem[]> {
@@ -111,34 +146,44 @@ export async function getServicesItems(): Promise<ServiceItem[]> {
   return Array.isArray(raw) ? (raw as ServiceItem[]) : servicesDefaults;
 }
 
-// ─── Instagram Posts ──────────────────────────────────────────────────────────
+// ─── About ────────────────────────────────────────────────────────────────────
+
+const aboutDefaults: AboutContent = {
+  imageUrl: null,
+  imageAlt: 'Raise Design & Build team',
+  headline: 'Craft-forward remodeling on Long Island.',
+  bodyParagraphs: [
+    'Raise Design & Build is a family-owned remodeling company serving Long Island homeowners since 2003.',
+    'We specialize in high-end kitchens, bathrooms, sunrooms, and custom millwork — built with honesty, precision, and care.',
+  ],
+  teamNames: ['Paul Sr.', 'Paul Jr.', 'Jessica'],
+  serviceAreas: [],
+};
+
+export async function getAboutContent(): Promise<AboutContent> {
+  const raw = (await getSiteContent('about', 'content')) as Partial<AboutContent> | null;
+  return { ...aboutDefaults, ...raw };
+}
+
+// Legacy alias used by older admin routes
+export async function getAboutPreview(): Promise<AboutContent> {
+  return getAboutContent();
+}
+
+// ─── Instagram ────────────────────────────────────────────────────────────────
 
 export async function getInstagramPosts(): Promise<InstagramPost[]> {
   const raw = await getSiteContent('instagram', 'posts');
   return Array.isArray(raw) ? (raw as InstagramPost[]) : [];
 }
 
-// ─── About Preview ────────────────────────────────────────────────────────────
-
-const aboutDefaults: AboutPreview = {
-  imageUrl: null,
-  imageAlt: '',
-  heading: 'Design-First Approach',
-  bodyText: 'We transform high-end residential spaces with meticulous attention to detail and expert craftsmanship.',
-};
-
-export async function getAboutPreview(): Promise<AboutPreview> {
-  const raw = (await getSiteContent('about', 'preview')) as Partial<AboutPreview> | null;
-  return { ...aboutDefaults, ...raw };
-}
-
-// ─── CTA Content ──────────────────────────────────────────────────────────────
+// ─── CTA ──────────────────────────────────────────────────────────────────────
 
 const ctaDefaults: CtaContent = {
-  heading: 'Ready to Start Your Project?',
-  bodyText: 'Schedule a free consultation to discuss your remodeling vision',
-  buttonText: 'Schedule Your Consultation',
-  buttonLink: '/schedule',
+  headlinePlain: 'Bring craftsmanship to',
+  headlineEmphasis: 'your space.',
+  primaryCTA: { text: 'Schedule a Visit', link: '/schedule' },
+  secondaryCTA: { text: 'View Our Work', link: '/work' },
 };
 
 export async function getCtaContent(): Promise<CtaContent> {

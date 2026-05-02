@@ -31,13 +31,16 @@ function FooterWordmark() {
   );
 }
 
-export function Footer() {
+import type { BusinessInfo } from "@/lib/site-content";
+
+export function Footer({ business }: { business?: BusinessInfo }) {
   const currentYear = new Date().getFullYear();
-  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com";
-  const phone = process.env.NEXT_PUBLIC_BUSINESS_PHONE || "";
-  const email = process.env.NEXT_PUBLIC_BUSINESS_EMAIL || "";
-  const city = process.env.NEXT_PUBLIC_BUSINESS_CITY || "Long Island";
-  const state = process.env.NEXT_PUBLIC_BUSINESS_STATE || "NY";
+  const instagramUrl = business?.instagramUrl || process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com";
+  const phone = business?.phone || process.env.NEXT_PUBLIC_BUSINESS_PHONE || "";
+  const email = business?.email || process.env.NEXT_PUBLIC_BUSINESS_EMAIL || "";
+  const city = business?.city || process.env.NEXT_PUBLIC_BUSINESS_CITY || "";
+  const state = business?.state || process.env.NEXT_PUBLIC_BUSINESS_STATE || "NY";
+  const businessName = business?.name || "Raise Design & Build";
 
   const linkStyle = {
     fontFamily: "var(--font-sans, 'Inter', sans-serif)",
@@ -217,7 +220,7 @@ export function Footer() {
             margin: 0,
           }}
         >
-          © {currentYear} Raise Design &amp; Build. All rights reserved.
+          © {currentYear} {businessName}. All rights reserved.
         </p>
       </div>
     </footer>

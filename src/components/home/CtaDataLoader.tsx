@@ -4,5 +4,6 @@ import { CTA } from './CTA';
 export const dynamic = 'force-dynamic';
 
 export async function CtaDataLoader() {
-  return <CTA />;
+  const content = await getCtaContent();
+  return <CTA content={content} />;
 }

@@ -2,7 +2,7 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { FooterDataLoader } from "@/components/layout/FooterDataLoader";
 import { StructuredData } from "@/components/StructuredData";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { SkipToContent } from "@/components/accessibility/SkipToContent";
@@ -97,7 +97,7 @@ export default async function RootLayout({
         <main id="main-content" className="flex-1" tabIndex={-1}>
           {children}
         </main>
-        <Footer />
+        <FooterDataLoader />
         <Toaster position="top-center" richColors />
         {/* Google Analytics - Only loads in production */}
         {/* Page views are tracked automatically by GA4 */}
