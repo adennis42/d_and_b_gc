@@ -450,6 +450,8 @@ function AboutTab() {
     imageUrl: null, imageAlt: '',
     headline: '', bodyParagraphs: [''], teamNames: [], serviceAreas: [],
   });
+  const [teamNamesText, setTeamNamesText] = useState('');
+  const [bodyText, setBodyText] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -457,22 +459,30 @@ function AboutTab() {
 
   useEffect(() => {
     fetch('/api/site-content/about-preview').then(r => r.json()).then((d: any) => {
+      const teamNames = Array.isArray(d?.teamNames) ? d.teamNames : [];
+      const bodyParagraphs = Array.isArray(d?.bodyParagraphs) ? d.bodyParagraphs : [d?.bodyText || ''].filter(Boolean);
       setData({
         imageUrl: d?.imageUrl || null,
         imageAlt: d?.imageAlt || '',
         headline: d?.headline || '',
-        bodyParagraphs: Array.isArray(d?.bodyParagraphs) ? d.bodyParagraphs : [d?.bodyText || ''].filter(Boolean),
-        teamNames: Array.isArray(d?.teamNames) ? d.teamNames : [],
+        bodyParagraphs,
+        teamNames,
         serviceAreas: Array.isArray(d?.serviceAreas) ? d.serviceAreas : [],
       });
+      setTeamNamesText(teamNames.join('\n'));
+      setBodyText(bodyParagraphs.join('\n\n'));
       setLoading(false);
     });
   }, []);
 
   const save = async () => {
     setSaving(true); setError(null);
+    // Convert raw text areas to arrays on save
+    const teamNames = teamNamesText.split('\n').filter(s => s.trim().length > 0);
+    const bodyParagraphs = bodyText.split(/\n\n+/).map(s => s.trim()).filter(Boolean);
+    const payload = { ...data, teamNames, bodyParagraphs };
     try {
-      const res = await fetch('/api/site-content/about-preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const res = await fetch('/api/site-content/about-preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!res.ok) throw new Error((await res.json()).error || 'Save failed');
       setSuccess(true); setTimeout(() => setSuccess(false), 3000);
     } catch (err) { setError(err instanceof Error ? err.message : 'Save failed'); }
@@ -502,10 +512,10 @@ function AboutTab() {
           <Label>Body Text</Label>
           <p className="text-xs text-slate-500">One paragraph per line</p>
           <Textarea
-            value={data.bodyParagraphs.join('\n\n')}
-            onChange={e => setData(p => ({ ...p, bodyParagraphs: e.target.value.split(/\n\n+/).map(s => s.trim()).filter(Boolean) }))}
+            value={bodyText}
+            onChange={e => setBodyText(e.target.value)}
             rows={5}
-            placeholder="Paragraph 1\n\nParagraph 2"
+            placeholder={"Paragraph 1\n\nParagraph 2"}
             className="bg-slate-800 border-slate-700 text-slate-100"
           />
         </div>
@@ -513,9 +523,9 @@ function AboutTab() {
           <Label>Team Names</Label>
           <p className="text-xs text-slate-500">One name per line</p>
           <Textarea
-            value={data.teamNames.join('\n')}
-            onChange={e => setData(p => ({ ...p, teamNames: e.target.value.split('\n').filter(s => s.trim().length > 0) }))}
-            rows={3}
+            value={teamNamesText}
+            onChange={e => setTeamNamesText(e.target.value)}
+            rows={4}
             placeholder={"Paul Sr.\nPaul Jr.\nJessica"}
             className="bg-slate-800 border-slate-700 text-slate-100"
           />
