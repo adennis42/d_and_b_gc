@@ -1,5 +1,6 @@
 import { CheckCircle2, MapPin, Shield, Users, Clock } from "lucide-react";
 import { getAboutMetadata } from "@/lib/metadata";
+import { getAboutContent } from "@/lib/site-content";
 
 /**
  * About page metadata for SEO
@@ -60,7 +61,10 @@ function LocalBusinessStructuredData() {
  * About page component
  * Displays company information, process, service areas, and differentiators
  */
-export default function AboutPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function AboutPage() {
+  const about = await getAboutContent();
   const processSteps = [
     {
       number: "01",
@@ -95,7 +99,7 @@ export default function AboutPage() {
       icon: Shield,
       title: "Maintaining Standards",
       description:
-        "We stay consistent, we stay accountable, and we stand behind our work. When you choose us, you’re choosing a team that values honesty, reliability, and results that last.",
+        "We stay consistent, we stay accountable, and we stand behind our work. When you choose us, you're choosing a team that values honesty, reliability, and results that last.",
     },
     {
       icon: Users,
@@ -128,43 +132,29 @@ export default function AboutPage() {
             About Us
           </h1>
 
-          {/* About Company Section */}
+          {/* About Company Section — editable via admin dashboard */}
           <section className="mb-16 md:mb-24">
             <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
-              <p>
-                Our company is a true family operation rooted in craftsmanship
-                and integrity. Led by a second-generation master carpenter,
-                Paul, with over 40 years of hands-on experience, we bring
-                decades of building expertise to every project. He learned the
-                trade the traditional way—on the job, day after day, perfecting
-                the details that make a home truly special. After building
-                houses in the 80s/90s, as the industry changed, Paul shifted his
-                focus to interior millwork, kitchens, and bathrooms, bringing
-                the same level of precision and craftsmanship to each project.
-              </p>
-              <p>
-                Today, he works alongside his son, Paul Jr, on every site,
-                carrying forward a legacy built on skill, trust, and pride in a
-                job well done. Ensuring quality that only comes from people who
-                take joy in their craft. Complementing this is his daughter,
-                Jessica, who adds a design-forward perspective, helping clients
-                with design choices, interior layouts, and finish selections to
-                create spaces that feel cohesive, elevated, and uniquely theirs.
-                When the pandemic reshaped the way people lived in and used
-                their homes, we expanded our services to include custom
-                sunrooms—designing and installing bright, beautiful spaces that
-                bring the outdoors in. This includes full sunroom fit-outs,
-                blending our construction background with our passion for
-                creating comfortable, functional spaces
-              </p>
-              <p>
-                At the heart of our company is a commitment to honest work,
-                personal service, and exceptional results. As a Design & Build
-                operation, you’ll save thousands compared to boutique showrooms
-                that overcharge and under-listen. We aim higher than your
-                expectations to delivery you a space that is a masterpiece of
-                craftsmanship and sophistication.
-              </p>
+              {about.bodyParagraphs.length > 0 ? (
+                about.bodyParagraphs.map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))
+              ) : (
+                // Fallback if nothing in DB yet
+                <>
+                  <p>
+                    Our company is a true family operation rooted in craftsmanship
+                    and integrity. Led by a second-generation master carpenter,
+                    Paul, with over 40 years of hands-on experience, we bring
+                    decades of building expertise to every project.
+                  </p>
+                  <p>
+                    Today, he works alongside his son, Paul Jr, on every site,
+                    carrying forward a legacy built on skill, trust, and pride in a
+                    job well done.
+                  </p>
+                </>
+              )}
             </div>
           </section>
 
