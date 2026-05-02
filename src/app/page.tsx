@@ -1,6 +1,6 @@
 import { HeroDataLoader } from "@/components/home/HeroDataLoader";
 import { AboutPreviewDataLoader } from "@/components/home/AboutPreviewDataLoader";
-import { InstagramFeed } from "@/components/home/InstagramFeed";
+import { InstagramFeedDataLoader } from "@/components/home/InstagramFeedDataLoader";
 import { CtaDataLoader } from "@/components/home/CtaDataLoader";
 import { getHomeMetadata } from "@/lib/metadata";
 
@@ -22,8 +22,6 @@ export const revalidate = 0;
  * Homepage component - Modern minimalist design with scroll animations
  */
 export default function HomePage() {
-  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com";
-
   return (
     <main>
       {/* Hero Section */}
@@ -33,7 +31,7 @@ export default function HomePage() {
       <AboutPreviewDataLoader />
 
       {/* Instagram Feed */}
-      <InstagramFeed instagramUrl={instagramUrl} />
+      <InstagramFeedDataLoader />
 
       {/* Call-to-Action */}
       <CtaDataLoader />
