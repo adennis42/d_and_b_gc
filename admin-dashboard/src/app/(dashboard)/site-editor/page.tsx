@@ -137,10 +137,21 @@ function BusinessTab() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    fetch('/api/site-content/business').then(r => r.json()).then(d => {
-      // Guard: if DB returned a double-encoded string, parse it
-      const parsed = typeof d === 'string' ? JSON.parse(d) : d;
-      setData({ name: '', phone: '', email: '', city: '', state: '', zip: '', instagramUrl: '', facebookUrl: '', serviceAreas: [], hours: '', ...parsed });
+    fetch('/api/site-content/business').then(r => r.json()).then((d: any) => {
+      // Fully reconstruct from named fields only — never spread unknown objects
+      // This prevents character-indexed string spreading
+      setData({
+        name: d?.name || '',
+        phone: d?.phone || '',
+        email: d?.email || '',
+        city: d?.city || '',
+        state: d?.state || '',
+        zip: d?.zip || '',
+        instagramUrl: d?.instagramUrl || '',
+        facebookUrl: d?.facebookUrl || '',
+        serviceAreas: Array.isArray(d?.serviceAreas) ? d.serviceAreas : [],
+        hours: d?.hours || '',
+      });
       setLoading(false);
     });
   }, []);
