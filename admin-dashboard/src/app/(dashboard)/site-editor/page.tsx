@@ -10,14 +10,6 @@ import type { BusinessInfo, ServiceItem, InstagramPost, AboutPreview, CtaContent
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
-interface HeroSettings {
-  url: string;
-  alt: string;
-  headline: string;
-  subheadline: string;
-  primaryCTA: { text: string; link: string };
-}
-
 type Tab = 'business' | 'hero' | 'services' | 'instagram' | 'about' | 'cta';
 
 const TABS: { id: Tab; label: string }[] = [
@@ -215,8 +207,21 @@ function BusinessTab() {
 
 // ─── Hero Tab ───────────────────────────────────────────────────────────────
 
+interface HeroFormData {
+  url: string; alt: string;
+  headlineLine1: string; headlineLine2: string; headlineLine3: string;
+  eyebrow: string; creditLine: string;
+  primaryCTA: { text: string; link: string };
+}
+
 function HeroTab() {
-  const [data, setData] = useState<HeroSettings>({ url: '', alt: '', headline: '', subheadline: '', primaryCTA: { text: '', link: '' } });
+  const [data, setData] = useState<HeroFormData>({
+    url: '', alt: '',
+    headlineLine1: 'Craftsmanship', headlineLine2: 'at every', headlineLine3: 'detail.',
+    eyebrow: 'Kitchens · Baths · Sunrooms · Millwork',
+    creditLine: 'Long Island, New York — Est. 2003',
+    primaryCTA: { text: 'Schedule a Visit', link: '/schedule' },
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -226,8 +231,17 @@ function HeroTab() {
     Promise.all([
       fetch('/api/site-settings/hero').then(r => r.json()),
       fetch('/api/site-content/hero').then(r => r.json()),
-    ]).then(([img, content]) => {
-      setData({ url: img.url || '', alt: img.alt || '', headline: content.headline || '', subheadline: content.subheadline || '', primaryCTA: content.primaryCTA || { text: '', link: '' } });
+    ]).then(([img, content]: [any, any]) => {
+      setData({
+        url: img?.url || '',
+        alt: img?.alt || '',
+        headlineLine1: content?.headlineLine1 || 'Craftsmanship',
+        headlineLine2: content?.headlineLine2 || 'at every',
+        headlineLine3: content?.headlineLine3 || 'detail.',
+        eyebrow: content?.eyebrow || 'Kitchens · Baths · Sunrooms · Millwork',
+        creditLine: content?.creditLine || 'Long Island, New York — Est. 2003',
+        primaryCTA: content?.primaryCTA || { text: 'Schedule a Visit', link: '/schedule' },
+      });
       setLoading(false);
     });
   }, []);
@@ -237,7 +251,10 @@ function HeroTab() {
     try {
       await Promise.all([
         fetch('/api/site-settings/hero', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: data.url, alt: data.alt }) }).then(r => { if (!r.ok) throw new Error('Failed to save hero image'); }),
-        fetch('/api/site-content/hero', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ headline: data.headline, subheadline: data.subheadline, primaryCTA: data.primaryCTA }) }).then(r => { if (!r.ok) throw new Error('Failed to save hero content'); }),
+        fetch('/api/site-content/hero', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          headlineLine1: data.headlineLine1, headlineLine2: data.headlineLine2, headlineLine3: data.headlineLine3,
+          eyebrow: data.eyebrow, creditLine: data.creditLine, primaryCTA: data.primaryCTA,
+        }) }).then(r => { if (!r.ok) throw new Error('Failed to save hero content'); }),
       ]);
       setSuccess(true); setTimeout(() => setSuccess(false), 3000);
     } catch (err) { setError(err instanceof Error ? err.message : 'Save failed'); }
@@ -260,14 +277,30 @@ function HeroTab() {
           <Input id="hero-alt" value={data.alt} onChange={e => setData(p => ({ ...p, alt: e.target.value }))} placeholder="Describe the image for accessibility" className="bg-slate-800 border-slate-700 text-slate-100" />
         </div>
         <div className="border-t border-slate-700 pt-5 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="hero-headline">Headline</Label>
-            <Input id="hero-headline" value={data.headline} onChange={e => setData(p => ({ ...p, headline: e.target.value }))} placeholder="Transform Your Home with Expert Craftsmanship" className="bg-slate-800 border-slate-700 text-slate-100" />
+          <p className="text-xs text-slate-400">The headline displays on 3 lines. Each line is a separate field below.</p>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="hero-line1">Headline Line 1</Label>
+              <Input id="hero-line1" value={data.headlineLine1} onChange={e => setData(p => ({ ...p, headlineLine1: e.target.value }))} placeholder="Craftsmanship" className="bg-slate-800 border-slate-700 text-slate-100" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="hero-line2">Headline Line 2</Label>
+              <Input id="hero-line2" value={data.headlineLine2} onChange={e => setData(p => ({ ...p, headlineLine2: e.target.value }))} placeholder="at every" className="bg-slate-800 border-slate-700 text-slate-100" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="hero-line3">Headline Line 3</Label>
+              <Input id="hero-line3" value={data.headlineLine3} onChange={e => setData(p => ({ ...p, headlineLine3: e.target.value }))} placeholder="detail." className="bg-slate-800 border-slate-700 text-slate-100" />
+            </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="hero-sub">Subheadline</Label>
-            <Textarea id="hero-sub" value={data.subheadline} onChange={e => setData(p => ({ ...p, subheadline: e.target.value }))} rows={3} placeholder="Supporting text below the headline" className="bg-slate-800 border-slate-700 text-slate-100" />
+            <Label htmlFor="hero-eyebrow">Eyebrow Text (small text above headline)</Label>
+            <Input id="hero-eyebrow" value={data.eyebrow} onChange={e => setData(p => ({ ...p, eyebrow: e.target.value }))} placeholder="Kitchens · Baths · Sunrooms · Millwork" className="bg-slate-800 border-slate-700 text-slate-100" />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="hero-credit">Credit Line (vertical text, right side)</Label>
+            <Input id="hero-credit" value={data.creditLine} onChange={e => setData(p => ({ ...p, creditLine: e.target.value }))} placeholder="Long Island, New York — Est. 2003" className="bg-slate-800 border-slate-700 text-slate-100" />
+          </div>
+
           <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700 space-y-3">
             <p className="text-sm font-semibold text-slate-300">Call-to-Action Button</p>
             <div className="grid grid-cols-2 gap-4">
