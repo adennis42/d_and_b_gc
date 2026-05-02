@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Instagram, MapPin, Phone, Mail } from "lucide-react";
+import { Instagram, Facebook, MapPin, Phone, Mail } from "lucide-react";
 import { trackButtonClick, trackExternalLink } from "@/lib/analytics";
 
 
@@ -35,7 +35,9 @@ import type { BusinessInfo } from "@/lib/site-content";
 
 export function Footer({ business }: { business?: BusinessInfo }) {
   const currentYear = new Date().getFullYear();
-  const instagramUrl = business?.instagramUrl || process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com";
+  const instagramUrl = business?.instagramUrl || process.env.NEXT_PUBLIC_INSTAGRAM_URL || "";
+  const facebookUrl = business?.facebookUrl || "";
+  const pinterestUrl = business?.pinterestUrl || "";
   const phone = business?.phone || process.env.NEXT_PUBLIC_BUSINESS_PHONE || "";
   const email = business?.email || process.env.NEXT_PUBLIC_BUSINESS_EMAIL || "";
   const city = business?.city || process.env.NEXT_PUBLIC_BUSINESS_CITY || "";
@@ -148,18 +150,39 @@ export function Footer({ business }: { business?: BusinessInfo }) {
                 {email}
               </a>
             )}
-            <a
-              href={instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: "8px", ...linkStyle }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#A8804A")}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#4A4842")}
-              onClick={() => trackExternalLink(instagramUrl, "Instagram", "footer-social")}
-            >
-              <Instagram size={14} strokeWidth={1.25} style={{ color: "#A39E94", flexShrink: 0 }} />
-              Instagram
-            </a>
+            {instagramUrl && (
+              <a href={instagramUrl} target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: "8px", ...linkStyle }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#A8804A")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#4A4842")}
+                onClick={() => trackExternalLink(instagramUrl, "Instagram", "footer-social")}
+              >
+                <Instagram size={14} strokeWidth={1.25} style={{ color: "#A39E94", flexShrink: 0 }} />
+                Instagram
+              </a>
+            )}
+            {facebookUrl && (
+              <a href={facebookUrl} target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: "8px", ...linkStyle }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#A8804A")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#4A4842")}
+                onClick={() => trackExternalLink(facebookUrl, "Facebook", "footer-social")}
+              >
+                <Facebook size={14} strokeWidth={1.25} style={{ color: "#A39E94", flexShrink: 0 }} />
+                Facebook
+              </a>
+            )}
+            {pinterestUrl && (
+              <a href={pinterestUrl} target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: "8px", ...linkStyle }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#A8804A")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#4A4842")}
+                onClick={() => trackExternalLink(pinterestUrl, "Pinterest", "footer-social")}
+              >
+                <span style={{ color: "#A39E94", fontSize: "14px", flexShrink: 0 }}>P</span>
+                Pinterest
+              </a>
+            )}
           </div>
         </div>
       </div>

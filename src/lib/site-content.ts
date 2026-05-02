@@ -20,6 +20,7 @@ export interface BusinessInfo {
   zip: string;
   instagramUrl: string;
   facebookUrl: string;
+  pinterestUrl: string;
   serviceAreas: string[];   // e.g. ["East Islip", "Bay Shore", "Islip", ...]
   hours: string;
 }
@@ -136,6 +137,7 @@ const businessDefaults: BusinessInfo = {
   zip: '',
   instagramUrl: '',
   facebookUrl: '',
+  pinterestUrl: '',
   serviceAreas: [],
   hours: '',
 };

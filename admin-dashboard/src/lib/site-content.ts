@@ -17,6 +17,7 @@ export interface BusinessInfo {
   zip: string;
   instagramUrl: string;
   facebookUrl: string;
+  pinterestUrl: string;
   serviceAreas: string[];
   hours: string;
 }
@@ -134,6 +135,7 @@ const businessDefaults: BusinessInfo = {
   zip: '',
   instagramUrl: '',
   facebookUrl: '',
+  pinterestUrl: '',
   serviceAreas: [],
   hours: '',
 };

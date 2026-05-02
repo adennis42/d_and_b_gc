@@ -10,12 +10,11 @@ import type { BusinessInfo, ServiceItem, InstagramPost, AboutPreview, CtaContent
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
-type Tab = 'business' | 'hero' | 'services' | 'instagram' | 'about' | 'cta';
+type Tab = 'business' | 'hero' | 'instagram' | 'about' | 'cta';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'business', label: 'Business' },
   { id: 'hero', label: 'Hero' },
-  { id: 'services', label: 'Services' },
   { id: 'instagram', label: 'Instagram Grid' },
   { id: 'about', label: 'About' },
   { id: 'cta', label: 'CTA' },
@@ -122,7 +121,7 @@ function StatusBanner({ error, success }: { error: string | null; success: boole
 // ─── Business Tab ───────────────────────────────────────────────────────────
 
 function BusinessTab() {
-  const [data, setData] = useState<BusinessInfo>({ name: '', phone: '', email: '', city: '', state: '', zip: '', instagramUrl: '', facebookUrl: '', serviceAreas: [], hours: '' });
+  const [data, setData] = useState<BusinessInfo>({ name: '', phone: '', email: '', city: '', state: '', zip: '', instagramUrl: '', facebookUrl: '', pinterestUrl: '', serviceAreas: [], hours: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -141,6 +140,7 @@ function BusinessTab() {
         zip: d?.zip || '',
         instagramUrl: d?.instagramUrl || '',
         facebookUrl: d?.facebookUrl || '',
+        pinterestUrl: d?.pinterestUrl || '',
         serviceAreas: Array.isArray(d?.serviceAreas) ? d.serviceAreas : [],
         hours: d?.hours || '',
       });
@@ -195,8 +195,27 @@ function BusinessTab() {
             placeholder={"East Islip\nBay Shore\nIslip\nCentral Islip"}
           />
         </div>
-        {field('instagramUrl', 'Instagram URL', 'https://instagram.com/youraccount', 'url')}
-        {field('facebookUrl', 'Facebook URL', 'https://facebook.com/yourpage', 'url')}
+        <div className="border-t border-slate-700 pt-4 space-y-4">
+          <p className="text-sm font-semibold text-slate-300">Social Media Links</p>
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <span>📸</span> Instagram
+            </Label>
+            <Input value={data.instagramUrl} onChange={e => setData(p => ({ ...p, instagramUrl: e.target.value }))} placeholder="https://instagram.com/youraccount" type="url" className="bg-slate-800 border-slate-700 text-slate-100" />
+          </div>
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <span>📘</span> Facebook
+            </Label>
+            <Input value={data.facebookUrl} onChange={e => setData(p => ({ ...p, facebookUrl: e.target.value }))} placeholder="https://facebook.com/yourpage" type="url" className="bg-slate-800 border-slate-700 text-slate-100" />
+          </div>
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <span>📌</span> Pinterest
+            </Label>
+            <Input value={data.pinterestUrl} onChange={e => setData(p => ({ ...p, pinterestUrl: e.target.value }))} placeholder="https://pinterest.com/youraccount" type="url" className="bg-slate-800 border-slate-700 text-slate-100" />
+          </div>
+        </div>
         <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
           {saving ? 'Saving…' : 'Save Business Info'}
         </Button>
@@ -317,67 +336,6 @@ function HeroTab() {
         </div>
         <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
           {saving ? 'Saving…' : 'Save Hero Settings'}
-        </Button>
-      </CardContent>
-    </Card>
-  );
-}
-
-// ─── Services Tab ───────────────────────────────────────────────────────────
-
-function ServicesTab() {
-  const [items, setItems] = useState<ServiceItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    fetch('/api/site-content/services').then(r => r.json()).then(d => { setItems(d); setLoading(false); });
-  }, []);
-
-  const save = async () => {
-    setSaving(true); setError(null);
-    try {
-      const res = await fetch('/api/site-content/services', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(items) });
-      if (!res.ok) throw new Error((await res.json()).error || 'Save failed');
-      setSuccess(true); setTimeout(() => setSuccess(false), 3000);
-    } catch (err) { setError(err instanceof Error ? err.message : 'Save failed'); }
-    finally { setSaving(false); }
-  };
-
-  const update = (i: number, patch: Partial<ServiceItem>) => setItems(prev => prev.map((it, idx) => idx === i ? { ...it, ...patch } : it));
-
-  if (loading) return <p className="text-slate-400 text-sm">Loading…</p>;
-
-  return (
-    <Card className="bg-slate-900/80 backdrop-blur-sm border-slate-800">
-      <CardHeader>
-        <CardTitle>Services</CardTitle>
-        <CardDescription>The four service cards shown on the homepage. Upload a photo for each service.</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <StatusBanner error={error} success={success} />
-        {items.map((item, i) => (
-          <div key={i} className="p-4 bg-slate-800/40 rounded-lg border border-slate-700 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-200">{item.title}</h3>
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Input value={item.description || ''} onChange={e => update(i, { description: e.target.value })} placeholder="From custom cabinetry to stone countertops..." className="bg-slate-800 border-slate-700 text-slate-100" />
-            </div>
-            <div className="space-y-2">
-              <Label>Link (href)</Label>
-              <Input value={item.href || ''} onChange={e => update(i, { href: e.target.value })} placeholder="/schedule" className="bg-slate-800 border-slate-700 text-slate-100" />
-            </div>
-            <ImageField label="Service Image" imageUrl={item.imageUrl} onUrlChange={url => update(i, { imageUrl: url })} description="Portrait image works best (4:5 ratio)" />
-            <div className="space-y-2">
-              <Label>Image Alt Text</Label>
-              <Input value={item.imageAlt} onChange={e => update(i, { imageAlt: e.target.value })} placeholder={`${item.title} project photo`} className="bg-slate-800 border-slate-700 text-slate-100" />
-            </div>
-          </div>
-        ))}
-        <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
-          {saving ? 'Saving…' : 'Save Services'}
         </Button>
       </CardContent>
     </Card>
@@ -611,7 +569,6 @@ export default function SettingsPage() {
   const tabContent: Record<Tab, React.ReactNode> = {
     business: <BusinessTab />,
     hero: <HeroTab />,
-    services: <ServicesTab />,
     instagram: <InstagramTab />,
     about: <AboutTab />,
     cta: <CtaTab />,
