@@ -62,7 +62,12 @@ export async function getSiteContent(
       LIMIT 1
     `;
     if (result.length === 0) return null;
-    return result[0].value as Record<string, unknown>;
+    const val = result[0].value;
+    // If stored as a double-encoded string, parse it
+    if (typeof val === 'string') {
+      try { return JSON.parse(val) as Record<string, unknown>; } catch { return null; }
+    }
+    return val as Record<string, unknown>;
   } catch (error) {
     console.error(`Error getting site content ${section}.${key}:`, error);
     return null;
@@ -132,7 +137,11 @@ const businessDefaults: BusinessInfo = {
 };
 
 export async function getBusinessInfo(): Promise<BusinessInfo> {
-  const raw = await getSiteContent('business', 'info');
+  let raw = await getSiteContent('business', 'info');
+  // Guard: if raw came back as a string (double-encoded JSON), parse it
+  if (typeof raw === 'string') {
+    try { raw = JSON.parse(raw); } catch { raw = null; }
+  }
   return { ...businessDefaults, ...(raw as Partial<BusinessInfo> | null) };
 }
 

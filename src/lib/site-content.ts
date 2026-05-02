@@ -74,6 +74,7 @@ async function getSiteContent(section: string, key: string): Promise<unknown | n
     `;
     if (result.length === 0) return null;
     const value = result[0].value;
+    // Guard against double-encoded JSON strings
     if (typeof value === 'string') {
       try { return JSON.parse(value); } catch { return null; }
     }
