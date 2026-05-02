@@ -120,8 +120,8 @@ export default function AboutPage() {
   return (
     <>
       <LocalBusinessStructuredData />
-      <main className="py-8 md:py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="pt-12 pb-8 md:pt-16 md:pb-12">
+        <div className="container mx-auto px-4 sm:px-8 lg:px-12">
 
           {/* Page Title */}
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
