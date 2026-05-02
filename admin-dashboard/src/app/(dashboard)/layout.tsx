@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import { signOut } from '@/lib/auth';
-import { LayoutDashboard, FolderKanban, BarChart3, Settings, LogOut, User, Megaphone } from 'lucide-react';
+import { LayoutDashboard, BarChart3, PenSquare, LogOut, User } from 'lucide-react';
 
 export default async function DashboardLayout({
   children,
@@ -30,17 +30,11 @@ export default async function DashboardLayout({
                 </h1>
               </div>
               <div className="hidden sm:ml-8 sm:flex sm:space-x-1">
-                <NavLink href="/projects" icon={FolderKanban}>
-                  Projects
-                </NavLink>
-                <NavLink href="/banners" icon={Megaphone}>
-                  Banners
+                <NavLink href="/site-editor" icon={PenSquare}>
+                  Site Editor
                 </NavLink>
                 <NavLink href="/analytics" icon={BarChart3}>
                   Analytics
-                </NavLink>
-                <NavLink href="/settings" icon={Settings}>
-                  Settings
                 </NavLink>
               </div>
             </div>
