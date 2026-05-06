@@ -66,11 +66,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         try {
-          // Find user by email
+          // Find user by email (case-insensitive)
           const result = await sql`
             SELECT id, email, password_hash, role, name
             FROM users
-            WHERE email = ${credentials.email as string}
+            WHERE LOWER(email) = LOWER(${credentials.email as string})
             LIMIT 1
           `;
 
