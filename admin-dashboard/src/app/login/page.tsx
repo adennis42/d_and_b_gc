@@ -23,7 +23,7 @@ export default function LoginPage() {
         email,
         password,
         redirect: false,
-        callbackUrl: "/projects",
+        callbackUrl: "/site-editor",
       });
 
       if (result?.error) {
@@ -38,7 +38,7 @@ export default function LoginPage() {
           setError("Login failed. Please contact an administrator if you need help.");
         }
       } else if (result?.ok) {
-        router.push("/projects");
+        router.push("/site-editor");
         router.refresh();
       } else {
         setError("Login failed. Please contact an administrator if you need help.");
