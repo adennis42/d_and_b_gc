@@ -4,6 +4,13 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
+export const config = {
+  api: {
+    bodyParser: false,
+    responseLimit: false,
+  },
+};
 import { uploadImage } from '@/lib/blob';
 import { auth } from '@/lib/auth';
 import { logger } from '@/lib/logger';
@@ -44,8 +51,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (Vercel limit is 4.5MB, use 4MB to be safe)
-    const maxSizeBytes = 4 * 1024 * 1024; // 4MB
+    // Validate file size (Vercel limit ~4.5MB for standard, use 8MB with bodySizeLimit override)
+    const maxSizeBytes = 8 * 1024 * 1024; // 8MB
     const fileSizeMB = file.size / (1024 * 1024);
     
     if (file.size > maxSizeBytes) {
@@ -55,13 +62,13 @@ export async function POST(request: NextRequest) {
         metadata: {
           fileName: file.name,
           fileSizeMB: fileSizeMB.toFixed(2),
-          maxSizeMB: 4,
+          maxSizeMB: 8,
         },
       });
       return NextResponse.json(
         { 
           error: 'File too large',
-          message: `File size (${fileSizeMB.toFixed(1)}MB) exceeds maximum allowed size (4MB). Please compress the image before uploading.`,
+          message: `File size (${fileSizeMB.toFixed(1)}MB) exceeds maximum allowed size (8MB). Please compress the image before uploading.`,
         },
         { status: 413 }
       );
